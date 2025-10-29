@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Rekening extends Model
+{
+   
+    protected $table = 'tmrekening';
+    protected $primaryKey = 'id_rekening';
+
+    protected $fillable = ['id_nasabah', 'no_rekening', 'no_tabungan', 'nama_tabungan', 'id_bunga','kode_insentif','kode_resort','tabungan_wajib','tabungan_rutin','id_entry'];
+
+  
+}
