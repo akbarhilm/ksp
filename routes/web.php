@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\PinjamanController;
+use App\Http\Controllers\NasabahController;
+use App\Http\Controllers\RekeningController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,10 +24,12 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
-            
+
 Route::middleware(['auth'])->group(function () {
     Route::resource('simpanan', SimpananController::class);
     Route::resource('pinjaman', PinjamanController::class);
+	 Route::resource('nasabah', NasabahController::class);
+	 Route::resource('rekening', RekeningController::class);
 });
 
 Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
@@ -68,9 +72,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('static-sign-up', function () {
 		return view('pages.static-sign-up');
 	})->name('static-sign-up');
-	Route::get('user-management', function () {
-		return view('pages.laravel-examples.user-management');
-	})->name('user-management');
+
 	Route::get('user-profile', function () {
 		return view('pages.laravel-examples.user-profile');
 	})->name('user-profile');

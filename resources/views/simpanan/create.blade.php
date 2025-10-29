@@ -1,6 +1,6 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="simpanan"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="simpanan" menuParent="saving"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Simpanan"></x-navbars.navs.auth>
@@ -20,32 +20,20 @@
 
 
                                 <form method="POST" action="{{ route('simpanan.store') }}">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label>Anggota</label>
-                                        <select name="id_anggota" class="w-full border p-2 rounded">
-                                            @foreach ($anggota as $a)
-                                                <option value="{{ $a->id_anggota }}">{{ $a->nama }}</option>
-                                            @endforeach
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-outline my-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-outline my-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" disabled>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div class="mb-3">
-                                        <label>Jenis</label>
-                                        <select name="jenis" class="w-full border p-2 rounded">
-                                            <option value="pokok">Pokok</option>
-                                            <option value="wajib">Wajib</option>
-                                            <option value="sukarela">Sukarela</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label>Jumlah</label>
-                                        <input type="number" name="jumlah" class="w-full border p-2 rounded" required>
-                                    </div>
-
-                                    <button type="submit"
-                                        class="bg-green-600 text-white px-4 py-2 rounded">Simpan</button>
                                 </form>
                             </div>
                         </div>

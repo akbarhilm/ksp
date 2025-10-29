@@ -9,7 +9,8 @@ class Nasabah extends Model
 {
    
     protected $table = 'trnasabah';
-    protected $fillable = ['no_anggota', 'nama', 'nik', 'alamat', 'no_telp','email', 'tanggal_gabung', 'status'];
+    protected $primaryKey = 'id_nasabah';
+    protected $fillable = ['pekerjaan', 'nama', 'nik', 'alamat', 'no_telp','nama_suami_istri','tgl_lahir','sektor_ekonomi','id_entry'];
 
     public function simpanan() {
         return $this->hasMany(Simpanan::class, 'id_nasabah');
@@ -22,4 +23,9 @@ class Nasabah extends Model
     public function user() {
         return $this->hasOne(User::class, 'id_nasabah');
     }
+    public function getRouteKeyName()
+{
+    return 'id_nasabah';
+}
+
 }

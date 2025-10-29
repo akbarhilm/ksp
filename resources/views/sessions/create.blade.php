@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12">
                     <!-- Navbar -->
-                    <x-navbars.navs.guest signin='login' signup='register'></x-navbars.navs.guest>
+                    {{-- <x-navbars.navs.guest signin='login' signup='register'></x-navbars.navs.guest> --}}
                     <!-- End Navbar -->
                 </div>
             </div>
@@ -18,9 +18,9 @@
                         <div class="col-lg-4 col-md-8 col-12 mx-auto">
                             <div class="card z-index-0 fadeIn3 fadeInBottom">
                                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                    <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                                    <div class="bg-gradient-info shadow-primary border-radius-lg py-3 pe-1">
                                         <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Sign in</h4>
-                                        <div class="row mt-3">
+                                        {{-- <div class="row mt-3">
                                             <h6 class='text-white text-center'>
                                                 <span class="font-weight-normal">Email:</span> admin@material.com
                                                 <br>
@@ -40,7 +40,7 @@
                                                     <i class="fa fa-google text-white text-lg"></i>
                                                 </a>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -75,18 +75,18 @@
                                                 me</label>
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Sign
+                                            <button type="submit" class="btn bg-gradient-info w-100 my-4 mb-2">Sign
                                                 in</button>
                                         </div>
                                         <p class="mt-4 text-sm text-center">
                                             Don't have an account?
                                             <a href="{{ route('register') }}"
-                                                class="text-primary text-gradient font-weight-bold">Sign up</a>
+                                                class="text-info text-gradient font-weight-bold">Sign up</a>
                                         </p>
                                         <p class="text-sm text-center">
                                             Forgot your password? Reset your password
                                             <a href="{{ route('verify') }}"
-                                                class="text-primary text-gradient font-weight-bold">here</a>
+                                                class="text-info text-gradient font-weight-bold">here</a>
                                         </p>
                                     </form>
                                 </div>
@@ -94,7 +94,7 @@
                         </div>
                     </div>
                 </div>
-                <x-footers.guest></x-footers.guest>
+                {{-- <x-footers.guest></x-footers.guest> --}}
             </div>
         </main>
         @push('js')
