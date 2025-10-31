@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 24, 2025 at 05:42 AM
+-- Generation Time: Oct 31, 2025 at 09:00 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -56,12 +56,43 @@ CREATE TABLE `tmpinjaman` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tmrekening`
+--
+
+CREATE TABLE `tmrekening` (
+  `id_rekening` int(11) NOT NULL,
+  `id_nasabah` int(11) NOT NULL,
+  `no_rekening` varchar(20) NOT NULL,
+  `no_tabungan` varchar(20) NOT NULL,
+  `jenis_rekening` varchar(20) NOT NULL,
+  `id_bunga` int(11) NOT NULL,
+  `kode_insentif` varchar(50) NOT NULL,
+  `kode_resort` varchar(100) NOT NULL,
+  `tabungan_wajib` int(10) NOT NULL,
+  `tabungan_rutin` int(10) NOT NULL,
+  `id_entry` int(11) NOT NULL,
+  `updated_at` date DEFAULT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tmrekening`
+--
+
+INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `no_tabungan`, `jenis_rekening`, `id_bunga`, `kode_insentif`, `kode_resort`, `tabungan_wajib`, `tabungan_rutin`, `id_entry`, `updated_at`, `created_at`) VALUES
+(2, 42, '12500042', '12500042', '1', 1, '0', '1', 100000, 0, 1, '2025-10-30', '2025-10-30'),
+(3, 42, '22500042', '22500042', '2', 2, '0', '2', 10000000, 500000, 1, '2025-10-30', '2025-10-30');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tmsimpanan`
 --
 
 CREATE TABLE `tmsimpanan` (
   `id_simpanan` int(11) NOT NULL,
-  `id_nasabah` int(11) NOT NULL,
+  `id_rekening` int(11) NOT NULL,
+  `id_akun` int(11) NOT NULL,
   `tanggal` date DEFAULT curdate(),
   `jenis` enum('pokok','wajib','sukarela') NOT NULL,
   `jumlah` decimal(15,2) NOT NULL DEFAULT 0.00,
@@ -148,28 +179,78 @@ INSERT INTO `trakun` (`id_akun`, `id_parent`, `kode_akun`, `nama_akun`, `status`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `trbunga`
+--
+
+CREATE TABLE `trbunga` (
+  `id_bunga` int(11) NOT NULL,
+  `kode_bunga` varchar(20) NOT NULL,
+  `jenis_bunga` varchar(50) NOT NULL,
+  `nama_bunga` varchar(100) NOT NULL,
+  `tipe_bunga` varchar(20) NOT NULL,
+  `termin` int(2) NOT NULL,
+  `suku_bunga1` float NOT NULL,
+  `suku_bunga2` float NOT NULL,
+  `suku_bunga3` float NOT NULL,
+  `id_entry` int(11) NOT NULL,
+  `updated_at` date DEFAULT NULL,
+  `created_at` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `trbunga`
+--
+
+INSERT INTO `trbunga` (`id_bunga`, `kode_bunga`, `jenis_bunga`, `nama_bunga`, `tipe_bunga`, `termin`, `suku_bunga1`, `suku_bunga2`, `suku_bunga3`, `id_entry`, `updated_at`, `created_at`) VALUES
+(1, 'S01', 'Simpanan', 'Simpanan tabungan', 'flat', 0, 3, 0, 0, 0, NULL, '2025-10-29'),
+(2, 'S02', 'Simpanan', 'Simpanan Deposito', 'flat', 0, 6.5, 0, 0, 0, NULL, '2025-10-29');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `trnasabah`
 --
 
 CREATE TABLE `trnasabah` (
   `id_nasabah` int(11) NOT NULL,
-  `no_nasabah` varchar(20) NOT NULL,
   `nik` varchar(100) NOT NULL,
   `nama` varchar(100) NOT NULL,
   `alamat` text DEFAULT NULL,
+  `tgl_lahir` date NOT NULL,
+  `pekerjaan` varchar(100) NOT NULL,
+  `nama_suami_istri` varchar(100) NOT NULL,
   `no_telp` varchar(20) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
+  `sektor_ekonomi` varchar(100) NOT NULL,
+  `id_entry` varchar(20) NOT NULL,
   `tanggal_gabung` date DEFAULT curdate(),
-  `status` enum('aktif','nonaktif') DEFAULT 'aktif'
+  `status` enum('aktif','nonaktif') DEFAULT 'aktif',
+  `updated_at` date DEFAULT NULL,
+  `created_at` date DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `trnasabah`
 --
 
-INSERT INTO `trnasabah` (`id_nasabah`, `no_nasabah`, `nik`, `nama`, `alamat`, `no_telp`, `email`, `tanggal_gabung`, `status`) VALUES
-(1, 'AG001', '323232323232', 'Budi Santoso', 'Jl. Merdeka No.10', '08123456789', NULL, '2025-10-22', 'aktif'),
-(2, 'AG002', '373737373737', 'Siti Aminah', 'Jl. Melati No.5', '08234567890', NULL, '2025-10-22', 'aktif');
+INSERT INTO `trnasabah` (`id_nasabah`, `nik`, `nama`, `alamat`, `tgl_lahir`, `pekerjaan`, `nama_suami_istri`, `no_telp`, `sektor_ekonomi`, `id_entry`, `tanggal_gabung`, `status`, `updated_at`, `created_at`) VALUES
+(42, '321708080809', 'Akbar Hilman', 'asdasdasdads', '1999-07-07', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-10-30', 'aktif', '2025-10-30', '2025-10-30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `trprogram`
+--
+
+CREATE TABLE `trprogram` (
+  `id_program` int(11) NOT NULL,
+  `id_bunga` int(11) NOT NULL,
+  `nama_program` varchar(100) NOT NULL,
+  `plafond` int(15) NOT NULL,
+  `tenor` int(5) NOT NULL,
+  `id_entry` int(11) NOT NULL,
+  `created_at` date NOT NULL,
+  `updated_at` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -191,8 +272,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`, `id_nasabah`) VALUES
 (1, 'admin', '$2y$12$8T0Tgti.jsm72fNpx8lS2OyGVeEAze54JtRAHP2BEXZ3li/ZfxJ0O', 'admin', NULL),
-(2, 'budi', '9c5fa085ce256c7c598f6710584ab25d', 'anggota', 1),
-(3, 'siti', '5c2e4a2563f9f4427955422fe1402762', 'anggota', 2);
+(2, 'budi', '9c5fa085ce256c7c598f6710584ab25d', 'anggota', NULL),
+(3, 'siti', '5c2e4a2563f9f4427955422fe1402762', 'anggota', NULL);
 
 -- --------------------------------------------------------
 
@@ -235,11 +316,17 @@ ALTER TABLE `tmpinjaman`
   ADD KEY `id_nasabah` (`id_nasabah`);
 
 --
+-- Indexes for table `tmrekening`
+--
+ALTER TABLE `tmrekening`
+  ADD PRIMARY KEY (`id_rekening`),
+  ADD KEY `tmrekening_ibfk_1` (`id_nasabah`);
+
+--
 -- Indexes for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  ADD PRIMARY KEY (`id_simpanan`),
-  ADD KEY `id_nasabah` (`id_nasabah`);
+  ADD PRIMARY KEY (`id_simpanan`);
 
 --
 -- Indexes for table `tmtransaksi`
@@ -254,11 +341,23 @@ ALTER TABLE `trakun`
   ADD PRIMARY KEY (`id_akun`);
 
 --
+-- Indexes for table `trbunga`
+--
+ALTER TABLE `trbunga`
+  ADD PRIMARY KEY (`id_bunga`);
+
+--
 -- Indexes for table `trnasabah`
 --
 ALTER TABLE `trnasabah`
   ADD PRIMARY KEY (`id_nasabah`),
-  ADD UNIQUE KEY `no_nasabah` (`no_nasabah`);
+  ADD UNIQUE KEY `nik` (`nik`);
+
+--
+-- Indexes for table `trprogram`
+--
+ALTER TABLE `trprogram`
+  ADD PRIMARY KEY (`id_program`);
 
 --
 -- Indexes for table `users`
@@ -285,6 +384,12 @@ ALTER TABLE `tmpinjaman`
   MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tmrekening`
+--
+ALTER TABLE `tmrekening`
+  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
@@ -303,10 +408,22 @@ ALTER TABLE `trakun`
   MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
+-- AUTO_INCREMENT for table `trbunga`
+--
+ALTER TABLE `trbunga`
+  MODIFY `id_bunga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `trnasabah`
 --
 ALTER TABLE `trnasabah`
-  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+
+--
+-- AUTO_INCREMENT for table `trprogram`
+--
+ALTER TABLE `trprogram`
+  MODIFY `id_program` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -331,10 +448,16 @@ ALTER TABLE `tmpinjaman`
   ADD CONSTRAINT `tmpinjaman_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `tmrekening`
+--
+ALTER TABLE `tmrekening`
+  ADD CONSTRAINT `tmrekening_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  ADD CONSTRAINT `tmsimpanan_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tmsimpanan_ibfk_1` FOREIGN KEY (`id_rekening`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `users`

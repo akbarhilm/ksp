@@ -57,7 +57,7 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <p class="mb-0 text-sm">{{ $loop->iteration}}</p>
+                                                        <p class="mb-0 text-sm">{{ str_pad($n->id_nasabah, 5, '0', STR_PAD_LEFT) }}</p>
                                                     </div>
                                                 </div>
                                             </td>

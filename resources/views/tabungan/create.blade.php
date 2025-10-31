@@ -1,6 +1,6 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="nasabah" menuParent="admin"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="tabungan" menuParent="simpanan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
@@ -11,20 +11,21 @@
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                             <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Tambah Rekening</h6>
+                                <h6 class="text-white text-capitalize ps-3">Tambah Simpanan Tabungan</h6>
                             </div>
                         </div>
                         <div class="card-body px-4 pb-2 py-4">
-                            <form method="POST" action="{{ route('rekening.store') }}">
+                            <form method="POST" action="{{ route('tabungan.store') }}">
 
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>Nama Nasabah</label>
-                                            <input type="text" readonly class="form-control" name="nama"
-                                                value="{{$nasabah->nama }}" 
-                                                />
+                                            <label>Pilih Nasabah</label>
+                                            <select class="form-control" name="nama">
+                                                <option value="{{$nasabah->id_nasabah }}" >
+                                                    {{$nasabah->nama }}/{{$nasabah->nik }}/{{str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT) }}
+                                                </option>
 
                                         </div>
                                         @error('nama')

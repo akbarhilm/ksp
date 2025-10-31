@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bunga;
 use App\Models\Nasabah;
+use App\Models\Rekening;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class NasabahController extends Controller
@@ -36,17 +39,28 @@ class NasabahController extends Controller
             
         ]);
         $request->request->add(['id_entry' => auth()->user()->id]);
+        $nasabah='';
+        try{
        $nasabah= Nasabah::create($request->all());
         //  flash()
         //     ->success('Data Nasabah berhasil disimpan');
         //return view('rekening.create',compact('nasabah'));
         return redirect()->route('rekening.create')->with(['nasabah'=> $nasabah,'success'=> 'Silahkan tambah Rekening Nasabah.']);
+        }catch(QueryException $e){
+            if ($e->getCode() == 23000) {
+                // Duplicate entry error
+                return redirect()->back()->withInput()->with('error','NIK KTP sudah terdaftar');
+            }
+           throw $e;
+        }
     }
 
         public function edit($id)
     {
-        $nasabah = Nasabah::findorFail($id);
-        return view('nasabah.edit', compact('nasabah'));
+        $nasabah = Nasabah::find($id);
+        $rekening = Rekening::where('id_nasabah',$id)->get();
+        $bunga = Bunga::all();
+        return view('nasabah.edit', compact('nasabah','rekening','bunga'));
     }
 
     public function update(Request $request, Nasabah $nasabah)
