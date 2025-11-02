@@ -25,12 +25,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 
+Route::get('/rekening/cari', [RekeningController::class, 'cari'])->middleware('auth')->name('rekening.cari');
 Route::middleware(['auth'])->group(function () {
     Route::resource('simpanan', SimpananController::class);
     Route::resource('pinjaman', PinjamanController::class);
 	 Route::resource('nasabah', NasabahController::class);
 	 Route::resource('rekening', RekeningController::class);
 });
+
 
 Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');

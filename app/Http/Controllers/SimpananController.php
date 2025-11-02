@@ -9,10 +9,11 @@ use Illuminate\Http\Request;
 
 class SimpananController extends Controller
 {
-    public function index()
-    {
-        $simpanan = Simpanan::with('anggota')->latest()->paginate(10);
-        return view('simpanan.index', compact('simpanan'));
+  public function index(){
+         $nasabah = Nasabah::paginate(10);
+        
+        return view('simpanan.index', compact('nasabah'));
+
     }
 
     public function create()

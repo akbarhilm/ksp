@@ -57,14 +57,23 @@
                     <span class="nav-link-text ms-1">Data Karyawan</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'rekening' ? ' active bg-gradient-info' : '' }} "
+                    href="{{ route('rekening.index') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">wallet</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Rekening</span>
+                </a>
+            </li>
             </div>
             <li class="nav-item mt-3">
                 <a class="nav-link ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8" data-bs-toggle="collapse" href="#collapseSave" role="button" aria-controls="collapseSave">
                 Simpanan</a>
             </li>
-            <div class="collapse {{$menuParent == 'saving' ? 'show':''}}" id="collapseSave">
+            <div class="collapse {{$menuParent == 'simpanan' ? 'show':''}}" id="collapseSave">
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'simpanan' ? ' active bg-gradient-info' : '' }} "
+                <a class="nav-link text-white {{ $activePage == 'tabungan' ? ' active bg-gradient-info' : '' }} "
                     href="{{ route('simpanan.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">receipt_long</i>
@@ -106,6 +115,41 @@
                 </a>
             </li>
             </div>
+
+            <li class="nav-item mt-3">
+                <a class="nav-link ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8" data-bs-toggle="collapse" href="#collapseLap" role="button" aria-controls="collapseLap">
+                Laporan</a>
+            </li>
+            <div class="collapse {{$menuParent == 'loan' ? 'show':''}}" id="collapseLap">
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'billing' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('billing') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">receipt_long</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Jurnal</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'virtual-reality' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('virtual-reality') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">view_in_ar</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Neraca</span>
+                </a>
+            </li>
+             <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'virtual-reality' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('virtual-reality') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">view_in_ar</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Laba/Rugi</span>
+                </a>
+            </li>
+            </div>
+            
             {{-- <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'rtl' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('rtl') }}">

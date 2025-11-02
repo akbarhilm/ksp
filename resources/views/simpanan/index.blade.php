@@ -1,9 +1,9 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="rekening" menuParent="admin"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="tabungan" menuParent="simpanan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Managemen Rekening"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Tabungan"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -119,8 +119,8 @@
                                             <td class="align-middle">
                                                 
                                                 <a rel="tooltip" class="btn btn-info btn-link"
-                                                    href="{{ route('rekening.create',['id_nasabah' =>$n->id_nasabah]) }}"
-                                                    data-original-title="add rekening" title="add rekening">
+                                                    href="{{ route('simpanan.create',['id_nasabah' =>$n->id_nasabah]) }}"
+                                                    data-original-title="add rekening" title="Tambah Simpanan">
                                                     <i class="material-icons">add</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
