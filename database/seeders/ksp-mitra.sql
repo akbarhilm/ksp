@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2025 at 09:00 AM
+-- Generation Time: Nov 03, 2025 at 10:15 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -24,68 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tmangsuran`
---
-
-CREATE TABLE `tmangsuran` (
-  `id_angsuran` int(11) NOT NULL,
-  `id_pinjaman` int(11) NOT NULL,
-  `tanggal_bayar` date DEFAULT curdate(),
-  `jumlah_bayar` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `denda` decimal(15,2) DEFAULT 0.00,
-  `sisa_pinjaman` decimal(15,2) DEFAULT 0.00
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tmpinjaman`
---
-
-CREATE TABLE `tmpinjaman` (
-  `id_pinjaman` int(11) NOT NULL,
-  `id_nasabah` int(11) NOT NULL,
-  `nama_program` varchar(100) NOT NULL,
-  `tanggal_pinjam` date DEFAULT curdate(),
-  `jumlah_pinjaman` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `bunga` decimal(5,2) NOT NULL DEFAULT 0.00,
-  `lama_angsuran` int(11) NOT NULL DEFAULT 12,
-  `status` enum('berjalan','lunas','gagal') DEFAULT 'berjalan'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tmrekening`
---
-
-CREATE TABLE `tmrekening` (
-  `id_rekening` int(11) NOT NULL,
-  `id_nasabah` int(11) NOT NULL,
-  `no_rekening` varchar(20) NOT NULL,
-  `no_tabungan` varchar(20) NOT NULL,
-  `jenis_rekening` varchar(20) NOT NULL,
-  `id_bunga` int(11) NOT NULL,
-  `kode_insentif` varchar(50) NOT NULL,
-  `kode_resort` varchar(100) NOT NULL,
-  `tabungan_wajib` int(10) NOT NULL,
-  `tabungan_rutin` int(10) NOT NULL,
-  `id_entry` int(11) NOT NULL,
-  `updated_at` date DEFAULT NULL,
-  `created_at` date NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tmrekening`
---
-
-INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `no_tabungan`, `jenis_rekening`, `id_bunga`, `kode_insentif`, `kode_resort`, `tabungan_wajib`, `tabungan_rutin`, `id_entry`, `updated_at`, `created_at`) VALUES
-(2, 42, '12500042', '12500042', '1', 1, '0', '1', 100000, 0, 1, '2025-10-30', '2025-10-30'),
-(3, 42, '22500042', '22500042', '2', 2, '0', '2', 10000000, 500000, 1, '2025-10-30', '2025-10-30');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tmsimpanan`
 --
 
@@ -95,9 +33,21 @@ CREATE TABLE `tmsimpanan` (
   `id_akun` int(11) NOT NULL,
   `tanggal` date DEFAULT curdate(),
   `jenis` enum('pokok','wajib','sukarela') NOT NULL,
-  `jumlah` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `keterangan` text DEFAULT NULL
+  `v_debit` decimal(15,2) DEFAULT 0.00,
+  `v_kredit` decimal(15,2) DEFAULT 0.00,
+  `keterangan` text DEFAULT NULL,
+  `id_entry` int(11) NOT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `updated_at` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tmsimpanan`
+--
+
+INSERT INTO `tmsimpanan` (`id_simpanan`, `id_rekening`, `id_akun`, `tanggal`, `jenis`, `v_debit`, `v_kredit`, `keterangan`, `id_entry`, `created_at`, `updated_at`) VALUES
+(1, 2, 4, '2025-11-03', 'wajib', '0.00', '100000.00', '-', 1, '2025-11-03', '2025-11-03'),
+(2, 2, 5, '2025-11-03', 'wajib', '0.00', '50000.00', '-', 1, '2025-11-03', '2025-11-03');
 
 -- --------------------------------------------------------
 
@@ -233,7 +183,8 @@ CREATE TABLE `trnasabah` (
 --
 
 INSERT INTO `trnasabah` (`id_nasabah`, `nik`, `nama`, `alamat`, `tgl_lahir`, `pekerjaan`, `nama_suami_istri`, `no_telp`, `sektor_ekonomi`, `id_entry`, `tanggal_gabung`, `status`, `updated_at`, `created_at`) VALUES
-(42, '321708080809', 'Akbar Hilman', 'asdasdasdads', '1999-07-07', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-10-30', 'aktif', '2025-10-30', '2025-10-30');
+(42, '321708080809', 'Akbar Hilman', 'asdasdasdads', '1999-07-07', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-10-30', 'aktif', '2025-10-30', '2025-10-30'),
+(43, '321708080808', 'as', 'asdasdasdads', '2025-11-03', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-11-03', 'aktif', '2025-11-03', '2025-11-03');
 
 -- --------------------------------------------------------
 
@@ -275,52 +226,9 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `id_nasabah`) VALUES
 (2, 'budi', '9c5fa085ce256c7c598f6710584ab25d', 'anggota', NULL),
 (3, 'siti', '5c2e4a2563f9f4427955422fe1402762', 'anggota', NULL);
 
--- --------------------------------------------------------
-
---
--- Stand-in structure for view `v_ringkasan_keuangan`
--- (See below for the actual view)
---
-CREATE TABLE `v_ringkasan_keuangan` (
-`total_simpanan` decimal(37,2)
-,`total_pinjaman_berjalan` decimal(37,2)
-,`total_angsuran` decimal(37,2)
-,`saldo_kas` decimal(38,2)
-);
-
--- --------------------------------------------------------
-
---
--- Structure for view `v_ringkasan_keuangan`
---
-DROP TABLE IF EXISTS `v_ringkasan_keuangan`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_ringkasan_keuangan`  AS SELECT (select sum(`tmsimpanan`.`jumlah`) from `tmsimpanan`) AS `total_simpanan`, (select sum(`tmpinjaman`.`jumlah_pinjaman`) from `tmpinjaman` where `tmpinjaman`.`status` = 'berjalan') AS `total_pinjaman_berjalan`, (select sum(`tmangsuran`.`jumlah_bayar`) from `tmangsuran`) AS `total_angsuran`, (select sum(`tmtransaksi`.`debit`) - sum(`tmtransaksi`.`kredit`) from `tmtransaksi`) AS `saldo_kas``saldo_kas`  ;
-
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `tmangsuran`
---
-ALTER TABLE `tmangsuran`
-  ADD PRIMARY KEY (`id_angsuran`),
-  ADD KEY `id_pinjaman` (`id_pinjaman`);
-
---
--- Indexes for table `tmpinjaman`
---
-ALTER TABLE `tmpinjaman`
-  ADD PRIMARY KEY (`id_pinjaman`),
-  ADD KEY `id_nasabah` (`id_nasabah`);
-
---
--- Indexes for table `tmrekening`
---
-ALTER TABLE `tmrekening`
-  ADD PRIMARY KEY (`id_rekening`),
-  ADD KEY `tmrekening_ibfk_1` (`id_nasabah`);
 
 --
 -- Indexes for table `tmsimpanan`
@@ -372,28 +280,10 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `tmangsuran`
---
-ALTER TABLE `tmangsuran`
-  MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tmpinjaman`
---
-ALTER TABLE `tmpinjaman`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tmrekening`
---
-ALTER TABLE `tmrekening`
-  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tmtransaksi`
@@ -417,7 +307,7 @@ ALTER TABLE `trbunga`
 -- AUTO_INCREMENT for table `trnasabah`
 --
 ALTER TABLE `trnasabah`
-  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `trprogram`
@@ -434,30 +324,6 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `tmangsuran`
---
-ALTER TABLE `tmangsuran`
-  ADD CONSTRAINT `tmangsuran_ibfk_1` FOREIGN KEY (`id_pinjaman`) REFERENCES `tmpinjaman` (`id_pinjaman`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `tmpinjaman`
---
-ALTER TABLE `tmpinjaman`
-  ADD CONSTRAINT `tmpinjaman_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `tmrekening`
---
-ALTER TABLE `tmrekening`
-  ADD CONSTRAINT `tmrekening_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `tmsimpanan`
---
-ALTER TABLE `tmsimpanan`
-  ADD CONSTRAINT `tmsimpanan_ibfk_1` FOREIGN KEY (`id_rekening`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `users`
