@@ -1,9 +1,9 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="rekening" menuParent="admin"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="pengajuan" menuParent="loan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Managemen Rekening"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Pengajuan"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -82,7 +82,7 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <p class="mb-0 text-sm">{{ str_pad($n->id_nasabah,5,'0',STR_PAD_LEFT)  }}</p>
+                                                        <p class="mb-0 text-sm">{{str_pad($n->id_nasabah,5,'0',STR_PAD_LEFT) }}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -119,8 +119,8 @@
                                             <td class="align-middle">
                                                 
                                                 <a rel="tooltip" class="btn btn-info btn-link"
-                                                    href="{{ route('rekening.create',['id_nasabah' =>$n->id_nasabah]) }}"
-                                                    data-original-title="add rekening" title="add rekening">
+                                                    href="{{ route('deposito.create',['id_nasabah' =>$n->id_nasabah]) }}"
+                                                    data-original-title="add rekening" title="Tambah Simpanan">
                                                     <i class="material-icons">add</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
@@ -129,7 +129,7 @@
                                                     <div class="ripple-container"></div></a> --}}
                                                
                                                     <a rel="tooltip" class="btn btn-success btn-link"
-                                                    href="{{ route('rekening.edit', $n->id_nasabah) }}"
+                                                    href="{{ route('deposito.show', $n->id_nasabah) }}"
                                                     data-original-title="view" title="view rekening">
                                                     <i class="material-icons">visibility</i>
                                                     <div class="ripple-container"></div>

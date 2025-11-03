@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Simpanan extends Model
 {
     protected $table = 'tmsimpanan';
-    protected $fillable = ['id_nasabah', 'tanggal', 'jenis', 'jumlah', 'keterangan'];
+    protected $fillable = ['id_nasabah','id_rekening','id_akun', 'jenis', 'v_debit','v_kredit', 'keterangan','id_entry'];
 
     public function nasabah() {
         return $this->belongsTo(Nasabah::class, 'id_nasabah');

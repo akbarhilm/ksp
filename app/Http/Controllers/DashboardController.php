@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function index()
     {
          // Total simpanan anggota
-        $totalSimpanan = Simpanan::sum('jumlah');
+        //$totalSimpanan = Simpanan::sum('jumlah');
 
         // Total pinjaman yang masih berjalan
         $totalPinjaman = Pinjaman::where('status', 'berjalan')->sum('jumlah_pinjaman');

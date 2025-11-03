@@ -1,10 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SimpananController;
+use App\Http\Controllers\TabunganController;
+use App\Http\Controllers\DepositoController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\RekeningController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SessionsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,18 +23,20 @@ use App\Http\Controllers\RekeningController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard.index');
 });
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\SessionsController;
 
+
+Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
+
+Route::get('/tabungan/lihat', [TabunganController::class, 'lihat'])->middleware('auth')->name('tabungan.lihat');
 Route::get('/rekening/cari', [RekeningController::class, 'cari'])->middleware('auth')->name('rekening.cari');
 Route::middleware(['auth'])->group(function () {
-    Route::resource('simpanan', SimpananController::class);
+    Route::resource('tabungan', TabunganController::class);
+	 Route::resource('deposito', DepositoController::class);
     Route::resource('pinjaman', PinjamanController::class);
+	 Route::resource('pengajuan', PengajuanController::class);
 	 Route::resource('nasabah', NasabahController::class);
 	 Route::resource('rekening', RekeningController::class);
 });

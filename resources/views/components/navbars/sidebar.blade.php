@@ -74,7 +74,7 @@
             <div class="collapse {{$menuParent == 'simpanan' ? 'show':''}}" id="collapseSave">
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'tabungan' ? ' active bg-gradient-info' : '' }} "
-                    href="{{ route('simpanan.index') }}">
+                    href="{{ route('tabungan.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">receipt_long</i>
                     </div>
@@ -82,8 +82,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'tables' ? ' active bg-gradient-info' : '' }} "
-                    href="{{ route('tables') }}">
+                <a class="nav-link text-white {{ $activePage == 'deposito' ? ' active bg-gradient-info' : '' }} "
+                    href="{{ route('deposito.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">table_view</i>
                     </div>
@@ -97,8 +97,8 @@
             </li>
             <div class="collapse {{$menuParent == 'loan' ? 'show':''}}" id="collapseLoan">
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'billing' ? ' active bg-gradient-info' : '' }}  "
-                    href="{{ route('billing') }}">
+                <a class="nav-link text-white {{ $activePage == 'pengajuan' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('pengajuan.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">receipt_long</i>
                     </div>
@@ -120,7 +120,7 @@
                 <a class="nav-link ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8" data-bs-toggle="collapse" href="#collapseLap" role="button" aria-controls="collapseLap">
                 Laporan</a>
             </li>
-            <div class="collapse {{$menuParent == 'loan' ? 'show':''}}" id="collapseLap">
+            <div class="collapse {{$menuParent == 'laporan' ? 'show':''}}" id="collapseLap">
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'billing' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('billing') }}">
