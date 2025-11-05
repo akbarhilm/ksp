@@ -1,9 +1,9 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="pengajuan" menuParent="loan"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="tabungan" menuParent="simpanan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Pengajuan Pinjaman"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Tabungan"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -11,11 +11,11 @@
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                             <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Pengajuan Pinjaman</h6>
+                                <h6 class="text-white text-capitalize ps-3">Tambah Transaksi Tabungan</h6>
                             </div>
                         </div>
                         <div class="card-body px-4 pb-2 py-4">
-                            <form method="POST" action="{{ route('pengajuan.store') }}">
+                            <form method="POST" action="{{ route('tabungan.store') }}">
 
                                 @csrf
                                 <div class="row">
@@ -23,7 +23,7 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label>No Nasabah</label>
                                             <input type="text" readonly class="form-control" name="nama"
-                                                value="{{str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT)  }}" 
+                                                value="{{str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT) }}" 
                                                 />
 
                                         </div>
@@ -48,7 +48,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Rekening</label>
-                                            <input type="text" id="nama_rekening" class="form-control" readonly  value=" {{ $rekening[0]->no_rekening}} / {{ $rekening[0]->jenis_rekening}}"/>
+                                            <input type="text" id="nama_rekening" class="form-control" readonly name="jenis" value="{{ $rekening[0]->jenis_rekening}}"/>
                                             <input type="hidden" id="id_rekening" name="id_rekening" value="{{ $rekening[0]->id_rekening}}"/>
 
                                         </div>
@@ -59,14 +59,12 @@
 
                                      <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>Jenis Pinjaman</label>
-                                           <select class="form-control" name="id_program">
-                                            <option value="">--Pilih Jenis Pinjaman--</option>
-                                            @foreach ($program as $p)
-                                                <option value="{{ $p->id_program }}">
-                                                    {{ $p->nama_program }} - {{$p->bunga->suku_bunga1}}% - {{ $p->tenor }} Bulan
-                                                </option>
-                                            @endforeach
+                                            <label>Jenis Simpanan</label>
+                                           <select class="form-control" name="jenis">
+                                            <option value="">--Pilih Jenis Simpanan--</option>
+                                            <option value="pokok">Simpanan Pokok</option>
+                                            <option value="wajib">Simpanan Wajib</option>
+                                            <option value="sukarela">Simpanan Sukarela</option>
                                            </select>
                                         </div>
                                         @error('no_rekening')
@@ -78,30 +76,31 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>Jumlah Pinjaman</label>
-                                            <input type="text"  class="form-control" name="jumlah_pinjaman"
-                                                value="{{old('jumlah_pinjaman') }}" 
+                                            <label>Jumlah</label>
+                                            <input type="text"  class="form-control" name="v_kredit"
+                                                value="{{old('v_kredit') }}" 
                                                 />
 
                                         </div>
-                                        @error('jumlah_pinjaman')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Plafond</label>
-                                            <input type="text"  class="form-control" readonly name="plafond"
-                                                value="{{$program[0]->plafond }}" 
-                                                />
-
-                                        </div>
-                                        @error('plafond')
+                                        @error('v_kredit')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
                                 </div>
-                               
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Keterangan</label>
+                                            <input type="text"  class="form-control" name="keterangan"
+                                                value="{{old('keterangan') }}" 
+                                                />
+
+                                        </div>
+                                        @error('keterangan')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                </div>
                                  <div class="row">
                             <div class="col-md-10">
                                 <div class="input-group input-group-static mb-4">

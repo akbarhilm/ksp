@@ -11,7 +11,7 @@ class PinjamanController extends Controller
 {
     public function index()
     {
-        $pinjaman = Pinjaman::with('anggota')->latest()->paginate(10);
+        $pinjaman = Nasabah::paginate(10);
         return view('pinjaman.index', compact('pinjaman'));
     }
 

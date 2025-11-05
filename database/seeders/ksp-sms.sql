@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 04, 2025 at 07:00 AM
+-- Generation Time: Nov 05, 2025 at 08:54 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -44,14 +44,23 @@ CREATE TABLE `tmangsuran` (
 
 CREATE TABLE `tmpinjaman` (
   `id_pinjaman` int(11) NOT NULL,
-  `id_nasabah` int(11) NOT NULL,
-  `nama_program` varchar(100) NOT NULL,
+  `id_rekening` int(11) NOT NULL,
+  `id_program` int(11) NOT NULL,
+  `id_akun` int(11) NOT NULL,
   `tanggal_pinjam` date DEFAULT curdate(),
   `jumlah_pinjaman` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `bunga` decimal(5,2) NOT NULL DEFAULT 0.00,
-  `lama_angsuran` int(11) NOT NULL DEFAULT 12,
-  `status` enum('berjalan','lunas','gagal') DEFAULT 'berjalan'
+  `status` enum('berjalan','lunas','tolak','pengajuan') NOT NULL DEFAULT 'pengajuan',
+  `id_entry` int(11) NOT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `updated_at` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tmpinjaman`
+--
+
+INSERT INTO `tmpinjaman` (`id_pinjaman`, `id_rekening`, `id_program`, `id_akun`, `tanggal_pinjam`, `jumlah_pinjaman`, `status`, `id_entry`, `created_at`, `updated_at`) VALUES
+(1, 5, 1, 6, '2025-11-05', '2000000.00', 'pengajuan', 1, '2025-11-05', '2025-11-05');
 
 -- --------------------------------------------------------
 
@@ -82,7 +91,8 @@ CREATE TABLE `tmrekening` (
 INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `no_tabungan`, `jenis_rekening`, `id_bunga`, `kode_insentif`, `kode_resort`, `tabungan_wajib`, `tabungan_rutin`, `id_entry`, `updated_at`, `created_at`) VALUES
 (2, 42, '12500042', '12500042', 'Tabungan', 1, '0', '1', 100000, 0, 1, '2025-10-30', '2025-10-30'),
 (3, 42, '22500042', '22500042', 'Deposito', 2, '0', '2', 10000000, 500000, 1, '2025-10-30', '2025-10-30'),
-(4, 43, '12500043', '12500043', 'Tabungan', 1, '0', '1', 10000000, 0, 1, '2025-11-03', '2025-11-03');
+(4, 43, '12500043', '12500043', 'Tabungan', 1, '0', '1', 10000000, 0, 1, '2025-11-03', '2025-11-03'),
+(5, 42, '32500042', '32500042', 'Pinjaman', 0, '0', '1', 0, 0, 1, '2025-11-05', '2025-11-05');
 
 -- --------------------------------------------------------
 
@@ -216,7 +226,8 @@ CREATE TABLE `trbunga` (
 
 INSERT INTO `trbunga` (`id_bunga`, `kode_bunga`, `jenis_bunga`, `nama_bunga`, `tipe_bunga`, `termin`, `suku_bunga1`, `suku_bunga2`, `suku_bunga3`, `id_entry`, `updated_at`, `created_at`) VALUES
 (1, 'S01', 'Simpanan', 'Simpanan tabungan', 'flat', 0, 3, 0, 0, 0, NULL, '2025-10-29'),
-(2, 'S02', 'Simpanan', 'Simpanan Deposito', 'flat', 0, 6.5, 0, 0, 0, NULL, '2025-10-29');
+(2, 'S02', 'Simpanan', 'Simpanan Deposito', 'flat', 0, 6.5, 0, 0, 0, NULL, '2025-10-29'),
+(3, 'P01', 'Pinjaman', 'Urgent', 'flat', 0, 1, 0, 0, 1, NULL, '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -266,6 +277,13 @@ CREATE TABLE `trprogram` (
   `updated_at` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `trprogram`
+--
+
+INSERT INTO `trprogram` (`id_program`, `id_bunga`, `nama_program`, `plafond`, `tenor`, `id_entry`, `created_at`, `updated_at`) VALUES
+(1, 3, 'Urgent', 3000000, 6, 1, '2025-11-05', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -304,8 +322,7 @@ ALTER TABLE `tmangsuran`
 -- Indexes for table `tmpinjaman`
 --
 ALTER TABLE `tmpinjaman`
-  ADD PRIMARY KEY (`id_pinjaman`),
-  ADD KEY `id_nasabah` (`id_nasabah`);
+  ADD PRIMARY KEY (`id_pinjaman`);
 
 --
 -- Indexes for table `tmrekening`
@@ -373,19 +390,19 @@ ALTER TABLE `tmangsuran`
 -- AUTO_INCREMENT for table `tmpinjaman`
 --
 ALTER TABLE `tmpinjaman`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `tmrekening`
 --
 ALTER TABLE `tmrekening`
-  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tmtransaksi`
@@ -403,7 +420,7 @@ ALTER TABLE `trakun`
 -- AUTO_INCREMENT for table `trbunga`
 --
 ALTER TABLE `trbunga`
-  MODIFY `id_bunga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_bunga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `trnasabah`
@@ -415,7 +432,7 @@ ALTER TABLE `trnasabah`
 -- AUTO_INCREMENT for table `trprogram`
 --
 ALTER TABLE `trprogram`
-  MODIFY `id_program` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_program` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -432,12 +449,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `tmangsuran`
   ADD CONSTRAINT `tmangsuran_ibfk_1` FOREIGN KEY (`id_pinjaman`) REFERENCES `tmpinjaman` (`id_pinjaman`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `tmpinjaman`
---
-ALTER TABLE `tmpinjaman`
-  ADD CONSTRAINT `tmpinjaman_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tmrekening`

@@ -83,8 +83,11 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Bunga</label>
-                                            <select class="form-control" name="id_bunga">
+                                            <input type='hidden' name='id_nasabah'
+                                                value='{{ $nasabah->id_nasabah }}' />
+                                            <select class="form-control" name="id_bunga" id="id_bunga">
                                                 <option value="">--Pilih Bunga--</option>
+                                                <option value="0">Pinjaman</option>
                                                 @foreach ($bunga as $b)
                                                     <option value="{{ $b->id_bunga }}">
                                                         {{ $b->nama_bunga }} - {{ $b->suku_bunga1 }}%
@@ -179,6 +182,7 @@
     }
     function generaterekening() {
         
+
         var jenis_rekening = document.getElementById("jenis_rekening").value;
         var today = new Date();
         var year = today.getFullYear().toString().substr(-2);
@@ -188,6 +192,7 @@
         console.log(no_rekening);
         document.getElementById("no_rekening").value = no_rekening;
          document.getElementById("no_tabungan").value = no_rekening;
+
         }
 </script>
     @endpush

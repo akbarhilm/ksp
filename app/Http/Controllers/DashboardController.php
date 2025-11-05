@@ -16,21 +16,22 @@ class DashboardController extends Controller
         //$totalSimpanan = Simpanan::sum('jumlah');
 
         // Total pinjaman yang masih berjalan
-        $totalPinjaman = Pinjaman::where('status', 'berjalan')->sum('jumlah_pinjaman');
+       // $totalPinjaman = Pinjaman::where('status', 'berjalan')->sum('jumlah_pinjaman');
 
-        // Total angsuran yang sudah dibayar
+       // // Total angsuran yang sudah dibayar
         $totalAngsuran = Angsuran::sum('jumlah_bayar');
 
         // Saldo kas (uang masuk - uang keluar)
-        $totalDebit = Transaksi::sum('debit');
-        $totalKredit = Transaksi::sum('kredit');
-        $saldoKas = $totalDebit - $totalKredit;
+       // $totalDebit = Transaksi::sum('debit');
+       // $totalKredit = Transaksi::sum('kredit');
+       // $saldoKas = $totalDebit - $totalKredit;
 
-        return view('dashboard.index', compact(
-            'totalSimpanan',
-            'totalPinjaman',
-            'totalAngsuran',
-            'saldoKas'
-        ));
+        return view('dashboard.index');
+        // , compact(
+        //     'totalSimpanan',
+        //     'totalPinjaman',
+        //     'totalAngsuran',
+        //     'saldoKas'
+        // ));
     }
 }

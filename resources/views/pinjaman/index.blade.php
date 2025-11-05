@@ -1,9 +1,9 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="pengajuan" menuParent="loan"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="pinjaman" menuParent="loan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Pengajuan"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Pinjaman"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -119,8 +119,8 @@
                                             <td class="align-middle">
                                                 
                                                 <a rel="tooltip" class="btn btn-info btn-link"
-                                                    href="{{ route('pengajuan.create',['id_nasabah' =>$n->id_nasabah]) }}"
-                                                    data-original-title="tambah pengajuan" title="Tambah pengajuan">
+                                                    href="{{ route('tabungan.create',['id_nasabah' =>$n->id_nasabah]) }}"
+                                                    data-original-title="add rekening" title="Tambah Simpanan">
                                                     <i class="material-icons">add</i>
                                                     <div class="ripple-container"></div>
                                                 </a>
@@ -129,8 +129,8 @@
                                                     <div class="ripple-container"></div></a> --}}
                                                
                                                     <a rel="tooltip" class="btn btn-success btn-link"
-                                                    href="{{ route('pengajuan.show', $n->id_nasabah) }}"
-                                                    data-original-title="lihat pengajuan" title="lihat pengajuan">
+                                                    href="{{ route('tabungan.show', $n->id_nasabah) }}"
+                                                    data-original-title="view" title="view rekening">
                                                     <i class="material-icons">visibility</i>
                                                     <div class="ripple-container"></div>
                                                 </a>

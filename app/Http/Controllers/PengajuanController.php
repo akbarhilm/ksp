@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Simpanan;
 use App\Models\Nasabah;
+use App\Models\Pinjaman;
 use App\Models\Rekening;
+use App\Models\Program;
+
 use Illuminate\Http\Request;
 
 class PengajuanController extends Controller
@@ -24,9 +27,13 @@ class PengajuanController extends Controller
      
         $idnasabah = $request->query('id_nasabah');
         $nasabah = Nasabah::find($idnasabah);
-        
-        $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Tabungan')->get();
-        return view('pengajuan.create', compact('nasabah', 'rekening'));
+        $program = Program::with('bunga')->get();
+       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->get();
+        if(!$rekening->count()){
+            return redirect()->route('pengajuan.index')->with('error', 'Nasabah belum memiliki rekening pinjaman. Silakan buat rekening terlebih dahulu.');
+        }else{
+        return view('pengajuan.create', compact('nasabah', 'rekening','program') );
+        }
         
        
     }
@@ -35,19 +42,17 @@ class PengajuanController extends Controller
     {
         $request->validate([
             'id_rekening' => 'required',
-            'jenis' => 'required',
-            'v_kredit' => 'required|numeric',
-            'keterangan' => 'nullable|string',
+            'id_program' => 'required',
+            'jumlah_pinjaman' => 'required|numeric'
+           
         ]);
-        if($request->nama_rekening == 'Tabungan'){
-        $request->request->add(['id_akun' => '4']);
-        }else{
-            $request->request->add(['id_akun' => '5']);
-        }
+       
+            $request->request->add(['id_akun' => '6']);
+        
         $request->request->add(['id_entry' => auth()->user()->id]);
-        Simpanan::create($request->all());
+        Pinjaman::create($request->all());
 
-        return redirect()->route('pengajuan.index')->with('success', 'Simpanan berhasil ditambahkan.');
+        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan.');
     }
 
     public function lihat(Request $request){
