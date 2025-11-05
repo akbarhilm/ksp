@@ -13,7 +13,7 @@
     "outputDirectory": "public",
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_URL": "https://ksp-sms.com",
         "APP_KEY": "base64:Fgiu1pFYjxIDZG5qUO6owOcrDZRG4lLuXMLutBZokrk=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
