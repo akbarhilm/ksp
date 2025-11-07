@@ -13,5 +13,7 @@ class Rekening extends Model
 
     protected $fillable = ['id_nasabah', 'no_rekening', 'no_tabungan', 'nama_tabungan','jenis_rekening', 'id_bunga','kode_insentif','kode_resort','tabungan_wajib','tabungan_rutin','id_entry'];
 
-  
+   public function nasabah() {
+        return $this->hasMany(Nasabah::class, 'id_nasabah', 'id_nasabah');
+    }
 }

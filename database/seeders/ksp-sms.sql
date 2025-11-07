@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 05, 2025 at 08:54 AM
+-- Generation Time: Nov 07, 2025 at 08:34 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -39,16 +39,18 @@ CREATE TABLE `tmangsuran` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tmpinjaman`
+-- Table structure for table `tmpengajuan`
 --
 
-CREATE TABLE `tmpinjaman` (
-  `id_pinjaman` int(11) NOT NULL,
+CREATE TABLE `tmpengajuan` (
+  `id_pengajuan` int(11) NOT NULL,
   `id_rekening` int(11) NOT NULL,
   `id_program` int(11) NOT NULL,
-  `id_akun` int(11) NOT NULL,
-  `tanggal_pinjam` date DEFAULT curdate(),
-  `jumlah_pinjaman` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `tanggal_pengajuan` date DEFAULT current_timestamp(),
+  `tanggal_approval` date DEFAULT NULL,
+  `tanggal_pencairan` date DEFAULT NULL,
+  `jumlah_pengajuan` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `jumlah_pencairan` decimal(15,2) DEFAULT NULL,
   `status` enum('berjalan','lunas','tolak','pengajuan') NOT NULL DEFAULT 'pengajuan',
   `id_entry` int(11) NOT NULL,
   `created_at` date NOT NULL DEFAULT current_timestamp(),
@@ -56,11 +58,29 @@ CREATE TABLE `tmpinjaman` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `tmpinjaman`
+-- Dumping data for table `tmpengajuan`
 --
 
-INSERT INTO `tmpinjaman` (`id_pinjaman`, `id_rekening`, `id_program`, `id_akun`, `tanggal_pinjam`, `jumlah_pinjaman`, `status`, `id_entry`, `created_at`, `updated_at`) VALUES
-(1, 5, 1, 6, '2025-11-05', '2000000.00', 'pengajuan', 1, '2025-11-05', '2025-11-05');
+INSERT INTO `tmpengajuan` (`id_pengajuan`, `id_rekening`, `id_program`, `tanggal_pengajuan`, `tanggal_approval`, `tanggal_pencairan`, `jumlah_pengajuan`, `jumlah_pencairan`, `status`, `id_entry`, `created_at`, `updated_at`) VALUES
+(1, 5, 1, '2025-11-05', '2025-11-06', NULL, '2000000.00', NULL, 'pengajuan', 1, '2025-11-05', '2025-11-06');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tmpinjaman`
+--
+
+CREATE TABLE `tmpinjaman` (
+  `id_pinjaman` int(11) NOT NULL,
+  `id_pengajuan` int(11) NOT NULL,
+  `id_akun` int(11) NOT NULL,
+  `v_debet` decimal(15,2) DEFAULT NULL,
+  `v_kredit` decimal(15,2) DEFAULT NULL,
+  `keterangan` varchar(200) DEFAULT NULL,
+  `id_entry` int(11) NOT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `updated_at` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -130,9 +150,10 @@ INSERT INTO `tmsimpanan` (`id_simpanan`, `id_rekening`, `id_akun`, `tanggal`, `j
 
 CREATE TABLE `tmtransaksi` (
   `id_transaksi` int(11) NOT NULL,
+  `id_akun` int(11) NOT NULL,
+  `id_rekening` int(11) DEFAULT NULL,
   `tanggal` date DEFAULT curdate(),
   `jenis_transaksi` enum('simpanan','pinjaman','angsuran','pengeluaran','lainnya') NOT NULL,
-  `id_ref` int(11) DEFAULT NULL,
   `debit` decimal(15,2) DEFAULT 0.00,
   `kredit` decimal(15,2) DEFAULT 0.00,
   `keterangan` text DEFAULT NULL
@@ -319,6 +340,12 @@ ALTER TABLE `tmangsuran`
   ADD KEY `id_pinjaman` (`id_pinjaman`);
 
 --
+-- Indexes for table `tmpengajuan`
+--
+ALTER TABLE `tmpengajuan`
+  ADD PRIMARY KEY (`id_pengajuan`);
+
+--
 -- Indexes for table `tmpinjaman`
 --
 ALTER TABLE `tmpinjaman`
@@ -387,10 +414,16 @@ ALTER TABLE `tmangsuran`
   MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tmpengajuan`
+--
+ALTER TABLE `tmpengajuan`
+  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tmpinjaman`
 --
 ALTER TABLE `tmpinjaman`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tmrekening`
@@ -402,7 +435,7 @@ ALTER TABLE `tmrekening`
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tmtransaksi`
@@ -448,7 +481,13 @@ ALTER TABLE `users`
 -- Constraints for table `tmangsuran`
 --
 ALTER TABLE `tmangsuran`
-  ADD CONSTRAINT `tmangsuran_ibfk_1` FOREIGN KEY (`id_pinjaman`) REFERENCES `tmpinjaman` (`id_pinjaman`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tmangsuran_ibfk_1` FOREIGN KEY (`id_pinjaman`) REFERENCES `tmpengajuan` (`id_pengajuan`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tmpengajuan`
+--
+ALTER TABLE `tmpengajuan`
+  ADD CONSTRAINT `tmpengajuan_ibfk_1` FOREIGN KEY (`id_rekening`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tmrekening`

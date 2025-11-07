@@ -29,7 +29,9 @@ Route::get('/', function () {
 
 
 Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
-
+Route::get('/pengajuan/approval', [PengajuanController::class, 'approval'])->middleware('auth')->name('pengajuan.approval');
+Route::get('/pengajuan/approv/{id}', [PengajuanController::class, 'approv'])->middleware('auth')->name('pengajuan.approv');
+Route::get('/pengajuan/decline/{id}', [PengajuanController::class, 'decline'])->middleware('auth')->name('pengajuan.decline');
 Route::get('/tabungan/lihat', [TabunganController::class, 'lihat'])->middleware('auth')->name('tabungan.lihat');
 Route::get('/rekening/cari', [RekeningController::class, 'cari'])->middleware('auth')->name('rekening.cari');
 Route::middleware(['auth'])->group(function () {
