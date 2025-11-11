@@ -63,7 +63,7 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">wallet</i>
                     </div>
-                    <span class="nav-link-text ms-1">Rekening</span>
+                    <span class="nav-link-text ms-1">Data Rekening</span>
                 </a>
             </li>
             </div>
@@ -111,7 +111,16 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">receipt_long</i>
                     </div>
-                    <span class="nav-link-text ms-1">Approval</span>
+                    <span class="nav-link-text ms-1">Approval Pengajuan</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'approval' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('pengajuan.approval') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">receipt_long</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Pencairan</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -120,7 +129,7 @@
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">view_in_ar</i>
                     </div>
-                    <span class="nav-link-text ms-1">Pembayaran</span>
+                    <span class="nav-link-text ms-1">Pembayaran Angsuran</span>
                 </a>
             </li>
             </div>

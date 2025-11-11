@@ -114,18 +114,19 @@
                                             
                                             <td class="align-middle">
                                                 
-                                                <a rel="tooltip" class="btn btn-info btn-link"
-                                                    href="{{ route('pengajuan.approv',$n->id_pinjaman) }}"
+                                                <button rel="tooltip" class="btn btn-info btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    href="#exampleModal"
                                                     data-original-title="setujui" title="setujui">
                                                     <i class="material-icons">check</i>
                                                     <div class="ripple-container"></div>
-                                                </a>
+                        </button>
+                        
                                           
                                                 {{-- <a class="btn btn-danger" onclick="return confirm('Hapus anggota?')" href="{{route('nasabah.destroy', $n->id_nasabah)}}"><i class="material-icons">close</i>
                                                     <div class="ripple-container"></div></a> --}}
                                                
                                                     <a rel="tooltip" class="btn btn-warning btn-link"
-                                                    href="{{ route('pengajuan.decline', $n->id_pinjaman) }}"
+                                                    href="{{ route('pengajuan.decline', $n->id_pengajuan) }}"
                                                     data-original-title="tolak" title="tolak">
                                                     <i class="material-icons">close</i>
                                                     <div class="ripple-container"></div>
@@ -155,6 +156,50 @@
             </div>
             {{-- <x-footers.auth></x-footers.auth> --}}
         </div>
+
+        <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Approval Pengajuan</h5>
+        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
+          <i class="material-icons">close</i>
+        </button>
+      </div>
+      <div class="modal-body">
+         <form>
+          <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Jumlah Pengajuan</label>
+                                            <input type="text" readonly class="form-control" name="nama"
+                                                value="asdasd" 
+                                                />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Jumlah Approv</label>
+                                            <input type="text"  class="form-control" name="nama"
+                                                value="" 
+                                                />
+
+                                        </div>
+                                       
+                                    </div>
+                                                </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal">Approv</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
     </main>
     <x-plugins></x-plugins>
         @push('js')
