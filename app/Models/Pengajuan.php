@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pengajuan extends Model
 {
     protected $table = 'tmpengajuan';
-      protected $primaryKey = 'id_ppengajuan';
+      protected $primaryKey = 'id_pengajuan';
     protected $fillable = ['id_program', 'tanggal_pengajuan','tanggal_approval','tanggal_pencairan', 'jumlah_pengajuan','jumlah_pencairan', 'id_entry', 'id_rekening', 'status'];
 
     public function rekening() {

@@ -1,9 +1,9 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="approval" menuParent="loan"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="cair" menuParent="loan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Approval Pengajuan Pinjaman"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Pencairan Pengajuan Pinjaman"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -52,7 +52,7 @@
                                         <tr>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Nomor Nasabah
+                                                No Nasabah
                                             </th>
                                             
                                             <th
@@ -61,7 +61,7 @@
                                           
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Tanggal</th>
+                                                Tanggal Pengajuan</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Program</th>
@@ -71,7 +71,7 @@
                                             </th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Status
+                                                Jumlah Approv
                                             </th>
                                             <th class="text-secondary opacity-7" colspan="2"></th>
                                         </tr>
@@ -109,7 +109,7 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $n->status }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ $n->jumlah_pencairan }}</span>
                                             </td>
                                             
                                             <td class="align-middle">

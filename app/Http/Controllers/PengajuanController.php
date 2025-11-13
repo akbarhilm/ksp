@@ -11,6 +11,8 @@ use App\Models\Program;
 
 use Illuminate\Http\Request;
 
+use function Ramsey\Uuid\v1;
+
 class PengajuanController extends Controller
 {
   public function index(){
@@ -68,9 +70,9 @@ class PengajuanController extends Controller
         return view('pengajuan.approval', compact('pinjaman'));
     }
 
-    public function approv($id){
+    public function approv(Request $request){
         
-        Pengajuan::where('id_pengajuan',$id)->update(['status'=>'berjalan', 'tanggal_approval'=>date('Y-m-d')]);
+        Pengajuan::where('id_pengajuan',$request->get('id_pengajuan'))->update(['status'=>'approv', 'tanggal_approval'=>date('Y-m-d'),'jumlah_pencairan'=>$request->get('jumlah_pencairan')]);
         return redirect()->route('pengajuan.approval')->with('success', 'Pengajuan berhasil disetujui.');
        
     }
@@ -84,13 +86,19 @@ class PengajuanController extends Controller
 
     public function show($id)
     {
-       
-        $nasabah = Nasabah::find($id);
-        $rekening = Rekening::where('id_nasabah', $id)->get();
-        return view('pengajuan.show', compact('nasabah', 'rekening'));
+        $pengajuan = Pengajuan::find($id);
+        return response()->json($pengajuan);
         
     }
 
+      public function pencairan(){
+        
+        $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->with('program')->get();
+        return view('pengajuan.pencairan', compact('pinjaman'));
+    }
+    
+        
+    
     public function update(Request $request, Simpanan $simpanan)
     {
         $request->validate([
@@ -102,6 +110,10 @@ class PengajuanController extends Controller
         $simpanan->update($request->all());
 
         return redirect()->route('pengajuan.index')->with('success', 'Simpanan berhasil diperbarui.');
+    }
+
+    public function cair(){
+        return view('pdf.sphutang');
     }
 
     public function destroy(Simpanan $simpanan)
