@@ -11,7 +11,7 @@ use App\Models\Program;
 
 use Illuminate\Http\Request;
 
-use function Ramsey\Uuid\v1;
+use PDF;
 
 class PengajuanController extends Controller
 {
@@ -92,8 +92,8 @@ class PengajuanController extends Controller
     }
 
       public function pencairan(){
-        
         $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->with('program')->get();
+        
         return view('pengajuan.pencairan', compact('pinjaman'));
     }
     
@@ -112,8 +112,17 @@ class PengajuanController extends Controller
         return redirect()->route('pengajuan.index')->with('success', 'Simpanan berhasil diperbarui.');
     }
 
-    public function cair(){
-        return view('pdf.sphutang');
+    public function cair($id){
+        $data = Pengajuan::where('id_pengajuan',$id)->where('status','=','approv')->with('rekening.nasabah')->with('program.bunga')->first();
+       Pengajuan::where('id_pengajuan',$id)->update(['status'=>'cair', 'tanggal_pencairan'=>date('Y-m-d')]);
+       $pdf=PDF::loadView('pdf.sphutang',['data'=>$data])
+       ->setPaper('a4')
+        ->setOption('enable-local-file-access', true)
+    ->setOption('no-stop-slow-scripts', true)
+    ->setOption('disable-smart-shrinking', false);
+        return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+
+          //return view('pdf.sphutang', compact('data'));
     }
 
     public function destroy(Simpanan $simpanan)

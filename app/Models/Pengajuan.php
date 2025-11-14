@@ -15,6 +15,6 @@ class Pengajuan extends Model
         return $this->hasMany(Rekening::class, 'id_rekening', 'id_rekening');
     }
     public function program() {
-        return $this->belongsTo(Program::class, 'id_program', 'id_program');
+        return $this->hasOne(Program::class, 'id_program', 'id_program');
     }
 }

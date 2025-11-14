@@ -114,10 +114,11 @@
                                             
                                             <td class="align-middle">
                                                 
-                                                <button rel="tooltip" id="appr" data-id="{{$n->id_pengajuan}}" class="btn btn-info btn-link" 
-                                                    href="#exampleModal"
-                                                    data-original-title="setujui" title="setujui">
-                                                    <i class="material-icons">check</i>
+                                                <a rel="tooltip" id="appr" class="btn btn-info btn-link" 
+                                                    href="{{route('pengajuan.cair', $n->id_pengajuan)}}"
+                                                     data-original-title="print" title="print">
+                                                   
+                                                    <i class="material-icons">print</i>
                                                     <div class="ripple-container"></div>
                         </button>
                         
@@ -158,57 +159,7 @@
         </div>
 
         <!-- Modal -->
-<div class="modal fade col-12" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-         <form method="POST" action="{{ route('pengajuan.approv') }}">
-        @csrf
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Approval Pengajuan</h5>
-        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close">
-          <i class="material-icons">close</i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="col-12">
-       
-          <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Jumlah Pengajuan</label>
-                                            <input type="hidden"  id="id_pengajuan" name="id_pengajuan" class="form-control " 
-                                                value="" 
-                                                />
-                                            <input type="text" disabled  id="v_pengajuan" class="form-control disabled " 
-                                                value="" 
-                                                />
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Jumlah Approv</label>
-                                            <input type="text" id="v_appr"  class="form-control" name="jumlah_pencairan"
-                                                value="" 
-                                                />
-
-                                        </div>
-                                       
-                                    </div>
-                                    </div>
-                                               
-                                    
-
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-info">Approv</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-      </div>
-       </form>
-    </div>
-  </div>
-</div>
     </main>
     <x-plugins></x-plugins>
         @push('js')

@@ -26,7 +26,7 @@ Route::get('/', function () {
     return view('dashboard.index');
 });
 
-Route::get('/pengajuan/cair', [PengajuanController::class, 'cair'])->name('pengajuan.cair');
+Route::get('/pengajuan/cair/{id}', [PengajuanController::class, 'cair'])->name('pengajuan.cair');
 
 Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
 Route::get('/pengajuan/approval', [PengajuanController::class, 'approval'])->middleware('auth')->name('pengajuan.approval');

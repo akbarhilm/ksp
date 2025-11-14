@@ -1,229 +1,331 @@
-<x-layout bodyClass="g-sidenav-show  bg-gray-200">
-    <main>
-      <div class="d-flex justify-content-center items-middle min-h-screen bg-gray-200 p-4">
-    <div class=" bg-white shadow-lg font-sans " style="max-width:210mm; height:auto">
-        <!-- A4 content goes here -->
-         <div class="text-center mb-2 mt-6">
-            <h6 class="text-xl font-bold text-decoration-underline">SURAT PERJANJIAN HUTANG PIUTANG</h6>
-            <span class="text-xs">Nomor Anggota : 2024</span>
-        </div>
-        <div class="px-5">
-            <span class="text-sm">Yang bertanda tangan di bawah ini:</span>
-        </div> 
-        <div class=" px-6">
-        <table class="table table-borderless w-100 text-sm">
-            <tr>
-                <td>1.</td>
-                <td>Nama</td>
-                <td>:</td>
-                <td>MOCHAMAD MEGANTARA</td>
-</tr>
-<tr>
-    <td></td>
-    <td>Alamat</td>
-    <td>:</td>
-    <td> KAV SETIA BUDI RT 002/005 DESA CIPADU LARANGAN – TANGERANG </td>
-</tr>
-<tr>
-    <td></td>
-    <td>NIK</td>
-    <td>:</td>
-    <td>3671132305040002</td>
-</tr>
-<tr>
-    <td></td>
-    <td>Pekerjaan</td>
-    <td>:</td>
-    <td> PT VIRTUS FACILITY SERVICE</td>
-</tr>
-<tr>
-    <td></td>
-    <td>No HP</td>
-    <td>:</td>
-    <td>083870411531</td>
-</tr>
-<tr>
-    <td></td>
-    <td colspan="3">Selanjutnya disebut PIHAK KESATU atau YANG BERHUTANG</td>
-</tr>
-<tr>
-    <td></td>
-    <td colspan="3"><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Kepala Cabang Koperasi KSP SINAR MURNI- SEJAHTERA PASAR KEMIS  dalam hal tersebut 
-dan atas nama Koperasi “SINAR MURNI  SEJAHTERA” Beralamat DIJALAN RAYA BUMI INDAH 
-BLOK RYER  PASAR KEMIS-TANGERANG, Selanjutnya disebut PIHAK KEDUA atau KOPERASI.</p></td>
-</tr>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Surat Perjanjian Hutang</title>
+    {{-- <link rel="stylesheet" href="{{ public_path('css/pdf.css') }}"> --}}
+    <style>
+        body {
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 1.35;
+}
 
-</table>
-<div class="text-center mb-4">
-            <span class="text-decoration-underline text-sm">KEDUA BELAH PIHAK MENGADAKAN PERJANJIAN SEBAGAI BERIKUT</span>
-</div>
-<table class="table table-borderless  w-100 text-sm">
-            <tr>
-                <td>a.</td>
-                <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">PIHAK KESATU mengaku telah berhutang dari PIHAK KEDUA sebesar <b>6.000.000 (Enam  
-Juta Rupiah)</b></p></td>
-                
-</tr>
-<tr>
-    <td>b.</td>
-    <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Untuk pengembalian pinjaman Tersebut <b>PIHAK KESATU</b> bersedia diambil angsurannya 
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+.text-justify { text-align: justify; }
+
+.text-sm { font-size: 14px; }
+.text-xs { font-size: 12px; }
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table td {
+    padding: 3px 4px;
+    vertical-align: top;
+}
+.pasal td:first-child {
+    width: 20px;
+    vertical-align: top;
+}
+
+.pasal td:last-child {
+    vertical-align: top;
+}
+
+.table-borderless td {
+    border: none !important;
+}
+
+.underline { text-decoration: underline; }
+
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-5 { margin-top: 20px; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-2 { margin-bottom: 8px; }
+.mb-4 { margin-bottom: 16px; }
+
+.page {
+    width: 100%;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 15px 20px;
+    background: white;
+}
+
+        </style>
+</head>
+
+<body>
+    <?php 
+    if (!function_exists('penyebut')) {
+function penyebut($Nilai) {
+		$Nilai = abs($Nilai);
+		$huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+		$temp = "";
+		if ($Nilai < 12) {
+			$temp = " ". $huruf[$Nilai];
+		} else if ($Nilai <20) {
+			$temp = penyebut($Nilai - 10). " Belas";
+		} else if ($Nilai < 100) {
+			$temp = penyebut($Nilai/10)." Puluh". penyebut($Nilai % 10);
+		} else if ($Nilai < 200) {
+			$temp = " Seratus" . penyebut($Nilai - 100);
+		} else if ($Nilai < 1000) {
+			$temp = penyebut($Nilai/100) . " Ratus" . penyebut($Nilai % 100);
+		} else if ($Nilai < 2000) {
+			$temp = " Seribu" . penyebut($Nilai - 1000);
+		} else if ($Nilai < 1000000) {
+			$temp = penyebut($Nilai/1000) . " Ribu" . penyebut($Nilai % 1000);
+		} else if ($Nilai < 1000000000) {
+			$temp = penyebut($Nilai/1000000) . " Juta" . penyebut($Nilai % 1000000);
+		} else if ($Nilai < 1000000000000) {
+			$temp = penyebut($Nilai/1000000000) . " Milyar" . penyebut(fmod($Nilai,1000000000));
+		} else if ($Nilai < 1000000000000000) {
+			$temp = penyebut($Nilai/1000000000000) . " Trilyun" . penyebut(fmod($Nilai,1000000000000));
+		}     
+		return $temp;
+	}
+}
+if (!function_exists('terbilang')) {
+    function terbilang($Nilai) {
+
+		if($Nilai<0) {
+			$hasil = "minus ". trim(penyebut($Nilai))." ";
+		}
+		elseif ($Nilai==0) {
+			$hasil = "-";	
+		} 
+		else{ 
+			$hasil = trim(penyebut($Nilai))." ";
+		}     		
+		return $hasil;
+	}
+}
+	
+	
+			
+			
+		
+	?>
+<div class="page">
+    <!-- TITLE -->
+    <div class="text-center mb-2 mt-3">
+        <h3 class="underline">SURAT PERJANJIAN HUTANG PIUTANG</h3>
+        <div class="text-xs">Nomor Anggota : {{str_pad($data->rekening[0]->nasabah[0]->id_nasabah,5,'0',STR_PAD_LEFT)}}</div>
+    </div>
+
+    <p class="text-sm">Yang bertanda tangan di bawah ini:</p>
+
+    <!-- BIODATA -->
+    <table class="table table-borderless text-sm">
+        <tr><td>1.</td><td>Nama</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->nama) }}</td></tr>
+        <tr><td></td><td>Alamat</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->alamat) }}</td></tr>
+        <tr><td></td><td>NIK</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->nik) }}</td></tr>
+        <tr><td></td><td>Pekerjaan</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->pekerjaan) }}</td></tr>
+        <tr><td></td><td>No HP</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->no_telp) }}</td></tr>
+        <tr>
+            <td></td>
+            <td colspan="3"><b>Selanjutnya disebut PIHAK KESATU atau YANG BERHUTANG</b></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="3">
+                <p class="text-justify text-sm">
+                    Kepala Cabang Koperasi KSP SINAR MURNI SEJAHTERA PASAR KEMIS dalam hal tersebut 
+                    dan atas nama Koperasi “SINAR MURNI SEJAHTERA” Beralamat DI JALAN RAYA BUMI INDAH 
+                    BLOK RYER PASAR KEMIS - TANGERANG, Selanjutnya disebut PIHAK KEDUA atau KOPERASI.
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- SUBTITLE -->
+    <div class="text-center mt-2 mb-2">
+        <b class="underline text-sm">KEDUA BELAH PIHAK MENGADAKAN PERJANJIAN SEBAGAI BERIKUT</b>
+    </div>
+
+    <!-- PASAL -->
+    <table class="table table-borderless text-sm pasal">
+
+        <tr>
+            <td><p class="text-justify">a.</p></td>
+            <td>
+                <p class="text-justify">
+                    PIHAK KESATU mengaku telah berhutang dari PIHAK KEDUA sebesar 
+                    <b>Rp. {{number_format($data->jumlah_pencairan,2,',','.')}} ({{ terbilang($data->jumlah_pencairan)}}Rupiah)</b>.
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">b.</p></td>
+            <td>
+                <p class="text-justify">
+                    Untuk pengembalian pinjaman Tersebut <b>PIHAK KESATU</b> bersedia diambil angsurannya 
 melalui ATM oleh <b>PIHAK KEDUA</b> sesuai dengan angsuran pinjaman yang telah ditetapkan & 
-disepakati kedua belah pihak sebesar Rp <b>1.190.000 (Satu Juta Seratus Sembilan Puluh 
-Ribu  Rupiah</b></p></td>
-</tr>
-<tr>
-    <td>c.</td>
-    <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Setiap bulan selama 6 kali angsuran mulai bulan Desember 2025 sampai dengan bulan Mei 
-2026 atau sampai hutang PIHAK KESATU lunas. Dengan ketentuan apabila terjadi 
+disepakati kedua belah pihak sebesar <b>Rp {{number_format(($data->jumlah_pencairan*(($data->program->bunga->suku_bunga1/100)+1)),2,',','.')}}
+    ({{terbilang(($data->jumlah_pencairan*(($data->program->bunga->suku_bunga1/100)+1))) }} Rupiah)</b>.
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">c.</p></td>
+            <td>
+                <p class="text-justify">
+                    Setiap bulan selama {{$data->program->tenor}} kali angsuran mulai bulan {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMMM yyyy'))
+        ->format(new DateTime('+1 month')) }} sampai dengan bulan {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMMM yyyy'))
+        ->format(new DateTime("+".($data->program->tenor+1)."month")) }}
+atau sampai hutang PIHAK KESATU lunas. Dengan ketentuan apabila terjadi 
 keterlambatan pembayaran maka setiap bulannya akan dikenakan denda sebesar 1% 
-perbulan atau 0.1% perhari dari saldo pinjaman.</p></td>
-</tr>
-<tr>
-    <td>d.</td>
-    <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">PIHAK KESATU menyetujui potongan simpanan Rp. 120.000 dan biaya tata 
+perbulan atau 0.1% perhari dari saldo pinjaman.
+
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">d.</p></td>
+            <td>
+                <p class="text-justify">
+                    PIHAK KESATU menyetujui potongan simpanan Rp. 120.000 dan biaya tata 
 laksana/administrasi Rp. 180.000 Atas dasar pinjaman tersebut, saya PIHAK KESATU dengan 
-sukarela menitip dengan PIHAK KEDUA berupa :</p></td>
-</table>
-<div class=" px-5 my-n4">
-<table class="table table-borderless w-100 text-xs">
-    <tr>
-        <td class="text-xs">1.</td>
-        <td class="text-xs">ATM</td>
-        <td class="text-xs">BRI 5221 8402 6684 2641</td>
-</tr>
-<tr>
-        <td class="text-xs">2.</td>
-        <td class="text-xs">PIN ATM</td>
-        <td class="text-xs">230 516</td>
-</tr>
-<tr>
-        <td class="text-xs">3.</td>
-        <td class="text-xs">JAMSOSTEK</td>
-        <td class="text-xs">23045037407</td>
-</tr>
-<tr>
-        <td class="text-xs">4.</td>
-        <td class="text-xs">BUKU TABUNGAN</td>
-        <td class="text-xs">0261-01-135095-50-0/td>
-</tr>
-<tr>
-        <td class="text-xs">5.</td>
-        <td class="text-xs">IJAZAH SMP</td>
-        <td class="text-xs">a/n Mochammad Megantara DN-30/D-SMP/06/0126240</td>
-</tr>
-<tr>
-        <td class="text-xs">6.</td>
-        <td class="text-xs">IJAZAH SMK</td>
-        <td class="text-xs">a/n Moch Edwin Apriza DN-MK/06 0030173</td>
-</tr>
-<tr>
-        <td class="text-xs">7.</td>
-        <td class="text-xs">AKTA KELAHIRAN</td>
-        <td class="text-xs">a/n Mochammad Megantara CSL 8330/2005</td>
-</tr>
-<tr>
-        <td class="text-xs">8.</td>
-        <td class="text-xs">KARTU KELUARGA</td>
-        <td class="text-xs">3671130212140006</td>
-</tr>
+sukarela menitip dengan PIHAK KEDUA berupa 
+                </p>
+            </td>
+        </tr>
+    </table>
 
-</table>
-</div>
-<table class="table table-borderless text-sm">
-</tr>
-<td></td>
-<td>
-<p class="text-wrap text-sm " style="text-align:justify; text-justify:inner-word"> Saya tidak keberatan gaji saya diambil melalui ATM dan sisanya saya ambil dari KSP SINAR 
-MURNI – SEJAHTERA PASAR KEMIS tunai/ non tunai dipotong cicilan pinjaman perbulan 
-sampai pinjaman saya lunas . </p></td>
-</tr>
+    <!-- BARANG JAMINAN -->
+    <table class="table table-borderless text-sm mt-1" style="margin-left: 30px">
+        <tr><td>1.</td><td>ATM</td><td>BRI 5221 8402 6684 2641</td></tr>
+        <tr><td>2.</td><td>PIN ATM</td><td>230 516</td></tr>
+        <tr><td>3.</td><td>JAMSOSTEK</td><td>23045037407</td></tr>
+        <tr><td>4.</td><td>BUKU TABUNGAN</td><td>0261-01-135095-50-0</td></tr>
+        <tr><td>5.</td><td>IJAZAH SMP</td><td>a/n Mochammad Megantara DN-30/D-SMP/06/0126240</td></tr>
+        <tr><td>6.</td><td>IJAZAH SMK</td><td>a/n Moch Edwin Apriza DN-MK/06 0030173</td></tr>
+        <tr><td>7.</td><td>AKTA KELAHIRAN</td><td>a/n Mochammad Megantara CSL 8330/2005</td></tr>
+        <tr><td>8.</td><td>KARTU KELUARGA</td><td>3671130212140006</td></tr>
+    </table>
 
-    <tr>
-        <td>e.</td>
-        <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Untuk angsuran pada point B, PIHAK KESATU menyetujui diamBil gaji pertama setelah 
+    <table class="table table-borderless text-sm mt-4">
+        <tr>
+            <td><p class="text-justify"></p></td>
+            <td>
+                <p class="text-justify">
+                     Saya tidak keberatan gaji saya diambil melalui ATM dan sisanya saya ambil dari <b>KSP SINAR 
+MURNI – SEJAHTERA PASAR KEMIS<b> tunai/ non tunai dipotong cicilan pinjaman perbulan 
+sampai pinjaman saya lunas . 
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">e.</p></td>
+            <td><p class="text-justify"> Untuk angsuran pada point B, PIHAK KESATU menyetujui diambil gaji pertama setelah 
 perjanjian akad kredit ini di buat.</p></td>
-</tr>
-<tr>
-        <td>f.</td>
-        <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Bilamana PIHAK KESATU tidak bekerja lagi atau di PHK dari pekerjaannya, maka PIHAK KESATU 
-harus melunasi sisa utangnya sesuai dengan perjanjian Kredit.</p></td>
-</tr>
-<tr>
-        <td>g.</td>
-        <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Apabila PIHAK KESATU melanggar Surat Perjanjian ini, maka bersedia dituntut di Pengadilan 
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">f.</p></td>
+            <td><p class="text-justify">Bilamana PIHAK KESATU tidak bekerja lagi atau di PHK dari pekerjaannya, maka PIHAK KESATU 
+harus melunasi sisa utangnya sesuai dengan perjanjian Kredit</p></td>
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">g.</p></td>
+            <td><p class="text-justify">Apabila PIHAK KESATU melanggar Surat Perjanjian ini, maka bersedia dituntut di Pengadilan 
 Negeri Kab. Tangerang, dengan catatan seluruh biaya perkara ditanggung oleh PIHAK KESATU</p></td>
-</tr>
-<tr>
-        <td>h.</td>
-        <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Dan apabila ada pinjaman baik dari BANK atau Pihak Lain yang masuk ke rekening yang 
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">h.</p></td>
+            <td><p class="text-justify">Dan apabila ada pinjaman baik dari BANK atau Pihak Lain yang masuk ke rekening yang 
 saya jaminkan kepada KSP SINAR MURNI, maka saya siap melunasi hutang di KOPERASI 
 SIMPAN PINJAM SINAR MURNI Secara Flat tidak ada pengurangan pokok maupun bunga.</p></td>
-</tr>
-<tr>
-        <td>i.</td>
-        <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">PIHAK KESATU berjanji tidak akan mengambil BERKAS diatas yang saya titipkan sebelum pinjaman 
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">i.</p></td>
+            <td>
+                <p class="text-justify">
+                     PIHAK KESATU berjanji tidak akan mengambil BERKAS diatas yang saya titipkan sebelum pinjaman 
 saya lunas dan tidak akan merekayasa system pengambilan gaji seperti merubah/memblokir 
-No.Rekening, No.Pin ataupun MOBILE BANKING, SMS BANKING dan INTERNET BANKING  yang 
-menyebabkan proses pembayaran angsuran ke PIHAK KEDUA terhambat.</p></td>
-</tr>
-<tr>
-        <td>j.</td>
-        <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word"> Bilamana PIHAK KESATU tidak bekerja lagi atau PHK (PEMUTUSAN HUBUNGAN KERJA) dari 
+No.Rekening, No.Pin ataupun <b>MOBILE BANKING, SMS BANKING</b> dan <b>INTERNET BANKING</b>  yang 
+menyebabkan proses pembayaran angsuran ke PIHAK KEDUA terhambat.
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">j.</p></td>
+            <td>
+                <p class="text-justify">
+                   Bilamana PIHAK KESATU tidak bekerja lagi atau PHK (PEMUTUSAN HUBUNGAN KERJA) dari 
 pekerjaannya, maka PIHAK KESATU harus melunasi sisa utangnya dari pesangon dan SALDO 
 JAMSOSTEK ataupun dari hal lain dengan jumlah sisa hutangnya yang tertera di perjanjian 
-kredit.</p></td>
-</tr>
-<tr>
-        <td>k.</td>
-        <td><p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word"> Apabila PIHAK KESATU melanggar Surat Perjanjian ini, maka bersedia dituntut di Pengadilan 
-Negeri Tangerang, dengan catatan seluruh biaya perkara ditanggung oleh PIHAK KESATU.</p></td>
-</tr>
-</table>
-</div>
-<div class="px-5 my-n3">
-    <p class="text-wrap text-sm" style="text-align:justify; text-justify:inner-word">Demikian Surat Perjanjian ini dibuat dengan pikiran sehat dan tenang tanpa ada paksaan dari pihak 
+kredit
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><p class="text-justify">k.</p></td>
+            <td>
+                <p class="text-justify">
+                    Apabila PIHAK KESATU melanggar Surat Perjanjian ini, maka bersedia dituntut di Pengadilan 
+Negeri Tangerang, dengan catatan seluruh biaya perkara ditanggung oleh PIHAK KESATU.
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- PENUTUP -->
+    <p class="text-justify mt-4 text-sm">
+        Demikian Surat Perjanjian ini dibuat dengan pikiran sehat dan tenang tanpa ada paksaan dari pihak 
 lain , coretan dan penambahan dianggap sah oleh kedua belah pihak , lalu ditanda tangani masing
-masing pihak dengan diberi materai secukupnya untuk dijadikan bukti yang sah</p>
-            
-         <!-- <div class="px-11"> -->
-            <!-- <div class="mt-3" style="line-height: 2;">
-                <span>1.</span> <span class="px-2">Nama : ....................................................</span>
-                <br>
-                <span class="px-4">Alamat : ..................................................</span>
-                <br>
-                <span class="px-4">NIK : ................................................</span>
-                <br>
-                <span class="px-4">Pekerjaan : ..................................................</span>
-                <br>
-                <span class="px-4">No HP : ..................................................</span>
-                <br>
-                <div class="mt-3" style="line-height: 2;">
-                 <span class="px-4">Selanjutnya disebut sebagai PIHAK KESATU atau YANG BERHUTANG.</span>
-                </div>
-          
-               <p class="px-4 py-2" style="text-align: justify;
-  text-justify: inter-word;">Kepala Cabang Koperasi KSP SINAR MURNI- SEJAHTERA PASAR KEMIS  dalam hal tersebut dan atas nama Koperasi “SINAR MURNI  SEJAHTERA” Beralamat DIJALAN RAYA BUMI INDAH 
-BLOK RYER  PASAR KEMIS-TANGERANG, Selanjutnya disebut PIHAK KEDUA atau KOPERASI.</p>
-</div> -->
-            
-            <!-- <div class="text-center mb-2 ">
-            <span class="  text-decoration-underline">  KEDUA BELAH PIHAK MENGADAKAN PERJANJIAN SEBAGAI BERIKUT</span>
-            
-        </div>
-          
-        
-            <div class="mt-3" style="line-height: 2;">
-                 <span> a.</span> <span class="px-2">PIHAK KESATU mengaku telah berhutang dari PIHAK KEDUA sebesar <b>6.000.000 (Enam  
-Juta Rupiah)</b></span>
- b.<div class="px-4" style="display: inline">
- <p style="text-align: justify;
-  text-justify: inter-word; "> Untuk pengembalian pinjaman Tersebut <b>PIHAK KESATU</b> bersedia diambil angsurannya 
-melalui ATM oleh <b>PIHAK KEDUA</b> sesuai dengan angsuran pinjaman yang telah ditetapkan & 
-disepakati kedua belah pihak sebesar Rp <b>1.190.000 (Satu Juta Seratus Sembilan Puluh 
-Ribu  Rupiah)</b></p></div>
-    </div> -->
-<!-- </div> -->
-    </div>
-      </div>
-    </main>
-</x-layout>
+masing pihak dengan diberi materai secukupnya untuk dijadikan bukti yang sah.
+    </p>
+
+    <!-- SIGNATURES -->
+    <table class="table table-borderless text-sm mt-4">
+        <tr>
+            <td class="text-center">KSP SINAR MURNI</td>
+            <td class="text-center">Tangerang, {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'dd MMMM yyyy'))
+        ->format(new DateTime()) }}</td>
+        </tr>
+        <tr>
+            <td style="height: 70px"></td>
+            <td style="height: 70px"></td>
+        </tr>
+        <tr>
+            <td class="text-center">ROHMAYATI<br>(PIMPINAN CABANG)</td>
+            <td class="text-center">MOCHAMAD MEGANTARA<br>(PIHAK KESATU)</td>
+        </tr>
+        <tr>
+            <td style="height: 70px"></td>
+            <td style="height: 70px"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="text-center">MOCH EDWIN APRIZA<br>(PENANGGUNG JAWAB)</td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>
