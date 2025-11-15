@@ -6,8 +6,10 @@ use App\Http\Controllers\DepositoController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\RekeningController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
@@ -26,6 +28,19 @@ Route::get('/', function () {
     return view('dashboard.index');
 });
 
+Route::get('/pdf/sphutang/{id}', function($id){
+    $data = session('pdf_data_'.$id);
+    if(!$data) abort(404);
+    
+    $pdf = PDF::loadView('pdf.sphutang', ['data'=>$data])
+        ->setPaper('a4')
+        ->setOption('enable-local-file-access', true)
+        ->setOption('no-stop-slow-scripts', true)
+        ->setOption('disable-smart-shrinking', false);
+
+    return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+})->name('pdf.sphutang.download');
+
 Route::get('/pengajuan/cair/{id}', [PengajuanController::class, 'cair'])->name('pengajuan.cair');
 
 Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
@@ -42,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('pengajuan', PengajuanController::class);
 	 Route::resource('nasabah', NasabahController::class);
 	 Route::resource('rekening', RekeningController::class);
+	 Route::resource('karyawan', KaryawanController::class);
+	 Route::resource('neraca', NeracaController::class);
 });
 
 

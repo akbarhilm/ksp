@@ -48,7 +48,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Rekening</label>
-                                            <input type="text" id="nama_rekening" class="form-control" readonly name="jenis" value="{{ $rekening[0]->jenis_rekening}}"/>
+                                            <input type="text" id="nama_rekening" class="form-control" readonly name="nama_rekening  " value="{{ $rekening[0]->jenis_rekening}}"/>
                                             <input type="hidden" id="id_rekening" name="id_rekening" value="{{ $rekening[0]->id_rekening}}"/>
 
                                         </div>

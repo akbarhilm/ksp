@@ -128,12 +128,12 @@
                                                 {{-- <a class="btn btn-danger" onclick="return confirm('Hapus anggota?')" href="{{route('nasabah.destroy', $n->id_nasabah)}}"><i class="material-icons">close</i>
                                                     <div class="ripple-container"></div></a> --}}
                                                
-                                                    <a rel="tooltip" class="btn btn-success btn-link"
+                                                    <!-- <a rel="tooltip" class="btn btn-success btn-link"
                                                     href="{{ route('pengajuan.show', $n->id_nasabah) }}"
                                                     data-original-title="lihat pengajuan" title="lihat pengajuan">
                                                     <i class="material-icons">visibility</i>
                                                     <div class="ripple-container"></div>
-                                                </a>
+                                                </a> -->
                                                
                                                 
                                             </td>

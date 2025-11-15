@@ -48,6 +48,7 @@ class RekeningController extends Controller
             'no_tabungan'=>'required',
             'id_bunga' => 'required',
             'kode_insentif' => 'required',
+            'jenis_rekening'=> 'required',
             'kode_resort' => 'required',
             'tabungan_wajib' => 'required',
             'tabungan_rutin' => 'required',
@@ -60,7 +61,7 @@ class RekeningController extends Controller
         //  flash()
         //     ->success('Data Nasabah berhasil disimpan');
         //return view('rekening.create',compact('nasabah'));
-        return redirect()->route('nasabah.index')->with('success', 'Rekening Nasabah berhasil.');
+        return redirect()->route('rekening.index')->with('success', 'Rekening Nasabah berhasil.');
     }
 
      public function edit($id)

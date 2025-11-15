@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Nasabah;
 use Illuminate\Http\Request;
 
-class NasabahController extends Controller
+class KaryawanController extends Controller
 {
     //
     public function index()
     {
-        $nasabah = Nasabah::Paginate(5);
+        //$nasabah = Nasabah::Paginate(5);
         //dd($nasabah);
-        return view('nasabah.index', compact('nasabah'));
+        return view('karyawan.index');
     }
        public function create()
     {

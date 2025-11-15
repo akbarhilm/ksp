@@ -105,7 +105,7 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $n->jumlah_pengajuan }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ number_format($n->jumlah_pengajuan,0) }}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span

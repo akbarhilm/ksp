@@ -314,7 +314,7 @@ masing pihak dengan diberi materai secukupnya untuk dijadikan bukti yang sah.
         </tr>
         <tr>
             <td class="text-center">ROHMAYATI<br>(PIMPINAN CABANG)</td>
-            <td class="text-center">MOCHAMAD MEGANTARA<br>(PIHAK KESATU)</td>
+            <td class="text-center">{{strtoupper($data->rekening[0]->nasabah[0]->nama) }}<br>(PIHAK KESATU)</td>
         </tr>
         <tr>
             <td style="height: 70px"></td>

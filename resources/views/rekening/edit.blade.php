@@ -29,9 +29,9 @@
                                             <label>Rekening</label>
                                             <select class="form-control" id="jenis_rekening" disabled name="jenis_rekening" onchange="generaterekening()">
                                                 <option value="">--Pilih Rekening--</option>
-                                               <option value="1" {{$rek->jenis_rekening == '1'? 'selected':''}}>REKENING TABUNGAN</option>
-                                               <option value="2" {{$rek->jenis_rekening == '2'? 'selected':''}}>REKENING DEPOSITO</option>
-                                               <option value="3" {{$rek->jenis_rekening == '3'? 'selected':''}}>REKENING Pinjaman</option>
+                                               <option value="1" {{$rek->jenis_rekening == 'Tabungan'? 'selected':''}}>REKENING TABUNGAN</option>
+                                               <option value="2" {{$rek->jenis_rekening == 'Deposito'? 'selected':''}}>REKENING DEPOSITO</option>
+                                               <option value="3" {{$rek->jenis_rekening == 'Pinjaman'? 'selected':''}}>REKENING Pinjaman</option>
                                             </select>
 
                                         </div>

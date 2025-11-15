@@ -8,6 +8,8 @@ use App\Models\Nasabah;
 use App\Models\Pengajuan;
 use App\Models\Rekening;
 use App\Models\Program;
+use App\Models\Jurnal;
+
 
 use Illuminate\Http\Request;
 
@@ -30,7 +32,7 @@ class PengajuanController extends Controller
         $idnasabah = $request->query('id_nasabah');
         $nasabah = Nasabah::find($idnasabah);
         $program = Program::with('bunga')->get();
-       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pengajuan')->get();
+       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->get();
         if(!$rekening->count()){
             return redirect()->route('pengajuan.index')->with('error', 'Nasabah belum memiliki rekening pinjaman. Silakan buat rekening terlebih dahulu.');
         }else{
@@ -45,7 +47,7 @@ class PengajuanController extends Controller
         $request->validate([
             'id_rekening' => 'required',
             'id_program' => 'required',
-            'jumlah_pinjaman' => 'required|numeric'
+            'jumlah_pengajuan' => 'required|numeric'
            
         ]);
        
@@ -114,13 +116,26 @@ class PengajuanController extends Controller
 
     public function cair($id){
         $data = Pengajuan::where('id_pengajuan',$id)->where('status','=','approv')->with('rekening.nasabah')->with('program.bunga')->first();
+       
+      // dd($data);
        Pengajuan::where('id_pengajuan',$id)->update(['status'=>'cair', 'tanggal_pencairan'=>date('Y-m-d')]);
-       $pdf=PDF::loadView('pdf.sphutang',['data'=>$data])
-       ->setPaper('a4')
-        ->setOption('enable-local-file-access', true)
-    ->setOption('no-stop-slow-scripts', true)
-    ->setOption('disable-smart-shrinking', false);
-        return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+       $datajurnaldebet = ['id_akun'=>'6','id_pinjaman'=>$id,'keterangan'=>'Piutang Pinjaman Anggota'.$data->rekening[0]->id_nasabah,'v_debet'=>$data->jumlah_pencairan,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
+       $datajurnalkredit = ['id_akun'=>'2','id_pinjaman'=>$id,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan,'id_entry'=>auth()->user()->id];
+    Jurnal::create($datajurnaldebet);
+    Jurnal::create($datajurnalkredit);
+    //    $pdf=PDF::loadView('pdf.sphutang',['data'=>$data])
+    //    ->setPaper('a4')
+    //     ->setOption('enable-local-file-access', true)
+    // ->setOption('no-stop-slow-scripts', true)
+    // ->setOption('disable-smart-shrinking', false);
+    //     return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+     $pdfFileName = 'SP_Hutang_'.$id.'.pdf';
+    session(['pdf_data_'.$id => $data]);
+
+    return response()->json([
+        'success' => true,
+        'pdf_url' => route('pdf.sphutang.download', $id)
+    ]);
 
           //return view('pdf.sphutang', compact('data'));
     }

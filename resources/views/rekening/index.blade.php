@@ -51,7 +51,7 @@
                                     <thead>
                                         <tr>
                                             <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Nomor Nasabah
                                             </th>
                                             <th
@@ -79,12 +79,8 @@
                                     </thead>
                                     @foreach ($nasabah as $n)
                                         <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <p class="mb-0 text-sm">{{ str_pad($n->id_nasabah,5,'0',STR_PAD_LEFT)  }}</p>
-                                                    </div>
-                                                </div>
+                                            <td class="align-right text-center">
+                                                        <span class="mb-0 text-sm">{{ str_pad($n->id_nasabah,5,'0',STR_PAD_LEFT)  }}</span>
                                             </td>
                                             <td>
                                                 <div class="d-flex px-2 py-1">

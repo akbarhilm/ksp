@@ -105,17 +105,17 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $n->jumlah_pengajuan }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ number_format($n->jumlah_pengajuan,0) }}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $n->jumlah_pencairan }}</span>
+                                                    class="text-secondary text-xs font-weight-bold">{{ number_format($n->jumlah_pencairan,0) }}</span>
                                             </td>
                                             
                                             <td class="align-middle">
                                                 
-                                                <a rel="tooltip" id="appr" class="btn btn-info btn-link" 
-                                                    href="{{route('pengajuan.cair', $n->id_pengajuan)}}"
+                                                <button rel="tooltip" id="btnCair" class="btn btn-info btn-link" 
+                                                   data-id="{{$n->id_pengajuan}}"
                                                      data-original-title="print" title="print">
                                                    
                                                     <i class="material-icons">print</i>
@@ -165,27 +165,22 @@
         @push('js')
 <script>
 
-$(document).ready(function() {
-    $('#appr').click(function() {
-        let id = $(this).data('id');
-        
-        $.ajax({
-            url: '/pengajuan/' + id, // route('nasabah.show', id)
-            method: 'GET',
-            success: function(data) {
-                // isi data ke modal
-                $('#v_pengajuan').val(data.jumlah_pengajuan);
-                $("#id_pengajuan").val(data.id_pengajuan);
+    $('#btnCair').click(function(){
+    let id = $(this).data('id');
 
-                // tampilkan modal
-                $('#exampleModal').modal('show');
-            },
-            error: function(e) {
-                alert('Gagal mengambil data.');
-            }
-        });
+    $.get('/pengajuan/cair/' + id, function(res){
+        if(res.success){
+            // buka PDF di tab baru
+            window.open(res.pdf_url, '_blank');
+
+            // refresh atau redirect halaman
+            location.reload(); // atau window.location.href = '/pengajuan';
+        }
     });
 });
+
+
+
    
             //fetchUsers(); // Load all users initially
            

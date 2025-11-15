@@ -49,8 +49,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'user' ? ' active bg-gradient-info' : '' }} "
-                    href="{{ route('nasabah.index') }}">
+                <a class="nav-link text-white {{ $activePage == 'karyawan' ? ' active bg-gradient-info' : '' }} "
+                    href="{{ route('karyawan.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">badge</i>
                     </div>
@@ -139,7 +139,7 @@
                 Laporan</a>
             </li>
             <div class="collapse {{$menuParent == 'laporan' ? 'show':''}}" id="collapseLap">
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'billing' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('billing') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -147,10 +147,10 @@
                     </div>
                     <span class="nav-link-text ms-1">Jurnal</span>
                 </a>
-            </li>
+            </li> -->
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'virtual-reality' ? ' active bg-gradient-info' : '' }}  "
-                    href="{{ route('virtual-reality') }}">
+                <a class="nav-link text-white {{ $activePage == 'neraca' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('neraca.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">view_in_ar</i>
                     </div>

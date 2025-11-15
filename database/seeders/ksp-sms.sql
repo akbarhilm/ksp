@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 07, 2025 at 08:34 AM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Generation Time: Nov 15, 2025 at 04:05 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.1.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -39,6 +39,61 @@ CREATE TABLE `tmangsuran` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tmjurnal`
+--
+
+CREATE TABLE `tmjurnal` (
+  `id_jurnal` int(11) NOT NULL,
+  `id_akun` int(11) NOT NULL,
+  `id_simpanan` int(11) DEFAULT NULL,
+  `id_pinjaman` int(11) DEFAULT NULL,
+  `tanggal_transaksi` date NOT NULL DEFAULT current_timestamp(),
+  `keterangan` varchar(100) NOT NULL,
+  `v_debet` decimal(10,0) NOT NULL,
+  `v_kredit` decimal(10,0) NOT NULL,
+  `id_entry` int(11) NOT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `updated_at` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tmjurnal`
+--
+
+INSERT INTO `tmjurnal` (`id_jurnal`, `id_akun`, `id_simpanan`, `id_pinjaman`, `tanggal_transaksi`, `keterangan`, `v_debet`, `v_kredit`, `id_entry`, `created_at`, `updated_at`) VALUES
+(7, 1, 11, NULL, '2025-11-15', 'kas', 1000000, 0, 1, '2025-11-15', '2025-11-15'),
+(8, 14, 11, NULL, '2025-11-15', 'Tabungan wajib anggota 00042', 0, 1000000, 1, '2025-11-15', '2025-11-15'),
+(9, 1, 14, NULL, '2025-11-15', 'kas', 25000000, 0, 1, '2025-11-15', '2025-11-15'),
+(10, 16, 14, NULL, '2025-11-15', 'Deposito anggota 00042', 0, 25000000, 1, '2025-11-15', '2025-11-15'),
+(13, 1, 19, NULL, '2025-11-15', 'kas', 1000000, 0, 1, '2025-11-15', '2025-11-15'),
+(14, 14, 19, NULL, '2025-11-15', 'Tabungan wajib anggota 00043', 0, 1000000, 1, '2025-11-15', '2025-11-15'),
+(15, 5, NULL, 3, '2025-11-15', 'Piutang Pinjaman Anggota43', 3000000, 0, 1, '2025-11-15', '2025-11-15'),
+(16, 1, NULL, 3, '2025-11-15', 'Kas', 0, 3000000, 1, '2025-11-15', '2025-11-15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tmpembayaran`
+--
+
+CREATE TABLE `tmpembayaran` (
+  `id_pembayaran` int(11) NOT NULL,
+  `id_pinjaman` int(11) NOT NULL,
+  `tanggal` date NOT NULL DEFAULT current_timestamp(),
+  `total_bayar` decimal(10,0) NOT NULL,
+  `bayar_bunga` decimal(10,0) NOT NULL,
+  `bayar_pokok` decimal(10,0) NOT NULL,
+  `sisa_pokok` decimal(10,0) NOT NULL,
+  `sisa_bunga` decimal(10,0) NOT NULL,
+  `cicilan_ke` int(11) NOT NULL,
+  `id_entry` int(11) NOT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `updated_at` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tmpengajuan`
 --
 
@@ -51,7 +106,7 @@ CREATE TABLE `tmpengajuan` (
   `tanggal_pencairan` date DEFAULT NULL,
   `jumlah_pengajuan` decimal(15,2) NOT NULL DEFAULT 0.00,
   `jumlah_pencairan` decimal(15,2) DEFAULT NULL,
-  `status` enum('berjalan','lunas','tolak','pengajuan') NOT NULL DEFAULT 'pengajuan',
+  `status` enum('approv','cair','tolak','pengajuan','cancel') NOT NULL DEFAULT 'pengajuan',
   `id_entry` int(11) NOT NULL,
   `created_at` date NOT NULL DEFAULT current_timestamp(),
   `updated_at` date DEFAULT NULL
@@ -62,7 +117,8 @@ CREATE TABLE `tmpengajuan` (
 --
 
 INSERT INTO `tmpengajuan` (`id_pengajuan`, `id_rekening`, `id_program`, `tanggal_pengajuan`, `tanggal_approval`, `tanggal_pencairan`, `jumlah_pengajuan`, `jumlah_pencairan`, `status`, `id_entry`, `created_at`, `updated_at`) VALUES
-(1, 5, 1, '2025-11-05', '2025-11-06', NULL, '2000000.00', NULL, 'pengajuan', 1, '2025-11-05', '2025-11-06');
+(1, 5, 1, '2025-11-05', '2025-11-15', '2025-11-15', 2000000.00, 1000000.00, 'cair', 1, '2025-11-05', '2025-11-15'),
+(3, 6, 1, '2025-11-15', '2025-11-15', '2025-11-15', 3000000.00, 3000000.00, 'cair', 1, '2025-11-15', '2025-11-15');
 
 -- --------------------------------------------------------
 
@@ -73,14 +129,22 @@ INSERT INTO `tmpengajuan` (`id_pengajuan`, `id_rekening`, `id_program`, `tanggal
 CREATE TABLE `tmpinjaman` (
   `id_pinjaman` int(11) NOT NULL,
   `id_pengajuan` int(11) NOT NULL,
-  `id_akun` int(11) NOT NULL,
-  `v_debet` decimal(15,2) DEFAULT NULL,
-  `v_kredit` decimal(15,2) DEFAULT NULL,
-  `keterangan` varchar(200) DEFAULT NULL,
+  `id_nasabah` int(11) NOT NULL,
+  `total_pinjaman` decimal(10,0) NOT NULL,
+  `sisa_pokok` decimal(10,0) NOT NULL,
+  `sisa_bunga` decimal(10,0) NOT NULL,
+  `status` enum('aktif','lunas') NOT NULL DEFAULT 'aktif',
   `id_entry` int(11) NOT NULL,
   `created_at` date NOT NULL DEFAULT current_timestamp(),
   `updated_at` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tmpinjaman`
+--
+
+INSERT INTO `tmpinjaman` (`id_pinjaman`, `id_pengajuan`, `id_nasabah`, `total_pinjaman`, `sisa_pokok`, `sisa_bunga`, `status`, `id_entry`, `created_at`, `updated_at`) VALUES
+(1, 3, 43, 3000000, 3000000, 180000, 'aktif', 1, '2025-11-15', NULL);
 
 -- --------------------------------------------------------
 
@@ -112,7 +176,8 @@ INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `no_tabung
 (2, 42, '12500042', '12500042', 'Tabungan', 1, '0', '1', 100000, 0, 1, '2025-10-30', '2025-10-30'),
 (3, 42, '22500042', '22500042', 'Deposito', 2, '0', '2', 10000000, 500000, 1, '2025-10-30', '2025-10-30'),
 (4, 43, '12500043', '12500043', 'Tabungan', 1, '0', '1', 10000000, 0, 1, '2025-11-03', '2025-11-03'),
-(5, 42, '32500042', '32500042', 'Pinjaman', 0, '0', '1', 0, 0, 1, '2025-11-05', '2025-11-05');
+(5, 42, '32500042', '32500042', 'Pinjaman', 0, '0', '1', 0, 0, 1, '2025-11-05', '2025-11-05'),
+(6, 43, '32500043', '32500043', 'Pinjaman', 0, '0', '5', 0, 0, 1, '2025-11-15', '2025-11-15');
 
 -- --------------------------------------------------------
 
@@ -139,8 +204,9 @@ CREATE TABLE `tmsimpanan` (
 --
 
 INSERT INTO `tmsimpanan` (`id_simpanan`, `id_rekening`, `id_akun`, `tanggal`, `jenis`, `v_debit`, `v_kredit`, `keterangan`, `id_entry`, `created_at`, `updated_at`) VALUES
-(1, 2, 4, '2025-11-03', 'wajib', '0.00', '100000.00', '-', 1, '2025-11-03', '2025-11-03'),
-(2, 2, 5, '2025-11-03', 'wajib', '0.00', '50000.00', '-', 1, '2025-11-03', '2025-11-03');
+(11, 2, 14, '2025-11-15', 'wajib', 0.00, 1000000.00, 'tabungan', 1, '2025-11-15', '2025-11-15'),
+(14, 3, 16, '2025-11-15', 'wajib', 0.00, 25000000.00, 'deposit', 1, '2025-11-15', '2025-11-15'),
+(19, 4, 14, '2025-11-15', 'wajib', 0.00, 1000000.00, 'tabungan', 1, '2025-11-15', '2025-11-15');
 
 -- --------------------------------------------------------
 
@@ -167,9 +233,9 @@ CREATE TABLE `tmtransaksi` (
 
 CREATE TABLE `trakun` (
   `id_akun` int(11) NOT NULL,
-  `id_parent` int(11) DEFAULT NULL,
   `kode_akun` varchar(5) NOT NULL,
   `nama_akun` varchar(100) NOT NULL,
+  `tipe_akun` enum('Aset','Kewajiban','Modal','Pendapatan','Beban') NOT NULL,
   `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -177,48 +243,45 @@ CREATE TABLE `trakun` (
 -- Dumping data for table `trakun`
 --
 
-INSERT INTO `trakun` (`id_akun`, `id_parent`, `kode_akun`, `nama_akun`, `status`) VALUES
-(1, NULL, '100', 'AKTIVA / ASET', 'aktif'),
-(2, 1, '101', 'Kas', 'aktif'),
-(3, 1, '102', 'Giro di Bank', 'aktif'),
-(4, 1, '103', 'Simpanan Tabungan Anggota', 'aktif'),
-(5, 1, '104', 'Simpanan Deposito Anggota', 'aktif'),
-(6, 1, '105', 'Pinjaman yang Diberikan', 'aktif'),
-(7, 1, '106', 'Cadangan Kerugian Pinjaman', 'aktif'),
-(9, 1, '107', 'Aktiva Tetap', 'aktif'),
-(10, 1, '108', 'Akumulasi Penyusutan Aktiva Tetap', 'aktif'),
-(11, 1, '109', 'Inventaris', 'aktif'),
-(12, 1, '110', 'Antar Kantor Aktiva', 'aktif'),
-(13, 1, '111', 'Aset Lain-lain', 'aktif'),
-(14, NULL, '200', 'KEWAJIBAN (LIABILITAS)', 'aktif'),
-(15, 14, '201', 'Hutang Bank', 'aktif'),
-(16, 14, '202', 'Hutang Usaha', 'aktif'),
-(17, 14, '203', 'Hutang Bunga', 'aktif'),
-(18, 14, '204', 'Taksiran Pajak Penghasilan', 'aktif'),
-(19, 14, '205', 'Hutang Lain-lain', 'aktif'),
-(20, 14, '206', 'Antar Kantor Pasiva', 'aktif'),
-(21, NULL, '300', 'EKUITAS / MODAL', 'aktif'),
-(22, 21, '301', 'Modal Simpanan Pokok', 'aktif'),
-(23, 21, '302', 'Modal Simpanan Wajib', 'aktif'),
-(24, 21, '303', 'Dana Cadangan Umum', 'aktif'),
-(25, 21, '304', 'Sisa Hasil Usaha (SHU)', 'aktif'),
-(26, 21, '305', 'Modal Penyertaan', 'aktif'),
-(27, NULL, '400', 'PENDAPATAN', 'aktif'),
-(28, 27, '401', 'Pendapatan Bunga Pinjaman', 'aktif'),
-(29, 27, '402', 'Pendapatan Jasa Administrasi', 'aktif'),
-(30, 27, '403', 'Pendapatan Bunga Deposito di Bank', 'aktif'),
-(31, 27, '404', 'Pendapatan Lainnya', 'aktif'),
-(32, 27, '405', 'Pendapatan Non-Operasional', 'aktif'),
-(33, NULL, '500', 'BEBAN / BIAYA', 'aktif'),
-(34, 33, '501', 'Biaya Bunga Simpanan', 'aktif'),
-(35, 33, '502', 'Biaya Operasional', 'aktif'),
-(36, 33, '503', 'Biaya Penyusutan', 'aktif'),
-(37, 33, '504', 'Biaya Pemeliharaan', 'aktif'),
-(38, 33, '505', 'Biaya Tenaga Kerja', 'aktif'),
-(39, 33, '506', 'Biaya Umum & Administrasi', 'aktif'),
-(40, 33, '507', 'Biaya Sewa', 'aktif'),
-(41, 33, '508', 'Biaya Non-Operasional', 'aktif'),
-(42, 33, '509', 'Pajak-pajak (kecuali PPh Badan)', 'aktif');
+INSERT INTO `trakun` (`id_akun`, `kode_akun`, `nama_akun`, `tipe_akun`, `status`) VALUES
+(1, '101', 'Kas', 'Aset', 'aktif'),
+(2, '102', 'Kas Kecil', 'Aset', 'aktif'),
+(3, '103', 'Bank', 'Aset', 'aktif'),
+(4, '104', 'Setoran Pada Bank', 'Aset', 'aktif'),
+(5, '105', 'Piutang Pinjaman Anggota', 'Aset', 'aktif'),
+(6, '106', 'Piutang Bunga', 'Aset', 'aktif'),
+(7, '107', 'Piutang Lain-lain', 'Aset', 'aktif'),
+(8, '108', 'Pendapatan Diterima Dimuka', 'Aset', 'aktif'),
+(9, '121', 'Peralatan Kantor', 'Aset', 'aktif'),
+(10, '122', 'Akumulasi Penyusutan Peralatan', 'Aset', 'aktif'),
+(11, '123', 'Inventaris Kantor', 'Aset', 'aktif'),
+(12, '124', 'Akumulasi Penyusutan Inventaris', 'Aset', 'aktif'),
+(13, '201', 'Simpanan Pokok Anggota', 'Kewajiban', 'aktif'),
+(14, '202', 'Simpanan Wajib Anggota', 'Kewajiban', 'aktif'),
+(15, '203', 'Tabungan / Simpanan Sukarela Anggota', 'Kewajiban', 'aktif'),
+(16, '204', 'Deposito Berjangka Anggota', 'Kewajiban', 'aktif'),
+(17, '205', 'Simpanan Khusus', 'Kewajiban', 'aktif'),
+(18, '221', 'Hutang Bunga', 'Kewajiban', 'aktif'),
+(19, '222', 'Hutang Jangka Pendek', 'Kewajiban', 'aktif'),
+(20, '223', 'Hutang Lain-lain', 'Kewajiban', 'aktif'),
+(21, '301', 'Modal Awal', 'Modal', 'aktif'),
+(22, '302', 'Donasi dan Hibah', 'Modal', 'aktif'),
+(23, '303', 'Cadangan Umum', 'Modal', 'aktif'),
+(24, '304', 'SHU Tahun Berjalan', 'Modal', 'aktif'),
+(25, '305', 'SHU Ditahan', 'Modal', 'aktif'),
+(26, '401', 'Pendapatan Bunga Pinjaman', 'Pendapatan', 'aktif'),
+(27, '402', 'Pendapatan Administrasi', 'Pendapatan', 'aktif'),
+(28, '403', 'Pendapatan Provisi', 'Pendapatan', 'aktif'),
+(29, '404', 'Pendapatan Denda', 'Pendapatan', 'aktif'),
+(30, '405', 'Pendapatan Lain-lain', 'Pendapatan', 'aktif'),
+(31, '501', 'Beban Bunga Simpanan', 'Beban', 'aktif'),
+(32, '502', 'Beban Administrasi Bank', 'Beban', 'aktif'),
+(33, '503', 'Beban Listrik', 'Beban', 'aktif'),
+(34, '504', 'Beban ATK', 'Beban', 'aktif'),
+(35, '505', 'Beban Penyusutan', 'Beban', 'aktif'),
+(36, '506', 'Beban Transportasi', 'Beban', 'aktif'),
+(37, '507', 'Beban Gaji dan Honor', 'Beban', 'aktif'),
+(38, '508', 'Beban Operasional Lain', 'Beban', 'aktif');
 
 -- --------------------------------------------------------
 
@@ -340,6 +403,18 @@ ALTER TABLE `tmangsuran`
   ADD KEY `id_pinjaman` (`id_pinjaman`);
 
 --
+-- Indexes for table `tmjurnal`
+--
+ALTER TABLE `tmjurnal`
+  ADD PRIMARY KEY (`id_jurnal`);
+
+--
+-- Indexes for table `tmpembayaran`
+--
+ALTER TABLE `tmpembayaran`
+  ADD PRIMARY KEY (`id_pembayaran`);
+
+--
 -- Indexes for table `tmpengajuan`
 --
 ALTER TABLE `tmpengajuan`
@@ -414,28 +489,40 @@ ALTER TABLE `tmangsuran`
   MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tmjurnal`
+--
+ALTER TABLE `tmjurnal`
+  MODIFY `id_jurnal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `tmpembayaran`
+--
+ALTER TABLE `tmpembayaran`
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tmpengajuan`
 --
 ALTER TABLE `tmpengajuan`
-  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tmpinjaman`
 --
 ALTER TABLE `tmpinjaman`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tmrekening`
 --
 ALTER TABLE `tmrekening`
-  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tmtransaksi`
@@ -447,7 +534,7 @@ ALTER TABLE `tmtransaksi`
 -- AUTO_INCREMENT for table `trakun`
 --
 ALTER TABLE `trakun`
-  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `trbunga`
@@ -484,28 +571,10 @@ ALTER TABLE `tmangsuran`
   ADD CONSTRAINT `tmangsuran_ibfk_1` FOREIGN KEY (`id_pinjaman`) REFERENCES `tmpengajuan` (`id_pengajuan`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `tmpengajuan`
---
-ALTER TABLE `tmpengajuan`
-  ADD CONSTRAINT `tmpengajuan_ibfk_1` FOREIGN KEY (`id_rekening`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `tmrekening`
 --
 ALTER TABLE `tmrekening`
   ADD CONSTRAINT `tmrekening_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `tmsimpanan`
---
-ALTER TABLE `tmsimpanan`
-  ADD CONSTRAINT `tmsimpanan_ibfk_1` FOREIGN KEY (`id_rekening`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `users`
---
-ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`id_nasabah`) REFERENCES `trnasabah` (`id_nasabah`) ON DELETE SET NULL ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

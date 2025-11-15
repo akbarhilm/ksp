@@ -60,10 +60,10 @@
                                      <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Jenis Pinjaman</label>
-                                           <select class="form-control" name="id_program">
+                                           <select class="form-control" id="id_program" name="id_program" onchange="selectplafond()">
                                             <option value="">--Pilih Jenis Pinjaman--</option>
                                             @foreach ($program as $p)
-                                                <option value="{{ $p->id_program }}">
+                                                <option value="{{ $p->id_program }}" data-plafond="{{ $p->plafond }}">
                                                     {{ $p->nama_program }} - {{$p->bunga->suku_bunga1}}% - {{ $p->tenor }} Bulan
                                                 </option>
                                             @endforeach
@@ -79,7 +79,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Jumlah Pinjaman</label>
-                                            <input type="text"  class="form-control" name="jumlah_pinjaman"
+                                            <input type="text"  class="form-control" name="jumlah_pengajuan"
                                                 value="{{old('jumlah_pinjaman') }}" 
                                                 />
 
@@ -91,8 +91,8 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Plafond</label>
-                                            <input type="text"  class="form-control" readonly name="plafond"
-                                                value="{{$program[0]->plafond }}" 
+                                            <input type="text"  class="form-control" readonly id="plafond" name="plafond"
+                                                value="" 
                                                 />
 
                                         </div>
@@ -128,6 +128,20 @@
     <x-plugins></x-plugins>
     @push('js')
     <script>
+
+        function selectplafond(){
+
+               let select = document.getElementById("id_program");
+    let option = select.options[select.selectedIndex];
+    
+    let plafond = option.getAttribute("data-plafond");
+    
+    document.getElementById("plafond").value = plafond ?? '';
+
+
+
+
+        }
     
     function padWithZeros(number, length) {
         let numString = String(number);

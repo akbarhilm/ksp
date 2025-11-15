@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Simpanan;
 use App\Models\Nasabah;
 use App\Models\Rekening;
+use App\Models\Jurnal;
 use Illuminate\Http\Request;
 
 class TabunganController extends Controller
@@ -39,13 +40,20 @@ class TabunganController extends Controller
             'v_kredit' => 'required|numeric',
             'keterangan' => 'nullable|string',
         ]);
-        if($request->nama_rekening == 'Tabungan'){
-        $request->request->add(['id_akun' => '4']);
-        }else{
-            $request->request->add(['id_akun' => '5']);
-        }
-        $request->request->add(['id_entry' => auth()->user()->id]);
-        Simpanan::create($request->all());
+        
+            $id_akun = '4';
+
+            $request->request->add(['id_akun' => $id_akun]);
+
+        $id_entry =  auth()->user()->id;
+        $request->request->add(['id_entry' => $id_entry]);
+        $nasabah = Rekening::find($request->id_rekening);
+        $simpanan= Simpanan::create($request->all());
+
+        $datajurnalkredit = ['id_akun'=>$id_akun,'id_simpanan'=>$simpanan->id,'keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>'2','id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+        Jurnal::create($datajurnaldebet);
+        Jurnal::create($datajurnalkredit);
 
         return redirect()->route('tabungan.index')->with('success', 'Simpanan berhasil ditambahkan.');
     }
