@@ -80,6 +80,18 @@ class NasabahController extends Controller
         return redirect()->route('nasabah.index')->with('success', 'nasabah berhasil diperbarui.');
     }
 
+    public function cari(Request $request)
+    {
+        if($request->get('param')){
+            $query = $request->get('param');
+        $nasabah = Nasabah::where('nik','=',$request->get('param'))->orWhere('nama','like',"{$query}%")->orWhere('id_nasabah','=',ltrim($request->get('param'),'0'))->paginate(5);
+    }
+        else{
+            $nasabah = Nasabah::paginate(10);
+        }
+        return view('nasabah.index', compact('nasabah'));
+    }
+
     public function destroy($id)
     {
         $nasabah = Nasabah::findorFail($id);

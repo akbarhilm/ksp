@@ -19,6 +19,9 @@ class Nasabah extends Model
     public function pinjaman() {
         return $this->hasMany(Pinjaman::class, 'id_nasabah');
     }
+     public function rekening() {
+        return $this->hasMany(Rekening::class, 'id_nasabah','id_nasabah');
+    }
 
     public function user() {
         return $this->hasOne(User::class, 'id_nasabah');

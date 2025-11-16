@@ -28,7 +28,7 @@
                         </div>
                         </div> -->
                         <div class="card-body px-0 pb-2">
-                            <form  action="{{ route('rekening.cari') }}" method="GET">
+                            <form  action="{{ route('deposito.cari') }}" method="GET">
                          <div class="row  px-4 py-4">
                             
                             <div class="col-md-3">

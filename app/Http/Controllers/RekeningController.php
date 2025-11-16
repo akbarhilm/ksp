@@ -49,6 +49,7 @@ class RekeningController extends Controller
             'id_bunga' => 'required',
             'kode_insentif' => 'required',
             'jenis_rekening'=> 'required',
+            'jenis_jaminan' => 'required',
             'kode_resort' => 'required',
             'tabungan_wajib' => 'required',
             'tabungan_rutin' => 'required',

@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 class DepositoController extends Controller
 {
   public function index(){
-         $nasabah = Nasabah::paginate(10);
+         $nasabah = Nasabah::withWhereHas('rekening',function($query){
+            $query->where('jenis_rekening','Deposito');
+         })->paginate(10);
         
         return view('deposito.index', compact('nasabah'));
 
@@ -60,6 +62,53 @@ class DepositoController extends Controller
         Jurnal::create($datajurnalkredit);
 
         return redirect()->route('deposito.index')->with('success', 'Simpanan berhasil ditambahkan.');
+    }
+
+    public function cari(Request $request)
+    {
+        if($request->get('param')){
+ $param = $request->get('param');
+
+            $query = Nasabah::query();
+
+// filter hanya nasabah yang punya rekening deposito
+$query->whereHas('rekening', function ($q) {
+    $q->where('jenis_rekening', 'Deposito');
+});
+
+// search parameter
+
+
+    $query->where(function ($q) use ($param) {
+        $q->where('nama', 'like', "%{$param}%")
+           ->orWhere('nik', 'like', "%{$param}%")
+           ->orWhere('id_nasabah','=',ltrim($param,'0'));
+    });
+
+
+// eager load deposito saja
+$query->with(['rekening' => function($q) {
+    $q->where('jenis_rekening', 'Deposito');
+}]);
+
+$nasabah = $query->paginate(10);
+
+
+
+//             $query = $request->get('param');
+//         $nasabah = Nasabah::
+//         whereHas('rekening', function ($q) {
+//     $q->where('jenis_rekening', 'Deposito');
+// })->
+// where('nik','=',$request->get('param'))->orWhere('nama','like',"{$query}%")->orWhere('id_nasabah','=',ltrim($request->get('param'),'0'))
+//         ->paginate(10);
+    }
+        else{
+           $nasabah = Nasabah::withWhereHas('rekening',function($query){
+            $query->where('jenis_rekening','Deposito');
+         })->paginate(10);
+        }
+        return view('deposito.index', compact('nasabah'));
     }
 
     public function lihat(Request $request){

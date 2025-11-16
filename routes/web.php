@@ -10,6 +10,9 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\NeracaController;
+use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\AngsuranController;
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
@@ -41,15 +44,28 @@ Route::get('/pdf/sphutang/{id}', function($id){
     return $pdf->download('Surat_Pernyataan_Hutang.pdf');
 })->name('pdf.sphutang.download');
 
+Route::get('/pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.index');
 Route::get('/pengajuan/cair/{id}', [PengajuanController::class, 'cair'])->name('pengajuan.cair');
 
 Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
+Route::get('/deposito/cari', [DepositoController::class, 'cari'])->middleware('auth')->name('deposito.cari');
+
 Route::get('/pengajuan/approval', [PengajuanController::class, 'approval'])->middleware('auth')->name('pengajuan.approval');
 Route::get('/pengajuan/pencairan', [PengajuanController::class, 'pencairan'])->middleware('auth')->name('pengajuan.pencairan');
 Route::post('/pengajuan/approv/', [PengajuanController::class, 'approv'])->middleware('auth')->name('pengajuan.approv');
 Route::get('/pengajuan/decline/{id}', [PengajuanController::class, 'decline'])->middleware('auth')->name('pengajuan.decline');
 Route::get('/tabungan/lihat', [TabunganController::class, 'lihat'])->middleware('auth')->name('tabungan.lihat');
 Route::get('/rekening/cari', [RekeningController::class, 'cari'])->middleware('auth')->name('rekening.cari');
+Route::get('/nasabah/cari', [NasabahController::class, 'cari'])->middleware('auth')->name('nasabah.cari');
+Route::get('/tabungan/cari', [TabunganController::class, 'cari'])->middleware('auth')->name('tabungan.cari');
+Route::get('/jurnal/cari', [JurnalController::class, 'cari'])->middleware('auth')->name('jurnal.cari');
+Route::get('/bukubesar', [JurnalController::class, 'bukuBesar'])->middleware('auth')->name('bukubesar.index');
+
+Route::get('/pinjaman/{id}/angsuran', [AngsuranController::class, 'index'])->middleware('auth')->name('angsuran.index');
+Route::post('/pinjaman/{id}/angsuran', [AngsuranController::class, 'store'])->middleware('auth')->name('angsuran.store');
+
+
+
 Route::middleware(['auth'])->group(function () {
     Route::resource('tabungan', TabunganController::class);
 	 Route::resource('deposito', DepositoController::class);
@@ -59,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('rekening', RekeningController::class);
 	 Route::resource('karyawan', KaryawanController::class);
 	 Route::resource('neraca', NeracaController::class);
+	 Route::resource('jurnal', JurnalController::class);
 });
 
 

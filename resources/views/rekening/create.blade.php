@@ -99,6 +99,23 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
+                                    <div class="col-md-6">
+                                <div class="input-group input-group-static mb-4">
+                                    <label>Kode Resort</label>
+                                    <!-- <select class="form-control" name="kode_resort">
+                                        <option value="">--Pilih Resort--</option>
+                                        <option value="1">SK NIP TASPEN</option>
+                                        <option value="2">SERTIFIKAT</option>
+                                        <option value="3">KARIP</option>
+                                        <option value="4">BPKB</option>
+                                        <option value="5">ATM</option>
+                                    </select> -->
+                                    <input type="text" class="form-control" name="kode_resort" value="{{old('kode_resort')}}"/>
+                                </div>
+                                @error('id_resort')
+                                    <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
                                 </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -118,17 +135,18 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group input-group-static mb-4">
-                                    <label>Kode Resort</label>
-                                    <select class="form-control" name="kode_resort">
+                                    <label>Jenis Jaminan</label>
+                                    <!-- <select class="form-control" name="kode_resort">
                                         <option value="">--Pilih Resort--</option>
                                         <option value="1">SK NIP TASPEN</option>
                                         <option value="2">SERTIFIKAT</option>
                                         <option value="3">KARIP</option>
                                         <option value="4">BPKB</option>
                                         <option value="5">ATM</option>
-                                    </select>
+                                    </select> -->
+                                    <input type="text" class="form-control" name="jenis_jaminan" value="{{old('jenis_jaminan')}}"/>
                                 </div>
-                                @error('id_resort')
+                                @error('jenis_jaminan')
                                     <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                             </div>

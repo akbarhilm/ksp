@@ -124,8 +124,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'virtual-reality' ? ' active bg-gradient-info' : '' }}  "
-                    href="{{ route('virtual-reality') }}">
+                <a class="nav-link text-white {{ $activePage == 'pinjaman' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('pinjaman.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">view_in_ar</i>
                     </div>
@@ -139,15 +139,24 @@
                 Laporan</a>
             </li>
             <div class="collapse {{$menuParent == 'laporan' ? 'show':''}}" id="collapseLap">
-            <!-- <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'billing' ? ' active bg-gradient-info' : '' }}  "
-                    href="{{ route('billing') }}">
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'jurnal' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('jurnal.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">receipt_long</i>
                     </div>
                     <span class="nav-link-text ms-1">Jurnal</span>
                 </a>
-            </li> -->
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'bukubesar' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('bukubesar.index') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">receipt_long</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Buku Besar</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'neraca' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('neraca.index') }}">

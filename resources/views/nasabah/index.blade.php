@@ -19,9 +19,27 @@
                                     the PRO product!</h6>
                             </div>
                         </div> --}}
-                        <div class=" me-3 my-3 text-end">
+                        <div class="d-flex justify-content-between w-100">
+                        <div class="card-body px-4 pb-2">
+                            <form  action="{{ route('nasabah.cari') }}" method="GET">
+                         
+                                <div class="col-md-6">        
+                                <div class="input-group input-group-static mb-4">
+                                    <label>Cari Nasabah</label>
+                                    <input type="text" name="param" placeholder="No Nasabah / NIK / Nama" class="form-control" />
+                                </div>
+                                
+
+                                  
+                                    <button class="btn bg-gradient-info mb-0" type="submit"><i
+                                    class="material-icons text-sm">search</i>&nbsp;&nbsp;cari</button>
+                        </div>
+                        </form>     
+                        </div>
+                        <div class="card-body  pb-2 mt-6 text-end" style="margin-left:60px;">
                             <a class="btn bg-gradient-info mb-0" href="{{ route('nasabah.create') }}"><i
                                     class="material-icons text-sm">add</i>&nbsp;&nbsp;Tambah Nasabah</a>
+                        </div>
                         </div>
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">

@@ -74,6 +74,18 @@ class TabunganController extends Controller
         
     }
 
+    public function cari(Request $request)
+    {
+        if($request->get('param')){
+            $query = $request->get('param');
+        $nasabah = Nasabah::where('nik','=',$request->get('param'))->orWhere('nama','like',"{$query}%")->orWhere('id_nasabah','=',ltrim($request->get('param'),'0'))->paginate(5);
+    }
+        else{
+            $nasabah = Nasabah::paginate(10);
+        }
+        return view('tabungan.index', compact('nasabah'));
+    }
+
     public function update(Request $request, Simpanan $simpanan)
     {
         $request->validate([

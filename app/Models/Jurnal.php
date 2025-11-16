@@ -12,8 +12,30 @@ class Jurnal extends Model
 
     protected $fillable = ['id_akun','id_simpanan','id_pinjaman',  'keterangan', 'v_debet', 'v_kredit','id_entry'];
 
+    protected $casts = [
+    'v_debet'  => 'float',
+    'v_kredit' => 'float',
+];
+
+
+
     public function akun()
     {
         return $this->belongsTo(Akun::class, 'id_akun', 'id_akun');
     }
+
+public function getVDebetDisplayAttribute()
+{
+    return $this->attributes['v_debet'] == 0
+        ? '-' 
+        : number_format($this->attributes['v_debet'], 0, ',', '.');
+}
+
+public function getVKreditDisplayAttribute()
+{
+    return $this->attributes['v_kredit'] == 0
+        ? '-' 
+        : number_format($this->attributes['v_kredit'], 0, ',', '.');
+}
+
 }

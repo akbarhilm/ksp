@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Jurnal;
+use App\Models\Akun;
 
 class NeracaController extends Controller
 {
@@ -12,39 +13,63 @@ class NeracaController extends Controller
     //     return view('neraca.index');
     // }
 
-    public function index(){
 
-        $ledger = Jurnal::select('id_akun')
-    ->selectRaw('SUM(v_debet) as total_debet')
-    ->selectRaw('SUM(v_kredit) as total_kredit')
-    ->groupBy('id_akun')
-    ->with('akun') // relasi ke tabel akun
-    ->get();
-$totalaset = 0;
-$totalwajib = 0;
-  foreach ($ledger as $row) {
+      public function index(Request $request)
+    {
+        $tanggal = $request->tanggal ?? date('Y-m-d');
 
-    if ($row->akun->tipe_akun == 'Aset') {
-        $row->saldo = $row->total_debet - $row->total_kredit;
-        $totalaset = $totalaset + $row->total_debet - $row->total_kredit;
+        $akunList = Akun::orderBy('kode_akun')->get();
+
+        $neraca = [
+            'Aset' => [],
+            'Kewajiban' => [],
+            'Modal' => [],
+        ];
+
+        $totalPendapatan = 0;
+        $totalBeban      = 0;
+
+        foreach ($akunList as $akun) {
+
+            switch($akun->tipe_akun){
+                case 'Aset':
+                    $saldo = Jurnal::where('id_akun', $akun->id_akun)
+                                ->where('tanggal_transaksi', '<=', $tanggal)
+                                ->sum(\DB::raw('v_debet - v_kredit'));
+                    $neraca['Aset'][] = ['nama' => $akun->nama_akun, 'saldo' => $saldo];
+                    break;
+
+                case 'Kewajiban':
+                case 'Modal':
+                    $saldo = Jurnal::where('id_akun', $akun->id_akun)
+                                ->where('tanggal_transaksi', '<=', $tanggal)
+                                ->sum(\DB::raw('v_kredit - v_debet'));
+                    if($akun->tipe_akun == 'Kewajiban'){
+                        $neraca['Kewajiban'][] = ['nama' => $akun->nama_akun, 'saldo' => $saldo];
+                    } else {
+                        $neraca['Modal'][] = ['nama' => $akun->nama_akun, 'saldo' => $saldo];
+                    }
+                    break;
+
+                case 'Pendapatan':
+                    $totalPendapatan += Jurnal::where('id_akun', $akun->id_akun)
+                                            ->where('tanggal_transaksi', '<=', $tanggal)
+                                            ->sum(\DB::raw('v_kredit - v_debet'));
+                    break;
+
+                case 'Beban':
+                    $totalBeban += Jurnal::where('id_akun', $akun->id_akun)
+                                        ->where('tanggal_transaksi', '<=', $tanggal)
+                                        ->sum(\DB::raw('v_debet - v_kredit'));
+                    break;
+            }
+        }
+
+        // Laba/Rugi bersih
+        $labaRugi = $totalPendapatan - $totalBeban;
+
+        $neraca['Modal'][] = ['nama' => 'Laba/Rugi Bersih', 'saldo' => $labaRugi];
+
+        return view('neraca.index', compact('neraca', 'tanggal'));
     }
-
-    if ($row->akun->tipe_akun == 'Kewajiban' || $row->akun->tipe_akun == 'Modal') {
-        $row->saldo = $row->total_kredit - $row->total_debet;
-        $totalwajib = $totalwajib + $row->total_kredit - $row->total_debet;
-    }
-
-    if ($row->akun->tipe_akun == 'Pendapatan') {
-        $row->saldo = $row->total_kredit - $row->total_debet;
-    }
-
-    if ($row->akun->tipe_akun == 'Beban') {
-        $row->saldo = $row->total_debet - $row->total_kredit;
-    }
-  }
-$total = ['aset'=>$totalaset,'wajib'=>$totalwajib];
-return view('pdf.neraca',compact('ledger','total'));
-
-
-}
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2025 at 04:05 PM
+-- Generation Time: Nov 16, 2025 at 04:27 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.1.25
 
@@ -20,21 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `ksp-sms`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tmangsuran`
---
-
-CREATE TABLE `tmangsuran` (
-  `id_angsuran` int(11) NOT NULL,
-  `id_pinjaman` int(11) NOT NULL,
-  `tanggal_bayar` date DEFAULT curdate(),
-  `jumlah_bayar` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `denda` decimal(15,2) DEFAULT 0.00,
-  `sisa_pinjaman` decimal(15,2) DEFAULT 0.00
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -61,12 +46,12 @@ CREATE TABLE `tmjurnal` (
 --
 
 INSERT INTO `tmjurnal` (`id_jurnal`, `id_akun`, `id_simpanan`, `id_pinjaman`, `tanggal_transaksi`, `keterangan`, `v_debet`, `v_kredit`, `id_entry`, `created_at`, `updated_at`) VALUES
-(7, 1, 11, NULL, '2025-11-15', 'kas', 1000000, 0, 1, '2025-11-15', '2025-11-15'),
-(8, 14, 11, NULL, '2025-11-15', 'Tabungan wajib anggota 00042', 0, 1000000, 1, '2025-11-15', '2025-11-15'),
-(9, 1, 14, NULL, '2025-11-15', 'kas', 25000000, 0, 1, '2025-11-15', '2025-11-15'),
-(10, 16, 14, NULL, '2025-11-15', 'Deposito anggota 00042', 0, 25000000, 1, '2025-11-15', '2025-11-15'),
-(13, 1, 19, NULL, '2025-11-15', 'kas', 1000000, 0, 1, '2025-11-15', '2025-11-15'),
-(14, 14, 19, NULL, '2025-11-15', 'Tabungan wajib anggota 00043', 0, 1000000, 1, '2025-11-15', '2025-11-15'),
+(7, 1, 11, NULL, '2025-11-12', 'kas', 1000000, 0, 1, '2025-11-15', '2025-11-15'),
+(8, 14, 11, NULL, '2025-11-12', 'Tabungan wajib anggota 00042', 0, 1000000, 1, '2025-11-15', '2025-11-15'),
+(9, 1, 14, NULL, '2025-11-13', 'kas', 25000000, 0, 1, '2025-11-15', '2025-11-15'),
+(10, 16, 14, NULL, '2025-11-13', 'Deposito anggota 00042', 0, 25000000, 1, '2025-11-15', '2025-11-15'),
+(13, 1, 19, NULL, '2025-11-14', 'kas', 1000000, 0, 1, '2025-11-15', '2025-11-15'),
+(14, 14, 19, NULL, '2025-11-14', 'Tabungan wajib anggota 00043', 0, 1000000, 1, '2025-11-15', '2025-11-15'),
 (15, 5, NULL, 3, '2025-11-15', 'Piutang Pinjaman Anggota43', 3000000, 0, 1, '2025-11-15', '2025-11-15'),
 (16, 1, NULL, 3, '2025-11-15', 'Kas', 0, 3000000, 1, '2025-11-15', '2025-11-15');
 
@@ -83,8 +68,6 @@ CREATE TABLE `tmpembayaran` (
   `total_bayar` decimal(10,0) NOT NULL,
   `bayar_bunga` decimal(10,0) NOT NULL,
   `bayar_pokok` decimal(10,0) NOT NULL,
-  `sisa_pokok` decimal(10,0) NOT NULL,
-  `sisa_bunga` decimal(10,0) NOT NULL,
   `cicilan_ke` int(11) NOT NULL,
   `id_entry` int(11) NOT NULL,
   `created_at` date NOT NULL DEFAULT current_timestamp(),
@@ -161,6 +144,7 @@ CREATE TABLE `tmrekening` (
   `id_bunga` int(11) NOT NULL,
   `kode_insentif` varchar(50) NOT NULL,
   `kode_resort` varchar(100) NOT NULL,
+  `jenis_jaminan` varchar(100) NOT NULL,
   `tabungan_wajib` int(10) NOT NULL,
   `tabungan_rutin` int(10) NOT NULL,
   `id_entry` int(11) NOT NULL,
@@ -172,12 +156,13 @@ CREATE TABLE `tmrekening` (
 -- Dumping data for table `tmrekening`
 --
 
-INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `no_tabungan`, `jenis_rekening`, `id_bunga`, `kode_insentif`, `kode_resort`, `tabungan_wajib`, `tabungan_rutin`, `id_entry`, `updated_at`, `created_at`) VALUES
-(2, 42, '12500042', '12500042', 'Tabungan', 1, '0', '1', 100000, 0, 1, '2025-10-30', '2025-10-30'),
-(3, 42, '22500042', '22500042', 'Deposito', 2, '0', '2', 10000000, 500000, 1, '2025-10-30', '2025-10-30'),
-(4, 43, '12500043', '12500043', 'Tabungan', 1, '0', '1', 10000000, 0, 1, '2025-11-03', '2025-11-03'),
-(5, 42, '32500042', '32500042', 'Pinjaman', 0, '0', '1', 0, 0, 1, '2025-11-05', '2025-11-05'),
-(6, 43, '32500043', '32500043', 'Pinjaman', 0, '0', '5', 0, 0, 1, '2025-11-15', '2025-11-15');
+INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `no_tabungan`, `jenis_rekening`, `id_bunga`, `kode_insentif`, `kode_resort`, `jenis_jaminan`, `tabungan_wajib`, `tabungan_rutin`, `id_entry`, `updated_at`, `created_at`) VALUES
+(2, 42, '12500042', '12500042', 'Tabungan', 1, '0', '1', '', 100000, 0, 1, '2025-10-30', '2025-10-30'),
+(3, 42, '22500042', '22500042', 'Deposito', 2, '0', '2', '', 10000000, 500000, 1, '2025-10-30', '2025-10-30'),
+(4, 43, '12500043', '12500043', 'Tabungan', 1, '0', '1', '', 10000000, 0, 1, '2025-11-03', '2025-11-03'),
+(5, 42, '32500042', '32500042', 'Pinjaman', 0, '0', '1', '', 0, 0, 1, '2025-11-05', '2025-11-05'),
+(6, 43, '32500043', '32500043', 'Pinjaman', 0, '0', '5', '', 0, 0, 1, '2025-11-15', '2025-11-15'),
+(7, 45, '12500045', '12500045', 'Tabungan', 1, '0', '1', '-', 0, 0, 1, '2025-11-16', '2025-11-16');
 
 -- --------------------------------------------------------
 
@@ -342,7 +327,8 @@ CREATE TABLE `trnasabah` (
 
 INSERT INTO `trnasabah` (`id_nasabah`, `nik`, `nama`, `alamat`, `tgl_lahir`, `pekerjaan`, `nama_suami_istri`, `no_telp`, `sektor_ekonomi`, `id_entry`, `tanggal_gabung`, `status`, `updated_at`, `created_at`) VALUES
 (42, '321708080809', 'Akbar Hilman', 'asdasdasdads', '1999-07-07', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-10-30', 'aktif', '2025-10-30', '2025-10-30'),
-(43, '321708080808', 'as', 'asdasdasdads', '2025-11-03', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-11-03', 'aktif', '2025-11-03', '2025-11-03');
+(43, '321708080808', 'as', 'asdasdasdads', '2025-11-03', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-11-03', 'aktif', '2025-11-03', '2025-11-03'),
+(45, '1234', 'tanpa pinjaman', 'kkkk', '2025-11-16', 'karyawan', '-', '0987', 'Lainnya', '1', '2025-11-16', 'aktif', '2025-11-16', '2025-11-16');
 
 -- --------------------------------------------------------
 
@@ -394,13 +380,6 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `id_nasabah`) VALUES
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `tmangsuran`
---
-ALTER TABLE `tmangsuran`
-  ADD PRIMARY KEY (`id_angsuran`),
-  ADD KEY `id_pinjaman` (`id_pinjaman`);
 
 --
 -- Indexes for table `tmjurnal`
@@ -483,12 +462,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `tmangsuran`
---
-ALTER TABLE `tmangsuran`
-  MODIFY `id_angsuran` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `tmjurnal`
 --
 ALTER TABLE `tmjurnal`
@@ -516,7 +489,7 @@ ALTER TABLE `tmpinjaman`
 -- AUTO_INCREMENT for table `tmrekening`
 --
 ALTER TABLE `tmrekening`
-  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tmsimpanan`
@@ -546,7 +519,7 @@ ALTER TABLE `trbunga`
 -- AUTO_INCREMENT for table `trnasabah`
 --
 ALTER TABLE `trnasabah`
-  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `trprogram`
@@ -563,12 +536,6 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `tmangsuran`
---
-ALTER TABLE `tmangsuran`
-  ADD CONSTRAINT `tmangsuran_ibfk_1` FOREIGN KEY (`id_pinjaman`) REFERENCES `tmpengajuan` (`id_pengajuan`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tmrekening`
