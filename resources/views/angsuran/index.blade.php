@@ -71,6 +71,7 @@
                 <thead>
                     <tr>
                         <th>Tanggal</th>
+                        <th>Total Bayar</th>
                         <th>Pokok</th>
                         <th>Bunga</th>
                         <th>Keterangan</th>
@@ -79,10 +80,11 @@
                 <tbody>
                     @forelse($history as $h)
                     <tr>
-                        <td>{{ $h->tanggal_bayar }}</td>
-                        <td>{{ number_format($h->pokok_dibayar,0) }}</td>
-                        <td>{{ number_format($h->bunga_dibayar,0) }}</td>
-                        <td>{{ $h->keterangan }}</td>
+                        <td>{{ $h->tanggal }}</td>
+                        <td class="text-end">{{ number_format($h->total_bayar,0) }}</td>
+                        <td class="text-end">{{ number_format($h->bayar_pokok,0) }}</td>
+                        <td class="text-end">{{ number_format($h->bayar_bunga,0) }}</td>
+                        <td>{{ 'Pembayaran Angsuran ke '.$h->cicilan_ke }}</td>
                     </tr>
                     @empty
                     <tr>
