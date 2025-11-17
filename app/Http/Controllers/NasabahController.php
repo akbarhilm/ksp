@@ -7,6 +7,7 @@ use App\Models\Nasabah;
 use App\Models\Rekening;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class NasabahController extends Controller
 {
@@ -17,6 +18,45 @@ class NasabahController extends Controller
         //dd($nasabah);
         return view('nasabah.index', compact('nasabah'));
     }
+
+
+public function datatableindex(Request $request)
+{
+    $query = Nasabah::select([
+        'id_nasabah',
+        'nik',
+        'nama',
+        'alamat',
+        'tgl_lahir',
+        'no_telp',
+    ]);
+
+    return DataTables::of($query)
+        ->addIndexColumn()
+        ->editColumn('id_nasabah', function ($row) {
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+        })
+        ->addColumn('aksi', function ($row) {
+            $edit = route('nasabah.edit', $row->id_nasabah);
+            $delete = route('nasabah.destroy', $row->id_nasabah);
+
+            return '
+                <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
+                    <i class="material-icons">edit</i>
+                </a>
+                <a href="javascript:{}" onclick="hapusNasabah('.$row->id_nasabah.')" class="btn btn-sm btn-danger btn-link" title="hapus">
+                    <i class="material-icons">close</i>
+                </a>
+                <form id="formDelete'.$row->id_nasabah.'" action="'.$delete.'" method="POST" style="display:none;">
+                    '.csrf_field().method_field('DELETE').'
+                </form>
+            ';
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
+
+
        public function create()
     {
         
@@ -98,5 +138,30 @@ class NasabahController extends Controller
         $nasabah->delete();
         return redirect()->route('nasabah.index')->with('success', 'Nasabah berhasil dihapus.');
     }
+
+    public function datatables()
+{
+    $query = Nasabah::select([
+        'id_nasabah',
+        'nik',
+        'nama',
+       
+        'tgl_lahir',
+        'no_telp'
+        
+    ]);
+
+    return DataTables::of($query)
+        ->addColumn('aksi', function ($n) {
+            return '
+                <a href="'.route('pengajuan.create',['id_nasabah'=>$n->id_nasabah]).'"
+                   class="btn btn-sm btn-info">
+                    <i class="material-icons">add</i>
+                </a>
+            ';
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
 
 }

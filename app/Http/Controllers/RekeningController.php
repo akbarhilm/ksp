@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Bunga;
 use App\Models\Nasabah;
 use App\Models\Rekening;
+use Yajra\DataTables\Facades\DataTables;
 
 class RekeningController extends Controller
 {
@@ -17,6 +18,39 @@ class RekeningController extends Controller
         return view('rekening.index', compact('nasabah'));
 
     }
+
+    public function datatableindexrekening(Request $request)
+{
+    $query = Nasabah::select([
+        'id_nasabah',
+        'nik',
+        'nama',
+        'alamat',
+        'tgl_lahir',
+        'no_telp',
+    ]);
+
+    return DataTables::of($query)
+        ->addIndexColumn()
+        ->editColumn('id_nasabah', function ($row) {
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+        })
+        ->addColumn('aksi', function ($row) {
+            $create = route('rekening.create', $row->id_nasabah);
+            $edit = route('rekening.edit', $row->id_nasabah);
+
+            return '
+                <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="edit">
+                    <i class="material-icons">add</i>
+                </a>
+                 <a href="'.$edit.'" class="btn  btn-sm btn-success btn-link" title="edit">
+                    <i class="material-icons">visibility</i>
+                </a>
+            ';
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
 
     public function cari(Request $request)
     {

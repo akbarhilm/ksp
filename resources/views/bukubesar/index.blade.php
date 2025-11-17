@@ -41,7 +41,7 @@
 
                 <div class="col-md-2 d-grid">
                     <label class="form-label invisible">Filter</label>
-                    <button class="btn btn-primary">Filter</button>
+                    <button class="btn btn-info">Filter</button>
                 </div>
 
             </form>
@@ -57,8 +57,8 @@
         @endphp
 
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">
+            <div class="card-header bg-info ">
+                <h5 class="mb-0  text-white">
                     Akun: {{ $akun->nama_akun }} (ID: {{ $akunId }})
                 </h5>
             </div>
@@ -111,6 +111,6 @@
 
 </div>
     </main>
-    <x-plugins></x-plugins>
+    {{-- <x-plugins></x-plugins> --}}
 
 </x-layout>

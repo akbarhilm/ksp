@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-md-2 d-grid">
                     <label class="form-label invisible">Filter</label>
-                    <button class="btn btn-primary">Tampilkan</button>
+                    <button class="btn btn-info">Tampilkan</button>
                 </div>
             </form>
 
@@ -27,7 +27,7 @@
                 {{-- ASET --}}
                 <div class="col-md-6 mb-3">
                     <div class="card">
-                        <div class="card-header bg-success text-white">Aset</div>
+                        <div class="card-header bg-info text-white">Aset</div>
                         <div class="card-body p-0">
                             <table class="table table-sm table-bordered m-0">
                                 <tbody>
@@ -52,7 +52,7 @@
                 {{-- KEWAJIBAN + MODAL --}}
                 <div class="col-md-6 mb-3">
                     <div class="card">
-                        <div class="card-header bg-primary text-white">Kewajiban & Modal</div>
+                        <div class="card-header bg-success text-white">Kewajiban & Modal</div>
                         <div class="card-body p-0">
                             <table class="table table-sm table-bordered m-0">
                                 <tbody>

@@ -7,6 +7,7 @@ use App\Models\Simpanan;
 use App\Models\Nasabah;
 use App\Models\Rekening;
 use App\Models\Jurnal;
+use Yajra\DataTables\Facades\DataTables;
 
 use Illuminate\Http\Request;
 
@@ -20,6 +21,35 @@ class DepositoController extends Controller
         return view('deposito.index', compact('nasabah'));
 
     }
+
+    public function datatablesdeposito(Request $request)
+{
+    $query = $nasabah = Nasabah::withWhereHas('rekening',function($query){
+            $query->where('jenis_rekening','Deposito');
+         });
+
+    return DataTables::of($query)
+        ->addIndexColumn()
+        ->editColumn('id_nasabah', function ($row) {
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+        })
+        ->addColumn('aksi', function ($row) {
+            $create = route('deposito.create', $row->id_nasabah);
+            $edit = route('deposito.show', $row->id_nasabah);
+
+            return '
+                <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="edit">
+                    <i class="material-icons">add</i>
+                </a>
+                 <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="lihat">
+                    <i class="material-icons">visibility</i>
+                </a>
+            ';
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
+
 
   
 

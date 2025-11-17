@@ -55,7 +55,7 @@
     <div class="card shadow-sm">
         <div class="card-body p-0">
 
-            <table class="table table-bordered table-striped m-0">
+            <table class="table table-bordered table-striped mb-4">
                 <thead class="table-dark">
                     <tr>
                         <th width="12%">Tanggal</th>
@@ -90,6 +90,6 @@
 
 </div>
     </main>
-    <x-plugins></x-plugins>
+    {{-- <x-plugins></x-plugins> --}}
 
 </x-layout>

@@ -124,7 +124,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'pinjaman' ? ' active bg-gradient-info' : '' }}  "
+                <a class="nav-link text-white {{ $activePage == 'angsuran' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pinjaman.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">view_in_ar</i>

@@ -9,6 +9,8 @@ use App\Models\Pengajuan;
 use App\Models\Rekening;
 use App\Models\Program;
 use App\Models\Jurnal;
+use App\Models\Pinjaman;
+use Yajra\DataTables\Facades\DataTables;
 
 
 use Illuminate\Http\Request;
@@ -119,16 +121,21 @@ class PengajuanController extends Controller
        
       // dd($data);
        Pengajuan::where('id_pengajuan',$id)->update(['status'=>'cair', 'tanggal_pencairan'=>date('Y-m-d')]);
-       $datajurnaldebet = ['id_akun'=>'6','id_pinjaman'=>$id,'keterangan'=>'Piutang Pinjaman Anggota'.$data->rekening[0]->id_nasabah,'v_debet'=>$data->jumlah_pencairan,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
-       $datajurnalkredit = ['id_akun'=>'2','id_pinjaman'=>$id,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan,'id_entry'=>auth()->user()->id];
-    Jurnal::create($datajurnaldebet);
+        $pinjaman = Pinjaman::create([
+        'id_pengajuan'     => $data->id_pengajuan,
+        'id_nasabah'       => $data->rekening[0]->id_nasabah,
+        'total_pinjaman'  => $data->jumlah_pencairan,
+        'sisa_pokok'            => $data->jumlah_pencairan,
+        'sisa_bunga'            => $data->jumlah_pencairan*($data->program->bunga->suku_bunga1*$data->program->tenor/100),
+        'status'           => 'aktif',
+        'id_entry' => auth()->user()->id
+    ]);
+       $datajurnaldebet = ['id_akun'=>'5','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Piutang Pinjaman Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>$data->jumlah_pencairan,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
+       $datajurnalkredit = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan,'id_entry'=>auth()->user()->id];
+
+       Jurnal::create($datajurnaldebet);
     Jurnal::create($datajurnalkredit);
-    //    $pdf=PDF::loadView('pdf.sphutang',['data'=>$data])
-    //    ->setPaper('a4')
-    //     ->setOption('enable-local-file-access', true)
-    // ->setOption('no-stop-slow-scripts', true)
-    // ->setOption('disable-smart-shrinking', false);
-    //     return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+   
      $pdfFileName = 'SP_Hutang_'.$id.'.pdf';
     session(['pdf_data_'.$id => $data]);
 
@@ -145,4 +152,62 @@ class PengajuanController extends Controller
         $simpanan->delete();
         return redirect()->route('pengajuan.index')->with('success', 'Simpanan berhasil dihapus.');
     }
+
+    public function datatables(Request $request)
+{
+
+    $data = Pengajuan::with('rekening.nasabah', 'program')
+    ->where('status', '=', 'pengajuan')
+        ->orderBy('id_pengajuan','DESC');
+
+    return DataTables::of($data)
+        ->addIndexColumn()
+
+        ->addColumn('nomor_nasabah', function($row){
+            return str_pad($row->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT);
+        })
+
+        ->addColumn('nama', function($row){
+            return $row->rekening[0]->nasabah[0]->nama;
+        })
+
+        ->addColumn('tanggal', function($row){
+            return $row->tanggal_pengajuan;
+        })
+
+        ->addColumn('program', function($row){
+            return $row->program->nama_program;
+        })
+
+        ->addColumn('jumlah', function($row){
+            return number_format($row->jumlah_pengajuan, 0);
+        })
+
+        ->addColumn('status', function($row){
+            return $row->status;
+        })
+
+        ->addColumn('aksi', function($row){
+
+            $btn = '
+            <button class="btn btn-sm btn-success me-1 appr-btn"
+                data-id="'.$row->id_pengajuan.'"
+                data-jumlah="'.$row->jumlah_pengajuan.'"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                title="Approve">
+                <i class="material-icons">check</i>
+            </button>
+
+            <a href="'.route('pengajuan.decline',$row->id_pengajuan).'"
+                class="btn btn-sm btn-warning" title="Tolak">
+                <i class="material-icons">close</i>
+            </a>';
+
+            return $btn;
+        })
+
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
 }

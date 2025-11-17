@@ -63,6 +63,14 @@ Route::get('/bukubesar', [JurnalController::class, 'bukuBesar'])->middleware('au
 
 Route::get('/pinjaman/{id}/angsuran', [AngsuranController::class, 'index'])->middleware('auth')->name('angsuran.index');
 Route::post('/pinjaman/{id}/angsuran', [AngsuranController::class, 'store'])->middleware('auth')->name('angsuran.store');
+Route::get('/nasabah/datatables', [NasabahController::class, 'datatables'])
+    ->name('nasabah.datatables');
+Route::get('/nasabah/datatablesindex', [NasabahController::class, 'datatableindex'])->name('nasabah.datatablesindex');
+Route::get('/rekening/datatablesindexrekning', [RekeningController::class, 'datatableindexrekening'])->name('rekening.datatablesindexrekening');
+Route::get('/tabungan/datatablestabungan', [TabunganController::class, 'datatablestabungan'])->name('tabungan.datatablestabungan');
+Route::get('/deposito/datatablesdeposito', [DepositoController::class, 'datatablesdeposito'])->name('deposito.datatablesdeposito');
+Route::get('/pengajuan/datatables', [PengajuanController::class, 'datatables'])->name('pengajuan.datatables');
+
 
 
 

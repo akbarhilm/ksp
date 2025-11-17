@@ -37,6 +37,10 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets') }}/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+  
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+
 </head>
 <body class="{{ $bodyClass }}">
 
@@ -47,6 +51,8 @@
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="{{ asset('assets') }}/js/plugins/smooth-scrollbar.min.js"></script>
 <script src="{{ asset('assets') }}/js/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 @stack('js')
 <script>
     var win = navigator.platform.indexOf('Win') > -1;

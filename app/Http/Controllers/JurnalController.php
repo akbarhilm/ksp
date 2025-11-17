@@ -55,69 +55,69 @@ public function bukuBesar(Request $request)
     $tanggalAwal  = $request->tanggal_awal;
     $tanggalAkhir = $request->tanggal_akhir;
 
-    // Query awal untuk jurnal
-    $jurnalQuery = Jurnal::orderBy('tanggal_transaksi', 'asc');
+    // Query jurnal dasar
+    $jurnalQuery = Jurnal::with('akun')->orderBy('tanggal_transaksi', 'asc');
 
-    // Filter akun
     if ($filterAkun) {
         $jurnalQuery->where('id_akun', $filterAkun);
     }
 
-    // Hitung saldo awal
-    $saldoAwalPerAkun = [];
-
-    if ($tanggalAwal) {
-        $saldoAwalQuery = Jurnal::select(
-                'id_akun',
-                DB::raw('SUM(v_debet - v_kredit) as saldo_awal')
-            )
-            ->whereDate('tanggal_transaksi', '<', $tanggalAwal);
-
-        if ($filterAkun) {
-            $saldoAwalQuery->where('id_akun', $filterAkun);
-        }
-
-        $saldoAwalQuery->groupBy('id_akun');
-
-        foreach ($saldoAwalQuery->get() as $sa) {
-            $saldoAwalPerAkun[$sa->id_akun] = $sa->saldo_awal;
-        }
-    }
-
-    // Filter tanggal berjalan
     if ($tanggalAwal && $tanggalAkhir) {
         $jurnalQuery->whereBetween('tanggal_transaksi', [$tanggalAwal, $tanggalAkhir]);
     }
 
     $jurnalData = $jurnalQuery->get()->groupBy('id_akun');
 
-    // Hitung saldo berjalan + tambah saldo awal di baris pertama
     $bukuBesar = [];
 
     foreach ($jurnalData as $akunId => $items) {
 
-        $saldo = $saldoAwalPerAkun[$akunId] ?? 0;
+        $akun = $akunList->firstWhere('id_akun', $akunId);
+        if (!$akun) continue; // jika akun tidak ditemukan, skip
 
-        // Tambahkan baris saldo awal jika ada filter tanggal
-        $awalRow = null;
+        // Hitung saldo awal
+        $saldoAwal = 0;
+
         if ($tanggalAwal) {
-            $awalRow = (object)[
-                'tanggal_transaksi' => $tanggalAwal,
-                'keterangan' => 'Saldo Awal',
-                'v_debet' => 0,
-                'v_kredit' => 0,
-                'saldo' => $saldo
-            ];
+
+            $saldoAwalRows = Jurnal::where('id_akun', $akunId)
+                ->whereDate('tanggal_transaksi', '<', $tanggalAwal)
+                ->get();
+
+            foreach ($saldoAwalRows as $row) {
+                // saldo tergantung tipe akun
+                if (in_array($akun->tipe_akun, ['Kewajiban', 'Modal', 'Pendapatan'])) {
+                    $saldoAwal += ($row->v_kredit - $row->v_debet);
+                } else {
+                    $saldoAwal += ($row->v_debet - $row->v_kredit);
+                }
+            }
         }
 
-        foreach ($items as $item) {
-            $saldo += $item->v_debet - $item->v_kredit;
-            $item->saldo = $saldo;
+        // hitung saldo berjalan
+        $saldo = $saldoAwal;
+
+        foreach ($items as $row) {
+            if (in_array($akun->tipe_akun, ['Kewajiban','Modal','Pendapatan'])) {
+                $saldo += ($row->v_kredit - $row->v_debet);
+            } else {
+                $saldo += ($row->v_debet - $row->v_kredit);
+            }
+
+            $row->saldo = $saldo;
         }
 
         $bukuBesar[$akunId] = [
-            'saldo_awal' => $awalRow,
-            'data'       => $items
+            'saldo_awal' => $tanggalAwal
+                ? (object)[
+                    'tanggal_transaksi' => $tanggalAwal,
+                    'keterangan' => 'Saldo Awal',
+                    'v_debet' => 0,
+                    'v_kredit' => 0,
+                    'saldo' => $saldoAwal
+                ]
+                : null,
+            'data' => $items
         ];
     }
 
@@ -129,6 +129,9 @@ public function bukuBesar(Request $request)
         'tanggalAkhir'
     ));
 }
+
+
+
 
 
  public function cari(Request $request){

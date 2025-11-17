@@ -1,6 +1,6 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="pinjaman" menuParent="loan"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="angsuran" menuParent="loan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Pinjaman"></x-navbars.navs.auth>
@@ -26,7 +26,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <button type="submit" class="btn btn-info">Filter</button>
                     <a href="{{ route('pinjaman.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </form>
@@ -36,11 +36,11 @@
     <!-- Tabel Pinjaman -->
     <div class="card">
         <div class="card-body">
-            <table class="table table-striped table-bordered align-middle">
+            <table class="table table-striped table-bordered align-middle text-sm">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID Pinjaman</th>
-                        <th>ID Nasabah</th>
+                     
+                        <th >Nomor Nasabah</th>
                         <th>Nama Nasabah</th>
                         <th>Total Pinjaman</th>
                         <th>Sisa Pokok</th>
@@ -52,20 +52,20 @@
                 <tbody>
                     @forelse($pinjaman as $p)
                         <tr>
-                            <td>{{ $p->id_pinjaman }}</td>
-                            <td>{{ $p->id_nasabah }}</td>
+                          
+                            <td class="text-end">{{str_pad($p->id_nasabah,5,'0',STR_PAD_LEFT) }}</td>
                             <td>{{ $p->nasabah->nama ?? '-' }}</td>
-                            <td>{{ number_format($p->total_pinjaman,0) }}</td>
-                            <td>{{ number_format($p->sisa_pokok,0) }}</td>
-                            <td>{{ number_format($p->sisa_bunga,0) }}</td>
-                            <td>
+                            <td class="text-end font-weight-bolder">{{ number_format($p->total_pinjaman,0) }}</td>
+                            <td class="text-end font-weight-bolder">{{ number_format($p->sisa_pokok,0) }}</td>
+                            <td class="text-end font-weight-bolder">{{ number_format($p->sisa_bunga,0) }}</td>
+                            <td class="text-center">
                                 <span class="badge {{ $p->status == 'aktif' ? 'bg-success' : 'bg-secondary' }}">
                                     {{ ucfirst($p->status) }}
                                 </span>
                             </td>
-                            <td>
-                                <a href="{{ route('angsuran.index', $p->id_pinjaman) }}" class="btn btn-primary btn-sm">
-                                    Bayar Angsuran
+                            <td class="text-center pt-1">
+                                <a href="{{ route('angsuran.index', $p->id_pinjaman) }}" class="btn btn-sm btn-info btn-sm">
+                                    Bayar
                                 </a>
                             </td>
                         </tr>

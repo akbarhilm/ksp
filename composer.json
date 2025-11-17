@@ -5,8 +5,6 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
 
-     
-	
     "require": {
         "php": "^8.1",
         "barryvdh/laravel-snappy": "^1.0",
@@ -16,7 +14,8 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.6",
-        "php-flasher/flasher-laravel": "^1.15"
+        "php-flasher/flasher-laravel": "^1.15",
+        "yajra/laravel-datatables-oracle": "^10"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
