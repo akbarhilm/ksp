@@ -50,7 +50,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'karyawan' ? ' active bg-gradient-info' : '' }} "
-                    href="{{ route('karyawan.index') }}">
+                    href="{{ route('users.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">badge</i>
                     </div>
@@ -76,7 +76,7 @@
                 <a class="nav-link text-white {{ $activePage == 'tabungan' ? ' active bg-gradient-info' : '' }} "
                     href="{{ route('tabungan.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt_long</i>
+                        <i class="material-icons opacity-10">account_balance</i>
                     </div>
                     <span class="nav-link-text ms-1">Tabungan</span>
                 </a>
@@ -109,7 +109,7 @@
                 <a class="nav-link text-white {{ $activePage == 'approval' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pengajuan.approval') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt_long</i>
+                        <i class="material-icons opacity-10">assignment_turned_in</i>
                     </div>
                     <span class="nav-link-text ms-1">Approval Pengajuan</span>
                 </a>
@@ -118,7 +118,7 @@
                 <a class="nav-link text-white {{ $activePage == 'cair' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pengajuan.pencairan') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt_long</i>
+                        <i class="material-icons opacity-10">paid</i>
                     </div>
                     <span class="nav-link-text ms-1">Pencairan</span>
                 </a>
@@ -127,7 +127,7 @@
                 <a class="nav-link text-white {{ $activePage == 'angsuran' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pinjaman.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">view_in_ar</i>
+                        <i class="material-icons opacity-10">payments</i>
                     </div>
                     <span class="nav-link-text ms-1">Pembayaran Angsuran</span>
                 </a>
@@ -143,7 +143,7 @@
                 <a class="nav-link text-white {{ $activePage == 'jurnal' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('jurnal.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt_long</i>
+                        <i class="material-icons opacity-10">auto_stories</i>
                     </div>
                     <span class="nav-link-text ms-1">Jurnal</span>
                 </a>
@@ -152,7 +152,7 @@
                 <a class="nav-link text-white {{ $activePage == 'bukubesar' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('bukubesar.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">receipt_long</i>
+                        <i class="material-icons opacity-10">book</i>
                     </div>
                     <span class="nav-link-text ms-1">Buku Besar</span>
                 </a>
@@ -161,16 +161,16 @@
                 <a class="nav-link text-white {{ $activePage == 'neraca' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('neraca.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">view_in_ar</i>
+                        <i class="material-icons opacity-10">balance</i>
                     </div>
                     <span class="nav-link-text ms-1">Neraca</span>
                 </a>
             </li>
              <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'virtual-reality' ? ' active bg-gradient-info' : '' }}  "
-                    href="{{ route('virtual-reality') }}">
+                <a class="nav-link text-white {{ $activePage == 'labarugi' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('labarugi.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">view_in_ar</i>
+                        <i class="material-icons opacity-10">request_page</i>
                     </div>
                     <span class="nav-link-text ms-1">Laba/Rugi</span>
                 </a>

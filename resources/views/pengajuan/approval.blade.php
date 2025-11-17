@@ -5,99 +5,31 @@
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Approval Pengajuan Pinjaman"></x-navbars.navs.auth>
         <!-- End Navbar -->
-      <div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
+         <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+      <table class="table table-striped table-hover align-middle" id="pengajuanTable">
+    <thead class="table-dark">
+        <tr>
+            <th>Nomor Nasabah</th>
+            <th>Nama</th>
+            <th>Tanggal</th>
+            <th>Program</th>
+            <th>Jumlah</th>
+            <th>Status</th>
+            <th class="text-center">Aksi</th>
+        </tr>
+    </thead>
+</table>
 
-                    {{-- Form Pencarian --}}
-                    <form action="{{ route('rekening.cari') }}" method="GET">
-                        <div class="row g-3 mb-4 align-items-end">
-
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Cari Nasabah</label>
-                                <input type="text" name="param" class="form-control"
-                                    placeholder="No Nasabah / NIK / Nama">
-                            </div>
-
-                            <div class="col-md-2">
-                                <button class="btn btn-info w-100">
-                                    <i class="material-icons text-sm">search</i> Cari
-                                </button>
-                            </div>
-
-                        </div>
-                    </form>
-
-                    {{-- Tabel --}}
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover align-middle">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Nomor Nasabah</th>
-                                    <th>Nama</th>
-                                    <th class="text-center">Tanggal</th>
-                                    <th class="text-center">Program</th>
-                                    <th class="text-center">Jumlah Pengajuan</th>
-                                    <th class="text-center">Status</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                @foreach ($pinjaman as $n)
-                                <tr>
-                                    <td>{{ str_pad($n->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT) }}</td>
-                                    <td>{{ $n->rekening[0]->nasabah[0]->nama }}</td>
-                                    <td class="text-center">{{ $n->tanggal_pengajuan }}</td>
-                                    <td class="text-center">{{ $n->program->nama_program }}</td>
-                                    <td class="text-center">{{ number_format($n->jumlah_pengajuan, 0) }}</td>
-                                    <td class="text-center">{{ $n->status }}</td>
-
-                                    <td class="text-center">
-
-                                        {{-- Tombol Approval (modal) --}}
-                                        <button 
-                                            class="btn btn-sm btn-success me-1 appr-btn"
-                                            data-id="{{ $n->id_pengajuan }}"
-                                            data-jumlah="{{ $n->jumlah_pengajuan }}"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal"
-                                            title="Setujui">
-                                            <i class="material-icons">check</i>
-                                        </button>
-
-                                        {{-- Tombol Decline --}}
-                                        <a href="{{ route('pengajuan.decline', $n->id_pengajuan) }}"
-                                            class="btn btn-sm btn-warning"
-                                            title="Tolak">
-                                            <i class="material-icons">close</i>
-                                        </a>
-
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-
-                            <tfoot>
-                                <tr>
-                                    <td colspan="7" class="text-center py-3">
-                                        {{-- Pagination bisa ditambah di sini --}}
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
 </div>
-
+</div>
+</div>
+</div>
+</div>
 
 <!-- ===========================
        MODAL APPROVAL
@@ -152,16 +84,51 @@
         @push('js')
 <script>
     // Handle klik tombol approv
-    document.querySelectorAll(".appr-btn").forEach(btn => {
-        btn.addEventListener("click", function () {
-            let id = this.getAttribute("data-id");
-            let jumlah = this.getAttribute("data-jumlah");
 
-            document.getElementById("id_pengajuan").value = id;
-            document.getElementById("v_pengajuan").value = jumlah;
-            document.getElementById("v_appr").value = jumlah;
-        });
+    $(document).ready(function() {
+
+    let table = $('#pengajuanTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('pengajuan.datatables') }}",
+
+        columns: [
+            { data: 'nomor_nasabah', name: 'nomor_nasabah' },
+            { data: 'nama', name: 'nama' },
+            { data: 'tanggal', name: 'tanggal' },
+            { data: 'program', name: 'program' },
+            { data: 'jumlah', name: 'jumlah', className: 'text-end' },
+            { data: 'status', name: 'status', className: 'text-center' },
+            { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center' }
+        ], language: {
+                        search: "Cari:",
+                        lengthMenu: "Tampilkan _MENU_ data",
+                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                        paginate: {
+                            previous: "<<",
+                            next: ">>"
+                        }
+                    }
     });
+
+    // Ketika tombol approve diklik → isi modal otomatis
+    $(document).on('click', '.appr-btn', function() {
+        $('#id_pengajuan').val($(this).data('id'));
+        $('#v_pengajuan').val($(this).data('jumlah'));
+        $('#v_appr').val($(this).data('jumlah'));
+    });
+
+});
+    // document.querySelectorAll(".appr-btn").forEach(btn => {
+    //     btn.addEventListener("click", function () {
+    //         let id = this.getAttribute("data-id");
+    //         let jumlah = this.getAttribute("data-jumlah");
+
+    //         document.getElementById("id_pengajuan").value = id;
+    //         document.getElementById("v_pengajuan").value = jumlah;
+    //         document.getElementById("v_appr").value = jumlah;
+    //     });
+    // });
 
 
 // $(document).ready(function() {

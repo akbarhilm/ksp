@@ -130,6 +130,44 @@ public function bukuBesar(Request $request)
     ));
 }
 
+public function storeDouble(Request $request)
+{
+    $request->validate([
+        'tanggal_transaksi' => 'required|date',
+        'keterangan' => 'required',
+        'akun_debet' => 'required|exists:trakun,id_akun',
+        'akun_kredit' => 'required|exists:trakun,id_akun',
+        'jumlah_debet' => 'required|numeric|min:1',
+        'jumlah_kredit' => 'required|numeric|min:1',
+    ]);
+
+    // Validasi harus balance
+    if ($request->jumlah_debet != $request->jumlah_kredit) {
+        return back()->with('error', 'Debit dan Kredit harus sama nominalnya.');
+    }
+
+    // 1. INSERT DEBIT
+    Jurnal::create([
+        'tanggal_transaksi' => $request->tanggal_transaksi,
+        'id_akun' => $request->akun_debet,
+        'keterangan' => $request->keterangan,
+        'v_debet' => $request->jumlah_debet,
+        'v_kredit' => 0,
+        'id_entry' => auth()->id() ?? 1,
+    ]);
+
+    // 2. INSERT KREDIT
+    Jurnal::create([
+        'tanggal_transaksi' => $request->tanggal_transaksi,
+        'id_akun' => $request->akun_kredit,
+        'keterangan' => $request->keterangan,
+        'v_debet' => 0,
+        'v_kredit' => $request->jumlah_kredit,
+        'id_entry' => auth()->id() ?? 1,
+    ]);
+
+    return back()->with('success', 'Jurnal double entry berhasil disimpan.');
+}
 
 
 

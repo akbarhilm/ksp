@@ -19,15 +19,12 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'location',
-        'phone',
-        'about',
-        'password_confirmation'
+        'username',
+        'password', // Akan di-hash
+        'role',
+        'nama',
+        'id_nasabah',
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -38,6 +35,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function findForAuth($username)
+    {
+        return $this->where('username', $username)->first();
+    }
     /**
      * The attributes that should be cast.
      *

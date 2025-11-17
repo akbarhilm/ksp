@@ -11,6 +11,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\LabarugiController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AngsuranController;
 
 use App\Http\Controllers\ProfileController;
@@ -70,6 +72,8 @@ Route::get('/rekening/datatablesindexrekning', [RekeningController::class, 'data
 Route::get('/tabungan/datatablestabungan', [TabunganController::class, 'datatablestabungan'])->name('tabungan.datatablestabungan');
 Route::get('/deposito/datatablesdeposito', [DepositoController::class, 'datatablesdeposito'])->name('deposito.datatablesdeposito');
 Route::get('/pengajuan/datatables', [PengajuanController::class, 'datatables'])->name('pengajuan.datatables');
+Route::post('/jurnal/double-entry', [JurnalController::class, 'storeDouble'])->name('jurnal.storeDouble');
+
 
 
 
@@ -81,8 +85,9 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('pengajuan', PengajuanController::class);
 	 Route::resource('nasabah', NasabahController::class);
 	 Route::resource('rekening', RekeningController::class);
-	 Route::resource('karyawan', KaryawanController::class);
 	 Route::resource('neraca', NeracaController::class);
+	 Route::resource('labarugi', LabarugiController::class);
+	Route::resource('users', UserController::class);
 	 Route::resource('jurnal', JurnalController::class);
 });
 
