@@ -23,76 +23,73 @@
                 </div>
             </form>
 
-            <div class="row">
-                {{-- ASET --}}
-                <div class="col-md-6 mb-3">
-                    <div class="card">
-                        <div class="card-header bg-info text-white">Aset</div>
-                        <div class="card-body p-0">
-                            <table class="table table-sm table-bordered m-0">
-                                <tbody>
-                                    @php $totalAset = 0; @endphp
-                                    @foreach($neraca['Aset'] as $item)
-                                        <tr>
-                                            <td>{{ $item['nama'] }}</td>
-                                            <td class="text-end">{{ number_format($item['saldo'], 0, ',', '.') }}</td>
-                                        </tr>
-                                        @php $totalAset += $item['saldo']; @endphp
-                                    @endforeach
-                                    <tr class="fw-bold bg-light">
-                                        <td>Total Aset</td>
-                                        <td class="text-end">{{ number_format($totalAset, 0, ',', '.') }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            {{-- Tabel gabungan dengan warna --}}
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="bg-info text-white" colspan="2">Aset</th>
+                            <th class="bg-success text-white" colspan="2">Kewajiban & Modal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $maxRows = max(count($neraca['Aset']), count($neraca['Kewajiban']) + count($neraca['Modal']));
+                            $totalAset = 0;
+                            $totalKewajiban = 0;
+                            $totalModal = 0;
+                        @endphp
 
-                {{-- KEWAJIBAN + MODAL --}}
-                <div class="col-md-6 mb-3">
-                    <div class="card">
-                        <div class="card-header bg-success text-white">Kewajiban & Modal</div>
-                        <div class="card-body p-0">
-                            <table class="table table-sm table-bordered m-0">
-                                <tbody>
-                                    @php
-                                        $totalKewajiban = 0;
-                                        $totalModal = 0;
-                                    @endphp
+                        @for($i = 0; $i < $maxRows; $i++)
+                            <tr>
+                                {{-- Aset --}}
+                                @if(isset($neraca['Aset'][$i]))
+                                    <td class="bg-light">{{ $neraca['Aset'][$i]['nama'] }}</td>
+                                    <td class="bg-light text-end">{{ number_format($neraca['Aset'][$i]['saldo'],0,',','.') }}</td>
+                                    @php $totalAset += $neraca['Aset'][$i]['saldo']; @endphp
+                                @else
+                                    <td class="bg-light">&nbsp;</td>
+                                    <td class="bg-light">&nbsp;</td>
+                                @endif
 
-                                    @foreach($neraca['Kewajiban'] as $item)
-                                        <tr>
-                                            <td>{{ $item['nama'] }}</td>
-                                            <td class="text-end">{{ number_format($item['saldo'], 0, ',', '.') }}</td>
-                                        </tr>
-                                        @php $totalKewajiban += $item['saldo']; @endphp
-                                    @endforeach
+                                {{-- Kewajiban & Modal --}}
+                                @php
+                                    $kmIndex = $i;
+                                    if($kmIndex < count($neraca['Kewajiban'])) {
+                                        $kmItem = $neraca['Kewajiban'][$kmIndex];
+                                        $totalKewajiban += $kmItem['saldo'];
+                                    } elseif($kmIndex - count($neraca['Kewajiban']) < count($neraca['Modal'])) {
+                                        $kmItem = $neraca['Modal'][$kmIndex - count($neraca['Kewajiban'])];
+                                        $totalModal += $kmItem['saldo'];
+                                    } else {
+                                        $kmItem = null;
+                                    }
+                                @endphp
 
-                                    @foreach($neraca['Modal'] as $item)
-                                        <tr>
-                                            <td>{{ $item['nama'] }}</td>
-                                            <td class="text-end">{{ number_format($item['saldo'], 0, ',', '.') }}</td>
-                                        </tr>
-                                        @php $totalModal += $item['saldo']; @endphp
-                                    @endforeach
+                                @if($kmItem)
+                                    <td class="bg-light">{{ $kmItem['nama'] }}</td>
+                                    <td class="bg-light text-end">{{ number_format($kmItem['saldo'],0,',','.') }}</td>
+                                @else
+                                    <td class="bg-light">&nbsp;</td>
+                                    <td class="bg-light">&nbsp;</td>
+                                @endif
+                            </tr>
+                        @endfor
 
-                                    <tr class="fw-bold bg-light">
-                                        <td>Total Kewajiban & Modal</td>
-                                        <td class="text-end">{{ number_format($totalKewajiban + $totalModal, 0, ',', '.') }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
+                        {{-- Total --}}
+                        <tr class="fw-bold text-white">
+                            <td class="bg-info">Total Aset</td>
+                            <td class="bg-info text-end">{{ number_format($totalAset,0,',','.') }}</td>
+                            <td class="bg-success">Total Kewajiban & Modal</td>
+                            <td class="bg-success text-end">{{ number_format($totalKewajiban + $totalModal,0,',','.') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>
     </div>
 </div>
-    </main>
-    <x-plugins></x-plugins>
 
+    </main>
 </x-layout>
