@@ -5,7 +5,7 @@
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Laporan Neraca"></x-navbars.navs.auth>
         <!-- End Navbar -->
-        <div class="container mt-4">
+<div class="container mt-4">
     <div class="card shadow-sm mb-4">
         <div class="card-body">
 
@@ -23,73 +23,91 @@
                 </div>
             </form>
 
-            {{-- Tabel gabungan dengan warna --}}
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="bg-info text-white" colspan="2">Aset</th>
-                            <th class="bg-success text-white" colspan="2">Kewajiban & Modal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $maxRows = max(count($neraca['Aset']), count($neraca['Kewajiban']) + count($neraca['Modal']));
-                            $totalAset = 0;
-                            $totalKewajiban = 0;
-                            $totalModal = 0;
-                        @endphp
-
-                        @for($i = 0; $i < $maxRows; $i++)
-                            <tr>
-                                {{-- Aset --}}
-                                @if(isset($neraca['Aset'][$i]))
-                                    <td class="bg-light">{{ $neraca['Aset'][$i]['nama'] }}</td>
-                                    <td class="bg-light text-end">{{ number_format($neraca['Aset'][$i]['saldo'],0,',','.') }}</td>
-                                    @php $totalAset += $neraca['Aset'][$i]['saldo']; @endphp
-                                @else
-                                    <td class="bg-light">&nbsp;</td>
-                                    <td class="bg-light">&nbsp;</td>
-                                @endif
-
-                                {{-- Kewajiban & Modal --}}
+            {{-- Flex container untuk dua kartu --}}
+            <div class="d-flex gap-3">
+                {{-- ASET --}}
+                <div class="card flex-fill">
+                    <div class="card-header bg-info text-white">Aset</div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm table-bordered m-0">
+                            <tbody>
                                 @php
-                                    $kmIndex = $i;
-                                    if($kmIndex < count($neraca['Kewajiban'])) {
-                                        $kmItem = $neraca['Kewajiban'][$kmIndex];
-                                        $totalKewajiban += $kmItem['saldo'];
-                                    } elseif($kmIndex - count($neraca['Kewajiban']) < count($neraca['Modal'])) {
-                                        $kmItem = $neraca['Modal'][$kmIndex - count($neraca['Kewajiban'])];
-                                        $totalModal += $kmItem['saldo'];
-                                    } else {
-                                        $kmItem = null;
-                                    }
+                                    $totalAset = 0;
+                                    $asetCount = count($neraca['Aset']);
+                                    $kmCount = count($neraca['Kewajiban']) + count($neraca['Modal']);
+                                    $maxRows = max($asetCount, $kmCount);
                                 @endphp
+                                @for($i = 0; $i < $maxRows; $i++)
+                                    @if(isset($neraca['Aset'][$i]))
+                                        <tr>
+                                            <td>{{ $neraca['Aset'][$i]['nama'] }}</td>
+                                            <td class="text-end">{{ number_format($neraca['Aset'][$i]['saldo'],0,',','.') }}</td>
+                                        </tr>
+                                        @php $totalAset += $neraca['Aset'][$i]['saldo']; @endphp
+                                    @else
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    @endif
+                                @endfor
+                                <tr class="fw-bold bg-light text-white">
+                                    <td class="bg-info">Total Aset</td>
+                                    <td class="text-end bg-info">{{ number_format($totalAset,0,',','.') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                                @if($kmItem)
-                                    <td class="bg-light">{{ $kmItem['nama'] }}</td>
-                                    <td class="bg-light text-end">{{ number_format($kmItem['saldo'],0,',','.') }}</td>
-                                @else
-                                    <td class="bg-light">&nbsp;</td>
-                                    <td class="bg-light">&nbsp;</td>
-                                @endif
-                            </tr>
-                        @endfor
-
-                        {{-- Total --}}
-                        <tr class="fw-bold text-white">
-                            <td class="bg-info">Total Aset</td>
-                            <td class="bg-info text-end">{{ number_format($totalAset,0,',','.') }}</td>
-                            <td class="bg-success">Total Kewajiban & Modal</td>
-                            <td class="bg-success text-end">{{ number_format($totalKewajiban + $totalModal,0,',','.') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                {{-- KEWAJIBAN & MODAL --}}
+                <div class="card flex-fill">
+                    <div class="card-header bg-success text-white">Kewajiban & Modal</div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm table-bordered m-0">
+                            <tbody>
+                                @php
+                                    $totalKewajiban = 0;
+                                    $totalModal = 0;
+                                @endphp
+                                @for($i = 0; $i < $maxRows; $i++)
+                                    @php
+                                        // Ambil item kewajiban atau modal sesuai index
+                                        $kmItem = null;
+                                        if($i < count($neraca['Kewajiban'])) {
+                                            $kmItem = $neraca['Kewajiban'][$i];
+                                            $totalKewajiban += $kmItem['saldo'];
+                                        } elseif($i - count($neraca['Kewajiban']) < count($neraca['Modal'])) {
+                                            $kmItem = $neraca['Modal'][$i - count($neraca['Kewajiban'])];
+                                            $totalModal += $kmItem['saldo'];
+                                        }
+                                    @endphp
+                                    @if($kmItem)
+                                        <tr>
+                                            <td>{{ $kmItem['nama'] }}</td>
+                                            <td class="text-end">{{ number_format($kmItem['saldo'],0,',','.') }}</td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    @endif
+                                @endfor
+                                <tr class="fw-bold bg-light text-white">
+                                    <td class="bg-success">Total Kewajiban & Modal</td>
+                                    <td class="text-end bg-success">{{ number_format($totalKewajiban + $totalModal,0,',','.') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> {{-- end flex container --}}
 
         </div>
     </div>
 </div>
+
 
     </main>
 </x-layout>
