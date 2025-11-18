@@ -77,7 +77,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Jumlah</label>
-                                            <input type="text"  class="form-control" name="v_kredit"
+                                            <input type="number"  class="form-control" name="v_kredit"
                                                 value="{{old('v_kredit') }}" 
                                                 />
 

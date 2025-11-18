@@ -79,7 +79,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Jumlah Pinjaman</label>
-                                            <input type="text"  class="form-control" name="jumlah_pengajuan"
+                                            <input type="number"  class="form-control" name="jumlah_pengajuan"
                                                 value="{{old('jumlah_pinjaman') }}" 
                                                 />
 

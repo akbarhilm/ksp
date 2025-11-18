@@ -136,15 +136,15 @@
                             <div class="col-md-6">
                                 <div class="input-group input-group-static mb-4">
                                     <label>Jenis Jaminan</label>
-                                    <!-- <select class="form-control" name="kode_resort">
-                                        <option value="">--Pilih Resort--</option>
-                                        <option value="1">SK NIP TASPEN</option>
-                                        <option value="2">SERTIFIKAT</option>
-                                        <option value="3">KARIP</option>
-                                        <option value="4">BPKB</option>
-                                        <option value="5">ATM</option>
-                                    </select> -->
-                                    <input type="text" class="form-control" name="jenis_jaminan" value="{{old('jenis_jaminan')}}"/>
+ 
+                                    <select class="form-control" name="jneis_jaminan">
+                                        <option value="">--Pilih Jaminan--</option>
+                                        <option value="1 {{old('jenis_jaminan')}}">Perjanjian Kop Surat </option>
+                                        <option value="2 {{old('jenis_jaminan')}}">Perjanjian Kredit</option>
+                                        <option value="3 {{old('jenis_jaminan')}}">Tanda Terima Jaminan</option>
+                                        <option value="4 {{old('jenis_jaminan')}}">Kwitansi Pencairan</option>
+                                        <option value="5 {{old('jenis_jaminan')}}">Kartu Kredit</option>
+                                    </select>
                                 </div>
                                 @error('jenis_jaminan')
                                     <p class='text-danger inputerror'>{{ $message }} </p>
@@ -155,7 +155,7 @@
                             <div class="col-md-6">
                                 <div class="input-group input-group-static mb-4">
                                     <label>Tabungan Wajib</label>
-                                    <input type="text" class="form-control" name="tabungan_wajib"
+                                    <input type="number" class="form-control" name="tabungan_wajib"
                                         value="{{ old('tabungan_wajib') }}" />
                                 </div>
                                 @error('tabungan_wajib')
@@ -165,7 +165,7 @@
                             <div class="col-md-6">
                                 <div class="input-group input-group-static mb-4">
                                     <label>Tabungan Rutin</label>
-                                    <input type="text" class="form-control" name="tabungan_rutin"
+                                    <input type="number" class="form-control" name="tabungan_rutin"
                                         value="{{ old('tabungan_rutin') }}"/>
                                 </div>
                                 @error('tabungan_rutin')
