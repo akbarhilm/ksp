@@ -70,7 +70,7 @@ class PengajuanController extends Controller
 
      public function approval(){
         
-        $pinjaman = Pengajuan::where('status','=','pengajuan')->with('rekening.nasabah')->with('program')->get();
+        $pinjaman = Pengajuan::where('status','=','pengajuan')->with('rekening.nasabah')->with('program')->orderBy('id_pengajuan','desc')->get();
         return view('pengajuan.approval', compact('pinjaman'));
     }
 
