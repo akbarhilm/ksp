@@ -72,6 +72,8 @@ Route::get('/rekening/datatablesindexrekning', [RekeningController::class, 'data
 Route::get('/tabungan/datatablestabungan', [TabunganController::class, 'datatablestabungan'])->name('tabungan.datatablestabungan');
 Route::get('/deposito/datatablesdeposito', [DepositoController::class, 'datatablesdeposito'])->name('deposito.datatablesdeposito');
 Route::get('/pengajuan/datatables', [PengajuanController::class, 'datatables'])->name('pengajuan.datatables');
+Route::get('/users/datatableindex', [UserController::class, 'datatableindex'])->name('users.datatableindex');
+
 Route::post('/jurnal/double-entry', [JurnalController::class, 'storeDouble'])->name('jurnal.storeDouble');
 
 

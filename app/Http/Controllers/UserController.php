@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class UserController extends Controller
 {
@@ -107,4 +109,40 @@ class UserController extends Controller
         return redirect()->route('users.index')
                          ->with('success', 'User berhasil dihapus.');
     }
+
+    
+public function datatableindex(Request $request)
+{
+    $query = User::select([
+        'id',
+        'nama',
+        'username',
+        'role',
+        'id_nasabah',
+    ]);
+
+    return DataTables::of($query)
+        ->addIndexColumn()
+        ->editColumn('id_nasabah', function ($row) {
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+        })
+        ->addColumn('aksi', function ($row) {
+            $edit = route('users.edit', $row->id);
+            $delete = route('users.destroy', $row->id);
+
+            return '
+                <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
+                    <i class="material-icons">edit</i>
+                </a>
+                <a href="javascript:{}" onclick="hapusNasabah('.$row->id.')" class="btn btn-sm btn-danger btn-link" title="hapus">
+                    <i class="material-icons">close</i>
+                </a>
+                <form id="formDelete'.$row->id.'" action="'.$delete.'" method="POST" style="display:none;">
+                    '.csrf_field().method_field('DELETE').'
+                </form>
+            ';
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
 }
