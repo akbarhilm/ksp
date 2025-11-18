@@ -40,7 +40,7 @@
                                                 <option value="">--Pilih Rekening--</option>
                                                <option value="1">REKENING TABUNGAN</option>
                                                <option value="2">REKENING DEPOSITO</option>
-                                               <option value="3">REKENING Pinjaman</option>
+                                               <option value="3">REKENING PINJAMAN</option>
                                             </select>
 
                                         </div>
