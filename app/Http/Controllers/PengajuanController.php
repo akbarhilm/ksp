@@ -76,7 +76,7 @@ class PengajuanController extends Controller
 
     public function approv(Request $request){
         
-        Pengajuan::where('id_pengajuan',$request->get('id_pengajuan'))->update(['status'=>'approv', 'tanggal_approval'=>date('Y-m-d'),'jumlah_pencairan'=>$request->get('jumlah_pencairan')]);
+        Pengajuan::where('id_pengajuan',$request->get('id_pengajuan'))->update(['status'=>'approv', 'tanggal_approval'=>date('Y-m-d'),'jumlah_pencairan'=>$request->get('jumlah_pencairan'),'updated_at'=>date('Y-m-d')]);
         return redirect()->route('pengajuan.approval')->with('success', 'Pengajuan berhasil disetujui.');
        
     }
@@ -96,7 +96,7 @@ class PengajuanController extends Controller
     }
 
       public function pencairan(){
-        $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->with('program')->get();
+        $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->with('program')->orderBy('updated_at','desc')->get();
         
         return view('pengajuan.pencairan', compact('pinjaman'));
     }

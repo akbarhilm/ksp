@@ -29,7 +29,7 @@ class TabunganController extends Controller
         'alamat',
         'tgl_lahir',
         'no_telp',
-    ]);
+    ])->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()

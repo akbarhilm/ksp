@@ -15,7 +15,7 @@ class AngsuranController extends Controller
 {
     $pinjaman = Pinjaman::with('pengajuan.program.bunga')->where('id_pinjaman',$id_pinjaman)->firstOrFail();
     $history = Angsuran::where('id_pinjaman', $id_pinjaman)
-        ->orderBy('tanggal', 'asc')
+        ->orderBy('tanggal', 'desc')
         ->get();
 
     return view('angsuran.index', compact('pinjaman', 'history'));

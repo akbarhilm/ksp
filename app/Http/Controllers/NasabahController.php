@@ -14,7 +14,8 @@ class NasabahController extends Controller
     //
     public function index()
     {
-        $nasabah = Nasabah::Paginate(5);
+        $nasabah = Nasabah::paginate(5);
+;
         //dd($nasabah);
         return view('nasabah.index', compact('nasabah'));
     }
@@ -29,7 +30,7 @@ public function datatableindex(Request $request)
         'alamat',
         'tgl_lahir',
         'no_telp',
-    ]);
+    ])->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()
@@ -149,7 +150,7 @@ public function datatableindex(Request $request)
         'tgl_lahir',
         'no_telp'
         
-    ]);
+    ])->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
         ->addColumn('aksi', function ($n) {

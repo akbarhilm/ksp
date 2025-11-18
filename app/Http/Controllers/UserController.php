@@ -119,7 +119,7 @@ public function datatableindex(Request $request)
         'username',
         'role',
         'id_nasabah',
-    ]);
+    ])->orderBy('id','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()

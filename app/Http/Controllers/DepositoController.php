@@ -26,7 +26,7 @@ class DepositoController extends Controller
 {
     $query = $nasabah = Nasabah::withWhereHas('rekening',function($query){
             $query->where('jenis_rekening','Deposito');
-         });
+         })->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()
