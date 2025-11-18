@@ -137,7 +137,7 @@
                                 <div class="input-group input-group-static mb-4">
                                     <label>Jenis Jaminan</label>
  
-                                    <select class="form-control" name="jneis_jaminan">
+                                    <select class="form-control" name="jenis_jaminan">
                                         <option value="">--Pilih Jaminan--</option>
                                         <option value="1 {{old('jenis_jaminan')}}">Perjanjian Kop Surat </option>
                                         <option value="2 {{old('jenis_jaminan')}}">Perjanjian Kredit</option>
