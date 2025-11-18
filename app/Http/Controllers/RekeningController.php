@@ -36,11 +36,11 @@ class RekeningController extends Controller
             return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
         })
         ->addColumn('aksi', function ($row) {
-            $create = route('rekening.create', $row->id_nasabah);
+            $create = route('rekening.create', ['id_nasabah' => $row->id_nasabah]);
             $edit = route('rekening.edit', $row->id_nasabah);
 
             return '
-                <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="edit">
+                <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="tambah">
                     <i class="material-icons">add</i>
                 </a>
                  <a href="'.$edit.'" class="btn  btn-sm btn-success btn-link" title="edit">
