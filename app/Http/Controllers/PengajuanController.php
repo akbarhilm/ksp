@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Simpanan;
 use App\Models\Nasabah;
 use App\Models\Pengajuan;
+use App\Models\PengajuanJaminan;
 use App\Models\Rekening;
 use App\Models\Program;
 use App\Models\Jurnal;
@@ -34,9 +35,9 @@ class PengajuanController extends Controller
         $idnasabah = $request->query('id_nasabah');
         $nasabah = Nasabah::find($idnasabah);
         $program = Program::with('bunga')->get();
-       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->get();
+       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->where('status','aktif')->get();
         if(!$rekening->count()){
-            return redirect()->route('pengajuan.index')->with('error', 'Nasabah belum memiliki rekening pinjaman. Silakan buat rekening terlebih dahulu.');
+            return redirect()->route('rekening.edit',$idnasabah)->with('error', 'Rekening pinjaman Belum Aktif.');
         }else{
         return view('pengajuan.create', compact('nasabah', 'rekening','program') );
         }
@@ -46,18 +47,31 @@ class PengajuanController extends Controller
 
     public function store(Request $request)
     {
+         $request->merge([
+        'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan)
+    ]);
         $request->validate([
             'id_rekening' => 'required',
-            'id_program' => 'required',
-            'jumlah_pengajuan' => 'required|numeric'
-           
+            
+            'jumlah_pengajuan' => 'required|numeric',
+           'tenor'            => 'required|numeric|min:1',
+        'bunga'            => 'required|numeric|min:0',
+        'jenis_jaminan.*'  => 'required|string|max:100',
+        'keterangan.*'     => 'required|string|max:255'
         ]);
        
-            $request->request->add(['id_akun' => '6']);
-        
         $request->request->add(['id_entry' => auth()->user()->id]);
-        Pengajuan::create($request->all());
-
+        $pengajuan = Pengajuan::create($request->all());
+        if ($request->jenis_jaminan) {
+        foreach ($request->jenis_jaminan as $i => $j) {
+            PengajuanJaminan::create([
+                'id_pengajuan'  => $pengajuan->id_pengajuan,
+                'jenis_jaminan' => $j,
+                'keterangan'    => $request->keterangan[$i] ?? null,
+                'id_entry'      => auth()->user()->id
+            ]);
+        }
+    }
         return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan.');
     }
 

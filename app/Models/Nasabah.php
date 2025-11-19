@@ -10,7 +10,7 @@ class Nasabah extends Model
    
     protected $table = 'trnasabah';
     protected $primaryKey = 'id_nasabah';
-    protected $fillable = ['pekerjaan', 'nama', 'nik', 'alamat', 'no_telp','nama_suami_istri','tgl_lahir','sektor_ekonomi','id_entry'];
+    protected $fillable = ['pekerjaan', 'nama', 'nik', 'alamat','status', 'no_telp','nama_suami_istri','tgl_lahir','sektor_ekonomi','id_entry'];
 
     public function simpanan() {
         return $this->hasMany(Simpanan::class, 'id_nasabah');

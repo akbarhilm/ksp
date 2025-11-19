@@ -39,13 +39,15 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
-                                </div>
-                                <div class="row">
+                              
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No Rekening</label>
                                             <input type='hidden' name='id_nasabah'
                                                 value='{{ $nasabah->id_nasabah }}' 
+                                                />
+                                                <input type='hidden' name='id_rekening'
+                                                value='{{ $rek->id_rekening }}' 
                                                 />
                                             <input type="text" id="no_rekening" readonly class="form-control" name="no_rekening"
                                                 value="{{ $rek->no_rekening }}"  />
@@ -55,93 +57,25 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
-
-
-
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>No Tabungan</label>
-                                            <input type="text" id="no_tabungan" class="form-control" readonly name="no_tabungan"
-                                                value="{{ $rek->no_tabungan }}" />
-                                        </div>
-                                        @error('no_tabungan')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
                                 </div>
-                                <div class="row">
-                                    
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Bunga</label>
-                                            <select class="form-control" disabled name="id_bunga">
-                                                <option value="">--Pilih Bunga--</option>
-                                                @foreach ($bunga as $b)
-                                                    <option value="{{ $b->id_bunga }}" {{$rek->id_bunga == $b->id_bunga ? 'selected':''}}>
-                                                        {{ $b->nama_bunga }} - {{ $b->suku_bunga1 }}%
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        @error('id_bunga')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                </div>
+
+
+
+                                   
+                               
+                        
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Kode Insentif</label>
-                                    <select class="form-control" disabled name="kode_insentif">
-                                        <option value="">--Pilih Insentif--</option>
-                                        <option value="0" {{$rek->kode_insentif == '0'? 'selected':''}}>Tidak Ada Insentif</option>
-                                        <option value="1" {{$rek->kode_insentif == '1'? 'selected':''}}>DAPAT PBTV</option>
-
-                                    </select>
-
-                                </div>
-                                @error('id_insentif')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Kode Resort</label>
-                                    <select class="form-control" disabled name="kode_resort">
-                                        <option value="">--Pilih Resort--</option>
-                                        <option value="1" {{$rek->kode_resort == '1'? 'selected':''}}>SK NIP TASPEN</option>
-                                        <option value="2" {{$rek->kode_resort == '2'? 'selected':''}}>SERTIFIKAT</option>
-                                        <option value="3" {{$rek->kode_resort == '3'? 'selected':''}}>KARIP</option>
-                                        <option value="4" {{$rek->kode_resort == '4'? 'selected':''}}>BPKB</option>
-                                        <option value="5" {{$rek->kode_resort == '5'? 'selected':''}}>ATM</option>
-                                    </select>
-                                </div>
-                                @error('id_resort')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Tabungan Wajib</label>
-                                    <input type="text" class="form-control" name="tabungan_wajib"
-                                        value="{{ $rek->tabungan_wajib }}" />
-                                </div>
-                                @error('tabungan_wajib')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Tabungan Rutin</label>
-                                    <input type="text" class="form-control" name="tabungan_rutin"
-                                        value="{{ $rek->tabungan_rutin }}"/>
-                                </div>
-                                @error('tabungan_rutin')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
+                            <div class="col-md-2 ">
+                                        <div class="input-group input-group-static mb-4 right">
+                                            @if($rek->status == 'nonaktif')
+                                            <a class="btn btn-info btn-link " href="{{route('rekening.aktif',['id_rekening'=>$rek->id_rekening]) }}">Aktifkan</a>
+                                            @else
+                                            <span class="badge bg-success">
+                                    {{ ucfirst($rek->status) }}
+                                </span>
+                                @endif
+                                        </div>
+                                    </div>
                         </div>
                         
 

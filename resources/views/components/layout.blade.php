@@ -62,6 +62,31 @@
         }
         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
+function formatAngka(angka) {
+    if (!angka) return "";
+    angka = angka.toString().replace(/[^0-9]/g, ""); // hilangkan non-angka
+
+    return angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+$(document).on("input", ".input-jumlah", function () {
+    let cursorPos = this.selectionStart;
+    this.value = formatAngka(this.value);
+    this.setSelectionRange(cursorPos, cursorPos);
+    hitungCicilan();
+});
+
+$(document).on("keypress", ".input-jumlah", function (e) {
+    const charCode = (e.which) ? e.which : e.keyCode;
+    if (charCode < 48 || charCode > 57) {
+        e.preventDefault();
+    }
+});
+
+function toNumber(str) {
+    if (!str) return 0;
+    return parseInt(str.replace(/\./g, "")) || 0;
+}
 
 </script>
 <!-- Github buttons -->

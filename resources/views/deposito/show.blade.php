@@ -57,7 +57,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-4">
                                      <label>Bulan</label>
-                                            <input type="date" id="nama_rekening" class="form-control"  name="tanggal" value="{{ $rekening[0]->jenis_rekening}}"/>
+                                            <input type="month" id="tanggal" class="form-control"  name="tanggal" value="{{ $rekening[0]->jenis_rekening}}"/>
 
 
                                     </div>
@@ -140,11 +140,13 @@
         <script>
             function lihat() {
                 var idrekening = $("#id_rekening").val()
+                var date = $("#tanggal").val()
                 $.ajax({
                     url: "{{ route('deposito.lihat') }}",
                     type: "GET",
                     data: {
-                        'idrekening': idrekening
+                        'idrekening': idrekening,
+                        'tanggal':date
                     },
                     success: function(data) {
                         $('#result').html(''); // kosongkan dulu

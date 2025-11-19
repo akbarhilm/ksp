@@ -58,6 +58,8 @@ Route::post('/pengajuan/approv/', [PengajuanController::class, 'approv'])->middl
 Route::get('/pengajuan/decline/{id}', [PengajuanController::class, 'decline'])->middleware('auth')->name('pengajuan.decline');
 Route::get('/tabungan/lihat', [TabunganController::class, 'lihat'])->middleware('auth')->name('tabungan.lihat');
 Route::get('/rekening/cari', [RekeningController::class, 'cari'])->middleware('auth')->name('rekening.cari');
+Route::get('/rekening/aktif', [RekeningController::class, 'aktifrekening'])->middleware('auth')->name('rekening.aktif');
+
 Route::get('/nasabah/cari', [NasabahController::class, 'cari'])->middleware('auth')->name('nasabah.cari');
 Route::get('/tabungan/cari', [TabunganController::class, 'cari'])->middleware('auth')->name('tabungan.cari');
 Route::get('/jurnal/cari', [JurnalController::class, 'cari'])->middleware('auth')->name('jurnal.cari');

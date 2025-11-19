@@ -40,11 +40,9 @@ class RekeningController extends Controller
             $edit = route('rekening.edit', $row->id_nasabah);
 
             return '
-                <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="tambah">
-                    <i class="material-icons">add</i>
-                </a>
+              
                  <a href="'.$edit.'" class="btn  btn-sm btn-success btn-link" title="edit">
-                    <i class="material-icons">visibility</i>
+                    <i class="material-icons">edit</i>
                 </a>
             ';
         })
@@ -105,5 +103,10 @@ class RekeningController extends Controller
         $rekening = Rekening::where('id_nasabah',$id)->get();
         $bunga = Bunga::all();
         return view('rekening.edit', compact('nasabah','rekening','bunga'));
+    }
+
+    public function aktifrekening(Request $request){
+        Rekening::find($request->get('id_rekening'))->update(['status'=>'aktif']);
+        return redirect()->back()->with('success','rekening telah aktif');
     }
 }

@@ -37,7 +37,7 @@ class TabunganController extends Controller
             return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
         })
         ->addColumn('aksi', function ($row) {
-            $create = route('tabungan.create', $row->id_nasabah);
+            $create = route('tabungan.create', ['id_nasabah'=>$row->id_nasabah]);
             $edit = route('tabungan.show', $row->id_nasabah);
 
             return '
@@ -92,9 +92,8 @@ class TabunganController extends Controller
     }
 
     public function lihat(Request $request){
-        
         $idrekening = $request->get('idrekening');
-        $result = Simpanan::where('id_rekening','=',$idrekening)->get();
+        $result = Simpanan::where('id_rekening','=',$idrekening)->whereRaw("substr(tanggal,1,7)='".$request->get('tanggal')."'")->get();
         return response()->json($result);
     }
 

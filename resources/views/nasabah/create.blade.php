@@ -22,7 +22,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No KTP</label>
-                                            <input type="text" class="form-control" name="nik"
+                                            <input type="text" patter="\d*" inputmode="numeric" class="form-control" maxlength="16" name="nik"
                                                 value="{{ old('nik') }}" />
 
                                         </div>
@@ -68,7 +68,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No Telp</label>
-                                            <input type="text" class="form-control" name="no_telp"
+                                            <input type="text"  patter="\d*" inputmode="numeric" class="form-control" name="no_telp"
                                                 value="{{ old('no_telp') }}" />
 
                                         </div>
@@ -103,10 +103,9 @@
                                             <label>Sektor Ekonomi</label>
                                             <select class="form-control" name="sektor_ekonomi">
                                                 <option value="">--Pilih Sektor Ekonomi--</option>
-                                                <option value="Pertanian">Pertanian</option>
-                                                <option value="Perdagangan">Perdagangan</option>
-                                                <option value="Industri">Industri</option>
-                                                <option value="Jasa">Jasa</option>
+                                                <option value="PNS">PNS</option>
+                                                <option value="wiraswasta">Wiraswasta</option>
+                                                <option value="Swasta">Swasta</option>
                                                 <option value="Lainnya">Lainnya</option>
                                             </select>
                                         </div>
@@ -116,9 +115,14 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         <div class="input-group input-group-static mb-4">
                                             <button class="btn btn-info" type="submit">Simpan</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <div class="input-group input-group-static mb-4 right">
+                                            <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>
                                         </div>
                                     </div>
                                 </div>

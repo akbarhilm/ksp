@@ -6,142 +6,177 @@
         <x-navbars.navs.auth titlePage="Pengajuan Pinjaman"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card my-4">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Pengajuan Pinjaman</h6>
-                            </div>
-                        </div>
-                        <div class="card-body px-4 pb-2 py-4">
-                            <form method="POST" action="{{ route('pengajuan.store') }}">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
 
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>No Nasabah</label>
-                                            <input type="text" readonly class="form-control" name="nama"
-                                                value="{{str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT)  }}" 
-                                                />
-
-                                        </div>
-                                        @error('nama')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Nama Nasabah</label>
-                                            <input type="text" readonly class="form-control" name="nama"
-                                                value="{{$nasabah->nama }}" 
-                                                />
-
-                                        </div>
-                                        @error('nama')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Rekening</label>
-                                            <input type="text" id="nama_rekening" class="form-control" readonly  value=" {{ $rekening[0]->no_rekening}} / {{ $rekening[0]->jenis_rekening}}"/>
-                                            <input type="hidden" id="id_rekening" name="id_rekening" value="{{ $rekening[0]->id_rekening}}"/>
-
-                                        </div>
-                                        @error('jenis')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-
-                                     <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Jenis Pinjaman</label>
-                                           <select class="form-control" id="id_program" name="id_program" onchange="selectplafond()">
-                                            <option value="">--Pilih Jenis Pinjaman--</option>
-                                            @foreach ($program as $p)
-                                                <option value="{{ $p->id_program }}" data-plafond="{{ $p->plafond }}">
-                                                    {{ $p->nama_program }} - {{$p->bunga->suku_bunga1}}% - {{ $p->tenor }} Bulan
-                                                </option>
-                                            @endforeach
-                                           </select>
-                                        </div>
-                                        @error('no_rekening')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                   
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Jumlah Pinjaman</label>
-                                            <input type="number"  class="form-control" name="jumlah_pengajuan"
-                                                value="{{old('jumlah_pinjaman') }}" 
-                                                />
-
-                                        </div>
-                                        @error('jumlah_pinjaman')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Plafond</label>
-                                            <input type="text"  class="form-control" readonly id="plafond" name="plafond"
-                                                value="" 
-                                                />
-
-                                        </div>
-                                        @error('plafond')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                </div>
-                               
-                                 <div class="row">
-                            <div class="col-md-10">
-                                <div class="input-group input-group-static mb-4">
-                                    <button class="btn btn-info" type="submit">Simpan</button>
-                                </div>
-                            </div>
-                             <div class="col-md-2">
-                                
-                                 <div class="input-group input-group-static mb-4 right">
-                                    <a class="btn btn-dark " href="{{ url()->previous() }}">kembali</a>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        {{-- <x-footers.auth></x-footers.auth> --}}
+                <div class="card-header p-0 mt-n4 mx-3 z-index-2 position-relative">
+                    <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white ps-3 mb-0">Pengajuan Pinjaman</h6>
                     </div>
                 </div>
+
+                <div class="card-body px-4 py-4">
+                    <form method="POST" action="{{ route('pengajuan.store') }}">
+                        @csrf
+
+                        {{-- DATA NASABAH --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">No Nasabah</label>
+                                <input type="text" readonly class="form-control"
+                                    value="{{ str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT) }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nama Nasabah</label>
+                                <input type="text" readonly class="form-control" value="{{ $nasabah->nama }}">
+                            </div>
+                        </div>
+
+                        {{-- REKENING & BUNGA --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Rekening</label>
+                                <input type="text" readonly class="form-control"
+                                    value="{{ $rekening[0]->no_rekening }} / {{ $rekening[0]->jenis_rekening }}">
+
+                                <input type="hidden" name="id_rekening" value="{{ $rekening[0]->id_rekening }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Bunga per Bulan (%)</label>
+                                <input type="number" id="bunga" name="bunga" class="form-control input-bunga"
+                                    value="{{ old('bunga') }}">
+                                @error('bunga') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                        </div>
+
+                        {{-- JUMLAH PINJAMAN & TENOR --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Jumlah Pinjaman</label>
+                                <input type="text" 
+         id="jumlah" name="jumlah_pengajuan" class="form-control format-angka  input-jumlah"
+                                    value="{{ old('jumlah_pengajuan') }}">
+                                @error('jumlah_pengajuan') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tenor (bulan)</label>
+                                <input type="number" id="tenor" name="tenor" value="{{ old('tenor') }}" class="form-control input-tenor">
+                                @error('tenor') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                        </div>
+
+                        {{-- CICILAN PER BULAN --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Cicilan Per Bulan</label>
+                                <input type="text" readonly name="cicilan" id="cicilan" value="{{ old('cicilan') }}" class="form-control bg-light fw-bold">
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        {{-- INPUT JAMINAN DINAMIS --}}
+                        <h6 class="mb-3">Jaminan</h6>
+
+                        <div id="jaminan-container">
+                            <div class="row jaminan-item mb-3">
+                                <div class="col-md-5">
+                                    <label class="form-label">Jenis Jaminan</label>
+                                    <input type="text" name="jenis_jaminan[]" class="form-control" placeholder="Contoh: ATM">
+                                </div>
+
+                                <div class="col-md-5">
+                                    <label class="form-label">Keterangan</label>
+                                    <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: No kartu 1234...">
+                                </div>
+
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger w-100 remove-jaminan">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="addJaminan" class="btn btn-secondary mb-4">+ Tambah Jaminan</button>
+
+                        {{-- TOMBOL --}}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
+                            <button class="btn btn-info" type="submit">Simpan</button>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
         </div>
-        </div>
+    </div>
+</div>
+
+
+
+
     </main>
-    <x-plugins></x-plugins>
     @push('js')
     <script>
 
-        function selectplafond(){
+      function hitungCicilan() {
 
-               let select = document.getElementById("id_program");
-    let option = select.options[select.selectedIndex];
-    
-    let plafond = option.getAttribute("data-plafond");
-    
-    document.getElementById("plafond").value = plafond ?? '';
+    let jumlah = toNumber($("#jumlah").val());
+    let bunga  = parseFloat($("#bunga").val());
+    let tenor  = parseInt($("#tenor").val());
 
+    if (jumlah > 0 && !isNaN(bunga) && tenor > 0) {
 
+        let totalBunga = (jumlah * bunga * tenor / 100);
+        let total = jumlah + totalBunga;
+        let cicilan = total / tenor;
 
+        $("#cicilan").val( formatAngka(cicilan.toFixed(0)) );
+    } else {
+        $("#cicilan").val("");
+    }
+}
 
+// ================= TRIGGER SAAT BUNGA / TENOR BERUBAH ===========
+$("#bunga, #tenor").on("input", function () {
+    hitungCicilan();
+});
+
+    // JAMINAN DINAMIS
+    document.getElementById('addJaminan').addEventListener('click', function() {
+        let container = document.getElementById('jaminan-container');
+
+        let html = `
+            <div class="row jaminan-item mb-3">
+                <div class="col-md-5">
+                    <label class="form-label">Jenis Jaminan</label>
+                    <input type="text" name="jenis_jaminan[]" class="form-control" placeholder="Contoh: ATM">
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label">Keterangan</label>
+                    <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: No kartu 1234...">
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger w-100 remove-jaminan">Hapus</button>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML("beforeend", html);
+    });
+
+    // Hapus baris jaminan
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-jaminan')) {
+            e.target.closest('.jaminan-item').remove();
         }
+    });
     
     function padWithZeros(number, length) {
         let numString = String(number);

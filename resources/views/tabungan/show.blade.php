@@ -3,7 +3,7 @@
     <x-navbars.sidebar activePage="tabungan" menuParent="simpanan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="History Tabungan"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -57,7 +57,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group input-group-static mb-4">
                                      <label>Bulan</label>
-                                            <input type="date" id="nama_rekening" class="form-control"  name="tanggal" value="{{ $rekening[0]->jenis_rekening}}"/>
+                                            <input type="month" id="tanggal" class="form-control"  name="tanggal" value="{{date('m')}}"/>
 
 
                                     </div>
@@ -135,16 +135,17 @@
         </div>
 
     </main>
-    <x-plugins></x-plugins>
     @push('js')
         <script>
             function lihat() {
                 var idrekening = $("#id_rekening").val()
+                 var date = $("#tanggal").val()
                 $.ajax({
                     url: "{{ route('tabungan.lihat') }}",
                     type: "GET",
                     data: {
-                        'idrekening': idrekening
+                        'idrekening': idrekening,
+                        'tanggal': date
                     },
                     success: function(data) {
                         $('#result').html(''); // kosongkan dulu

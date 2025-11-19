@@ -105,10 +105,9 @@
                                             <label>Sektor Ekonomi</label>
                                             <select class="form-control" name="sektor_ekonomi" value="{{ $nasabah->sektor_ekonomi }}">
                                                 <option value="">--Pilih Sektor Ekonomi--</option>
-                                                <option value="Pertanian" {{$nasabah->sektor_ekonomi == 'Pertanian'? 'selected':''}}>Pertanian</option>
-                                                <option value="Perdagangan" {{$nasabah->sektor_ekonomi == 'Perdagangan'? 'selected':''}}>Perdagangan</option>
-                                                <option value="Industri" {{$nasabah->sektor_ekonomi == 'Industri'? 'selected':''}}>Industri</option>
-                                                <option value="Jasa" {{$nasabah->sektor_ekonomi == 'Jasa'? 'selected':''}}>Jasa</option>
+                                                <option value="PNS" {{$nasabah->sektor_ekonomi == 'PNS'? 'selected':''}}>PNS</option>
+                                                <option value="Wiraswasta" {{$nasabah->sektor_ekonomi == 'Wiraswasta'? 'selected':''}}>Wiraswasta</option>
+                                                <option value="Swasta" {{$nasabah->sektor_ekonomi == 'Swasta'? 'selected':''}}>Swasta</option>
                                                 <option value="Lainnya" {{$nasabah->sektor_ekonomi == 'Lainnya'? 'selected':''}}>Lainnya</option>
                                             </select>
                                         </div>
@@ -118,17 +117,17 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         <div class="input-group input-group-static mb-4">
                                             <button class="btn btn-info" type="submit">Simpan</button>
                                         </div>
                                     </div>
-                              
-                                 <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <a class="btn btn-success" href="{{ route('rekening.create',['id_nasabah' => $nasabah->id_nasabah]) }}">Tambah Rekening</a>
+                                     <div class="col-md-2 ">
+                                        <div class="input-group input-group-static mb-4 right">
+                                            <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>
                                         </div>
                                     </div>
+                              
                                 </div>
 
                             </form>
@@ -154,7 +153,6 @@
                             
                         
                         <div class="card-body px-4 pb-2 py-4">
-                           <form>
                                 
                                 <div class="row">
                                     <div class="col-md-6">
@@ -162,9 +160,9 @@
                                             <label>Rekening</label>
                                             <select class="form-control" id="jenis_rekening" disabled name="jenis_rekening" onchange="generaterekening()">
                                                 <option value="">--Pilih Rekening--</option>
-                                               <option value="1" {{$rek->jenis_rekening == '1'? 'selected':''}}>REKENING TABUNGAN</option>
-                                               <option value="2" {{$rek->jenis_rekening == '2'? 'selected':''}}>REKENING DEPOSITO</option>
-                                               <option value="3" {{$rek->jenis_rekening == '3'? 'selected':''}}>REKENING Pinjaman</option>
+                                               <option value="Tabungan" {{$rek->jenis_rekening == 'Tabungan'? 'selected':''}}>REKENING TABUNGAN</option>
+                                               <option value="Deposito" {{$rek->jenis_rekening == 'Deposito'? 'selected':''}}>REKENING DEPOSITO</option>
+                                               <option value="Pinjaman" {{$rek->jenis_rekening == 'Pinjaman'? 'selected':''}}>REKENING Pinjaman</option>
                                             </select>
 
                                         </div>
@@ -172,8 +170,7 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
-                                </div>
-                                <div class="row">
+                              
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No Rekening</label>
@@ -188,100 +185,32 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
-
-
-
-                                    <div class="col-md-6">
+                                    <div class="row">
+                                         <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>No Tabungan</label>
-                                            <input type="text" id="no_tabungan" class="form-control" readonly name="no_tabungan"
-                                                value="{{ $rek->no_tabungan }}" />
-                                        </div>
-                                        @error('no_tabungan')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
+                                            @if($rek->jenis_rekening == 'Tabungan' && $rek->status == 'aktif')
+                                            <a href="{{route('tabungan.show', $nasabah->id_nasabah)}}" class="btn btn-info btn-link">Lihat</a>
+                                            @elseif($rek->jenis_rekening == 'Deposito'  && $rek->status == 'aktif')
+                                            <a href="{{route('deposito.show', $nasabah->id_nasabah)}}" class="btn btn-info btn-link">Lihat</a>
+                                             @elseif($rek->jenis_rekening == 'Pinjaman'  && $rek->status == 'aktif')
+                                            <a href="{{}}" class="btn btn-info btn-link">Lihat</a>
+                                            @else
+                                            <span  class="btn btn-warning btn-link">Belum Aktif</span>
+                                            @endif
+
                                     </div>
-                                </div>
-                                <div class="row">
+                                    </div>
+                                    </div>
+
                                     
-                                    <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Bunga</label>
-                                            <select class="form-control" disabled name="id_bunga">
-                                                <option value="">--Pilih Bunga--</option>
-                                                @foreach ($bunga as $b)
-                                                    <option value="{{ $b->id_bunga }}" {{$rek->id_bunga == $b->id_bunga ? 'selected':''}}>
-                                                        {{ $b->nama_bunga }} - {{ $b->suku_bunga1 }}%
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        @error('id_bunga')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
-                                </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Kode Insentif</label>
-                                    <select class="form-control" disabled name="kode_insentif">
-                                        <option value="">--Pilih Insentif--</option>
-                                        <option value="0" {{$rek->kode_insentif == '0'? 'selected':''}}>Tidak Ada Insentif</option>
-                                        <option value="1" {{$rek->kode_insentif == '1'? 'selected':''}}>DAPAT PBTV</option>
-
-                                    </select>
-
-                                </div>
-                                @error('id_insentif')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Kode Resort</label>
-                                    <select class="form-control" disabled name="kode_resort">
-                                        <option value="">--Pilih Resort--</option>
-                                        <option value="1" {{$rek->kode_resort == '1'? 'selected':''}}>SK NIP TASPEN</option>
-                                        <option value="2" {{$rek->kode_resort == '2'? 'selected':''}}>SERTIFIKAT</option>
-                                        <option value="3" {{$rek->kode_resort == '3'? 'selected':''}}>KARIP</option>
-                                        <option value="4" {{$rek->kode_resort == '4'? 'selected':''}}>BPKB</option>
-                                        <option value="5" {{$rek->kode_resort == '5'? 'selected':''}}>ATM</option>
-                                    </select>
-                                </div>
-                                @error('id_resort')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Tabungan Wajib</label>
-                                    <input type="text" class="form-control" name="tabungan_wajib"
-                                        value="{{ $rek->tabungan_wajib }}" />
-                                </div>
-                                @error('tabungan_wajib')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label>Tabungan Rutin</label>
-                                    <input type="text" class="form-control" name="tabungan_rutin"
-                                        value="{{ $rek->tabungan_rutin }}"/>
-                                </div>
-                                @error('tabungan_rutin')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-                        </div>
+                              
+                        
+                        
                         
 
 
-
+                                </div>
                         {{-- <x-footers.auth></x-footers.auth> --}}
-                        </form>
                     </div>
                     <hr class="border-top border-4 border-dark">
                         

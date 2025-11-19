@@ -144,7 +144,7 @@ $nasabah = $query->paginate(10);
     public function lihat(Request $request){
         
         $idrekening = $request->get('idrekening');
-        $result = Simpanan::where('id_rekening','=',$idrekening)->get();
+        $result = Simpanan::where('id_rekening','=',$idrekening)->whereRaw("substr(tanggal,1,7)='".$request->get('tanggal')."'")->get();
         return response()->json($result);
     }
 

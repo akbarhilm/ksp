@@ -56,7 +56,7 @@
         </div>
 
         <button type="submit" class="btn btn-info">Simpan</button>
-        <a href="{{ route('users.index') }}" class="btn btn-warning">Batal</a>
+        <a href="{{ route('users.index') }}" class="btn btn-dark">Batal</a>
     </form>
 </div>
 </div>

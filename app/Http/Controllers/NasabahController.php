@@ -81,12 +81,19 @@ public function datatableindex(Request $request)
         ]);
         $request->request->add(['id_entry' => auth()->user()->id]);
         $nasabah='';
+
+       
+
+
         try{
+        
        $nasabah= Nasabah::create($request->all());
-        //  flash()
-        //     ->success('Data Nasabah berhasil disimpan');
-        //return view('rekening.create',compact('nasabah'));
-        return redirect()->route('rekening.create')->with(['nasabah'=> $nasabah,'success'=> 'Silahkan tambah Rekening Nasabah.']);
+
+       $tabungan =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'1'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Tabungan','status'=>'aktif','id_entry'=>auth()->user()->id]);
+       $deposito =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'2'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Deposito','id_entry'=>auth()->user()->id]);
+       $pinjaman =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'3'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Pinjaman','id_entry'=>auth()->user()->id]);
+
+        return redirect()->route('nasabah.index')->with('success', 'Nasabah berhasil disimpan.');
         }catch(QueryException $e){
             if ($e->getCode() == 23000) {
                 // Duplicate entry error

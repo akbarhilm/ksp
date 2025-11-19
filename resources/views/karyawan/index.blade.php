@@ -12,7 +12,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-end mb-3">
-                        <a href="{{ route('nasabah.create') }}" class="btn btn-info">
+                        <a href="{{ route('users.create') }}" class="btn btn-info">
                             <i class="fas fa-plus me-1"></i> Tambah Nasabah
                         </a>
                     </div>
