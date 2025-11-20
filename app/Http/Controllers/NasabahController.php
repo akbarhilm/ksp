@@ -160,6 +160,9 @@ public function datatableindex(Request $request)
     ])->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
+    ->addColumn('nomor_nasabah', function($row){
+            return str_pad($row->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT);
+        })
         ->addColumn('aksi', function ($n) {
             return '
                 <a href="'.route('pengajuan.create',['id_nasabah'=>$n->id_nasabah]).'"

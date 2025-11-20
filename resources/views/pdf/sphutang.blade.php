@@ -177,8 +177,8 @@ if (!function_exists('terbilang')) {
                 <p class="text-justify">
                     Untuk pengembalian pinjaman Tersebut <b>PIHAK KESATU</b> bersedia diambil angsurannya 
 melalui ATM oleh <b>PIHAK KEDUA</b> sesuai dengan angsuran pinjaman yang telah ditetapkan & 
-disepakati kedua belah pihak sebesar <b>Rp {{number_format(($data->jumlah_pencairan*(($data->program->bunga->suku_bunga1/100)+1)),2,',','.')}}
-    ({{terbilang(($data->jumlah_pencairan*(($data->program->bunga->suku_bunga1/100)+1))) }} Rupiah)</b>.
+disepakati kedua belah pihak sebesar <b>Rp {{number_format(($data->jumlah_pencairan/$data->tenor*(($data->bunga*$data->tenor/100)+1)),2,',','.')}}
+    ({{terbilang(($data->jumlah_pencairan*(($data->bunga/100)+1))) }} Rupiah)</b>.
                 </p>
             </td>
         </tr>
@@ -187,9 +187,9 @@ disepakati kedua belah pihak sebesar <b>Rp {{number_format(($data->jumlah_pencai
             <td><p class="text-justify">c.</p></td>
             <td>
                 <p class="text-justify">
-                    Setiap bulan selama {{$data->program->tenor}} kali angsuran mulai bulan {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMMM yyyy'))
+                    Setiap bulan selama {{$data->tenor}} kali angsuran mulai bulan {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMMM yyyy'))
         ->format(new DateTime('+1 month')) }} sampai dengan bulan {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMMM yyyy'))
-        ->format(new DateTime("+".($data->program->tenor+1)."month")) }}
+        ->format(new DateTime("+".($data->tenor+1)."month")) }}
 atau sampai hutang PIHAK KESATU lunas. Dengan ketentuan apabila terjadi 
 keterlambatan pembayaran maka setiap bulannya akan dikenakan denda sebesar 1% 
 perbulan atau 0.1% perhari dari saldo pinjaman.
@@ -202,8 +202,8 @@ perbulan atau 0.1% perhari dari saldo pinjaman.
             <td><p class="text-justify">d.</p></td>
             <td>
                 <p class="text-justify">
-                    PIHAK KESATU menyetujui potongan simpanan Rp. 120.000 dan biaya tata 
-laksana/administrasi Rp. 180.000 Atas dasar pinjaman tersebut, saya PIHAK KESATU dengan 
+                    PIHAK KESATU menyetujui potongan simpanan Rp. {{number_format($data->simpanan_wajib,0,',','.')}} dan biaya tata 
+laksana/administrasi Rp. {{number_format($data->admin,0,',','.')}} Atas dasar pinjaman tersebut, saya PIHAK KESATU dengan 
 sukarela menitip dengan PIHAK KEDUA berupa 
                 </p>
             </td>
@@ -212,14 +212,14 @@ sukarela menitip dengan PIHAK KEDUA berupa
 
     <!-- BARANG JAMINAN -->
     <table class="table table-borderless text-sm mt-1" style="margin-left: 30px">
-        <tr><td>1.</td><td>ATM</td><td>BRI 5221 8402 6684 2641</td></tr>
-        <tr><td>2.</td><td>PIN ATM</td><td>230 516</td></tr>
-        <tr><td>3.</td><td>JAMSOSTEK</td><td>23045037407</td></tr>
-        <tr><td>4.</td><td>BUKU TABUNGAN</td><td>0261-01-135095-50-0</td></tr>
-        <tr><td>5.</td><td>IJAZAH SMP</td><td>a/n Mochammad Megantara DN-30/D-SMP/06/0126240</td></tr>
-        <tr><td>6.</td><td>IJAZAH SMK</td><td>a/n Moch Edwin Apriza DN-MK/06 0030173</td></tr>
-        <tr><td>7.</td><td>AKTA KELAHIRAN</td><td>a/n Mochammad Megantara CSL 8330/2005</td></tr>
-        <tr><td>8.</td><td>KARTU KELUARGA</td><td>3671130212140006</td></tr>
+        @foreach ($data->jaminan as $j)
+            <tr>
+                <td>{{$loop->iteration}}</td>
+                <td>{{$j->jenis_jaminan}}</td>
+                <td>{{$j->keterangan}}</td>
+            </tr>
+        @endforeach
+     
     </table>
 
     <table class="table table-borderless text-sm mt-4">

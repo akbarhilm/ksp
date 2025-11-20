@@ -14,11 +14,12 @@
       <table class="table table-striped table-hover align-middle" id="pengajuanTable">
     <thead class="table-dark">
         <tr>
-            <th>Nomor Nasabah</th>
-            <th>Nama</th>
+            <th>Nasabah</th>
+           
             <th>Tanggal</th>
-            <th>Program</th>
-            <th>Jumlah</th>
+             <th>Tenor</th>
+            <th>Bunga</th>
+            <th>Jumlah Pengajuan</th>
             <th>Status</th>
             <th class="text-center">Aksi</th>
         </tr>
@@ -54,12 +55,12 @@
 
                         <div class="col-md-6">
                             <label class="form-label">Jumlah Pengajuan</label>
-                            <input type="text" id="v_pengajuan" class="form-control" disabled>
+                            <input type="text" id="v_pengajuan" class="form-control " disabled>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">Jumlah Approve</label>
-                            <input type="number" name="jumlah_pencairan" id="v_appr" class="form-control" required>
+                            <input type="text" name="jumlah_pencairan" id="v_appr" class="form-control input-jumlah " required>
                         </div>
 
                     </div>
@@ -93,10 +94,11 @@
         ajax: "{{ route('pengajuan.datatables') }}",
 
         columns: [
-            { data: 'nomor_nasabah', name: 'nomor_nasabah' },
-            { data: 'nama', name: 'nama' },
-            { data: 'tanggal', name: 'tanggal' },
-            { data: 'program', name: 'program' },
+            { data: 'nasabah', name: 'nasabah' },
+           
+            { data: 'tanggal', name: 'tanggal',className: 'text-center' },
+             { data: 'tenor', name: 'tenor',className: 'text-center' },
+            { data: 'bunga', name: 'bunga',className: 'text-center' },
             { data: 'jumlah', name: 'jumlah', className: 'text-end' },
             { data: 'status', name: 'status', className: 'text-center' },
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center' }

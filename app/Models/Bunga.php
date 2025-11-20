@@ -11,7 +11,7 @@ class Bunga extends Model
     protected $table = 'trbunga';
     protected $primaryKey = 'id_bunga';
 
-    protected $fillable = ['kode_bunga', 'nama_bunga', 'tipe_bunga', 'termin', 'suku_bunga1','suku_bunga2','suku_bunga3','id_entry'];
+    protected $fillable = [ 'nama_bunga', 'jenis_bunga',  'persentase','threshold','persentase2','threshold2','id_entry'];
 
   
 }

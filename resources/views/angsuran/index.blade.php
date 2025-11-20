@@ -26,8 +26,8 @@
         {{-- Data dari backend --}}
         @php
             $jumlahPinjaman = $pinjaman->total_pinjaman;
-            $sukuBunga = $pinjaman->pengajuan->program->bunga->suku_bunga1; // persen
-             $tenor = $pinjaman->pengajuan->program->tenor;    // bulan
+            $sukuBunga = $pinjaman->pengajuan->bunga; // persen
+             $tenor = $pinjaman->pengajuan->tenor;    // bulan
         @endphp
 
         <form action="{{ route('angsuran.store', $pinjaman->id_pinjaman) }}" method="POST">
@@ -47,12 +47,31 @@
                 <label>Bunga Dibayar</label>
                 <input type="number" name="bunga" id="bunga" class="form-control" readonly>
             </div>
+            <div class="mb-3">
+                <label>Denda</label>
+                 @php
+                                        $denda = \App\Helpers\PinjamanHelper::hitungDenda($pinjaman->id_pinjaman);
+                                    @endphp
+                <input type="number" name="denda" id="denda" value="{{number_format($denda,0,',','.')}}" class="form-control" readonly>
+            </div>
+             <div class="mb-3">
+                <label>Simpanan Pokok</label>
+                <input type="number" name="simpanan" id="simpanan" class="form-control input-jumlah" onchange="addtototal()" >
+            </div>
 
             <div class="mb-3">
                 <label>Tanggal Bayar</label>
                 <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
             </div>
-
+            <div class="mb-3">
+        <label>Metode Pembayaran</label>
+        <select name="metode" class="form-control" required>
+            <option value="">-- Pilih Metode --</option>
+            <option value="ATM">ATM</option>
+            <option value="Auto Debit">Auto Debit</option>
+            <option value="Cash">Cash</option>
+        </select>
+    </div>
             
 
             <button type="submit" class="btn btn-info">Simpan Pembayaran</button>
@@ -88,7 +107,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center">Belum ada pembayaran</td>
+                        <td colspan="5" class="text-center">Belum ada pembayaran</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -100,10 +119,15 @@
     <x-plugins></x-plugins>
             @push('js')
 <script>
+    function addtototal(){
+       let simpanan =  toNumber($("#simpanan").val());
+        let total = toNumber(document.getElementById('total_bayar').value) 
+        document.getElementById('total_bayar').value  = total + simpanan
+    }
      const jumlahPinjaman = {{ $jumlahPinjaman }};  
     const sukuBunga = {{ $sukuBunga }};  
-    const tenor = {{ $tenor }};           
-
+    const tenor = {{ $tenor }}; 
+    const denda = {{$denda}}          
     // Hitung bunga bulanan
     const bungaPerBulan = jumlahPinjaman * (sukuBunga / 100);
 
@@ -111,7 +135,7 @@
     const pokokPerBulan = jumlahPinjaman / tenor;
 
     // Total bayar bulanan
-    const totalBulanan = pokokPerBulan + bungaPerBulan;
+    const totalBulanan = pokokPerBulan + bungaPerBulan + denda ;
 
     // Set otomatis ke form
     document.getElementById('total_bayar').value = Math.round(totalBulanan);

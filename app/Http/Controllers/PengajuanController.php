@@ -48,7 +48,10 @@ class PengajuanController extends Controller
     public function store(Request $request)
     {
          $request->merge([
-        'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan)
+        'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
+        'simpanan_wajib' => str_replace('.', '', $request->simpanan_wajib),
+        'admin' => str_replace('.', '', $request->admin),
+        'asuransi' => str_replace('.', '', $request->asuransi)
     ]);
         $request->validate([
             'id_rekening' => 'required',
@@ -56,6 +59,9 @@ class PengajuanController extends Controller
             'jumlah_pengajuan' => 'required|numeric',
            'tenor'            => 'required|numeric|min:1',
         'bunga'            => 'required|numeric|min:0',
+        'simpanan_wajib'            => 'required|numeric',
+        'admin'            => 'required|numeric',
+        'asuransi'            => 'required|numeric',
         'jenis_jaminan.*'  => 'required|string|max:100',
         'keterangan.*'     => 'required|string|max:255'
         ]);
@@ -84,12 +90,15 @@ class PengajuanController extends Controller
 
      public function approval(){
         
-        $pinjaman = Pengajuan::where('status','=','pengajuan')->with('rekening.nasabah')->with('program')->orderBy('id_pengajuan','desc')->get();
+        $pinjaman = Pengajuan::where('status','=','pengajuan')->with('rekening.nasabah')->orderBy('id_pengajuan','desc')->get();
         return view('pengajuan.approval', compact('pinjaman'));
     }
 
     public function approv(Request $request){
+         $request->merge([
+        'jumlah_pencairan' => str_replace('.', '', $request->jumlah_pencairan)
         
+    ]);
         Pengajuan::where('id_pengajuan',$request->get('id_pengajuan'))->update(['status'=>'approv', 'tanggal_approval'=>date('Y-m-d'),'jumlah_pencairan'=>$request->get('jumlah_pencairan'),'updated_at'=>date('Y-m-d')]);
         return redirect()->route('pengajuan.approval')->with('success', 'Pengajuan berhasil disetujui.');
        
@@ -110,7 +119,7 @@ class PengajuanController extends Controller
     }
 
       public function pencairan(){
-        $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->with('program')->orderBy('updated_at','desc')->get();
+        $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->orderBy('updated_at','desc')->get();
         
         return view('pengajuan.pencairan', compact('pinjaman'));
     }
@@ -131,16 +140,15 @@ class PengajuanController extends Controller
     }
 
     public function cair($id){
-        $data = Pengajuan::where('id_pengajuan',$id)->where('status','=','approv')->with('rekening.nasabah')->with('program.bunga')->first();
+        $data = Pengajuan::where('id_pengajuan',$id)->where('status','=','approv')->with('rekening.nasabah','jaminan')->first();
        
-      // dd($data);
        Pengajuan::where('id_pengajuan',$id)->update(['status'=>'cair', 'tanggal_pencairan'=>date('Y-m-d')]);
         $pinjaman = Pinjaman::create([
         'id_pengajuan'     => $data->id_pengajuan,
         'id_nasabah'       => $data->rekening[0]->id_nasabah,
         'total_pinjaman'  => $data->jumlah_pencairan,
         'sisa_pokok'            => $data->jumlah_pencairan,
-        'sisa_bunga'            => $data->jumlah_pencairan*($data->program->bunga->suku_bunga1*$data->program->tenor/100),
+        'sisa_bunga'            => $data->jumlah_pencairan*($data->bunga*$data->tenor/100),
         'status'           => 'aktif',
         'id_entry' => auth()->user()->id
     ]);
@@ -170,31 +178,32 @@ class PengajuanController extends Controller
     public function datatables(Request $request)
 {
 
-    $data = Pengajuan::with('rekening.nasabah', 'program')
+    $data = Pengajuan::with('rekening.nasabah')
     ->where('status', '=', 'pengajuan')
         ->orderBy('id_pengajuan','DESC');
 
     return DataTables::of($data)
         ->addIndexColumn()
 
-        ->addColumn('nomor_nasabah', function($row){
-            return str_pad($row->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT);
+        ->addColumn('nasabah', function($row){
+            return str_pad($row->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->rekening[0]->nasabah[0]->nama;
         })
 
-        ->addColumn('nama', function($row){
-            return $row->rekening[0]->nasabah[0]->nama;
-        })
-
+       
         ->addColumn('tanggal', function($row){
             return $row->tanggal_pengajuan;
         })
 
-        ->addColumn('program', function($row){
-            return $row->program->nama_program;
+         ->addColumn('tenor', function($row){
+            return $row->tenor.' Bulan';
+        })
+
+        ->addColumn('bunga', function($row){
+            return $row->bunga.'%';
         })
 
         ->addColumn('jumlah', function($row){
-            return number_format($row->jumlah_pengajuan, 0);
+            return number_format($row->jumlah_pengajuan, 0,',','.');
         })
 
         ->addColumn('status', function($row){
@@ -206,7 +215,7 @@ class PengajuanController extends Controller
             $btn = '
             <button class="btn btn-sm btn-success me-1 appr-btn"
                 data-id="'.$row->id_pengajuan.'"
-                data-jumlah="'.$row->jumlah_pengajuan.'"
+                data-jumlah="'.number_format($row->jumlah_pengajuan, 0,',','.').'"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
                 title="Approve">

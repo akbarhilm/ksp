@@ -78,6 +78,26 @@
                         </div>
 
                         <hr>
+                          <h6 class="mb-3">Potongan</h6>
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Simpanan Wajib</label>
+                                <input type="text"  name="simpanan_wajib"  value="{{ old('simpanan_wajib') }}" class="form-control format-angka  input-jumlah">
+                            </div>
+                             <div class="col-md-6 mb-4">
+                                <label class="form-label">Admin</label>
+                                <input type="text"  name="admin"  value="{{ old('admin') }}" class="form-control format-angka  input-jumlah">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Asuransi</label>
+                                <input type="text"  name="asuransi" value="{{ old('asuransi') }}" class="form-control format-angka  input-jumlah">
+                            </div>
+                            
+                        </div>
+
+                        <hr>
 
                         {{-- INPUT JAMINAN DINAMIS --}}
                         <h6 class="mb-3">Jaminan</h6>

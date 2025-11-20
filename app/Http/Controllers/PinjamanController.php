@@ -33,7 +33,6 @@ class PinjamanController extends Controller
 
     // Eksekusi query
     $pinjaman = $query->orderBy('created_at', 'desc')->get();
-
     return view('pinjaman.index', compact('pinjaman'));
 }
 

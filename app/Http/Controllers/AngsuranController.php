@@ -13,7 +13,7 @@ class AngsuranController extends Controller
 {
     public function index($id_pinjaman)
 {
-    $pinjaman = Pinjaman::with('pengajuan.program.bunga')->where('id_pinjaman',$id_pinjaman)->firstOrFail();
+    $pinjaman = Pinjaman::with('pengajuan')->where('id_pinjaman',$id_pinjaman)->firstOrFail();
     $history = Angsuran::where('id_pinjaman', $id_pinjaman)
         ->orderBy('tanggal', 'desc')
         ->get();

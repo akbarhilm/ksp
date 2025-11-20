@@ -48,8 +48,8 @@
                     ajax: "{{ route('nasabah.datatables') }}",
 
                     columns: [{
-                            data: 'id_nasabah',
-                            name: 'id_nasabah'
+                            data: 'nomor_nasabah',
+                            name: 'nomor_nasabah'
                         },
                         {
                             data: 'nik',

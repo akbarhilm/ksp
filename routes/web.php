@@ -14,6 +14,8 @@ use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\LabarugiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AngsuranController;
+use App\Http\Controllers\BungaController;
+
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
@@ -93,6 +95,8 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('labarugi', LabarugiController::class);
 	Route::resource('users', UserController::class);
 	 Route::resource('jurnal', JurnalController::class);
+	 Route::resource('bunga', BungaController::class);
+
 });
 
 

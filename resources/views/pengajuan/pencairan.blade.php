@@ -36,10 +36,8 @@
                         <table class="table table-striped table-hover align-middle">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>No Nasabah</th>
-                                    <th>Nama</th>
+                                    <th>Nasabah</th>
                                     <th class="text-center">Tanggal Pengajuan</th>
-                                    <th class="text-center">Program</th>
                                     <th class="text-center">Jumlah Pengajuan</th>
                                     <th class="text-center">Jumlah Approve</th>
                                     <th class="text-center">Aksi</th>
@@ -49,15 +47,12 @@
                             <tbody>
                                 @foreach ($pinjaman as $n)
                                 <tr>
-                                    <td>{{ str_pad($n->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT) }}</td>
+                                    <td>{{ str_pad($n->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $n->rekening[0]->nasabah[0]->nama }}</td>
 
-                                    <td>{{ $n->rekening[0]->nasabah[0]->nama }}</td>
 
                                     <td class="text-center">{{ $n->tanggal_pengajuan }}</td>
 
-                                    <td class="text-center">
-                                        {{ $n->program->nama_program }}
-                                    </td>
+                                   
 
                                     <td class="text-center">
                                         {{ number_format($n->jumlah_pengajuan, 0) }}
@@ -111,7 +106,6 @@
         <!-- Modal -->
 
     </main>
-    <x-plugins></x-plugins>
         @push('js')
 <script>
 

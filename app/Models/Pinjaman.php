@@ -18,4 +18,7 @@ public function pengajuan() {
 public function nasabah() {
     return $this->belongsTo(Nasabah::class, 'id_nasabah', 'id_nasabah');
 }
+public function angsuran() {
+    return $this->belongsTo(Angsuran::class, 'id_pinjaman', 'id_pinjaman');
+}
 }
