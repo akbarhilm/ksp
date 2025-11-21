@@ -15,11 +15,15 @@ use App\Http\Controllers\LabarugiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AngsuranController;
 use App\Http\Controllers\BungaController;
+use App\Http\Controllers\AkunController;
+
 
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\TransaksiHarianController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -80,7 +84,11 @@ Route::get('/users/datatableindex', [UserController::class, 'datatableindex'])->
 
 Route::post('/jurnal/double-entry', [JurnalController::class, 'storeDouble'])->name('jurnal.storeDouble');
 
+Route::get('/transaksi/harian', [TransaksiHarianController::class, 'index'])
+     ->name('transaksi.harian');
 
+Route::get('/transaksi/harian/view', [TransaksiHarianController::class, 'view'])
+     ->name('transaksi.harian.view');
 
 
 
@@ -96,6 +104,8 @@ Route::middleware(['auth'])->group(function () {
 	Route::resource('users', UserController::class);
 	 Route::resource('jurnal', JurnalController::class);
 	 Route::resource('bunga', BungaController::class);
+	 Route::resource('akun', AkunController::class);
+
 
 });
 

@@ -30,7 +30,6 @@
     </div>
         </div>
     </main>
-    <x-plugins></x-plugins>
         @push('js')
 <script>
 

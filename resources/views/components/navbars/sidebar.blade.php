@@ -75,6 +75,15 @@
                     <span class="nav-link-text ms-1">Data Bunga</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'akun' ? ' active bg-gradient-info' : '' }} "
+                    href="{{ route('akun.index') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">app_registration</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Data Akun</span>
+                </a>
+            </li>
             </div>
             <li class="nav-item mt-3">
                 <a class="nav-link ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8" data-bs-toggle="collapse" href="#collapseSave" role="button" aria-controls="collapseSave">
@@ -148,6 +157,15 @@
                 Laporan</a>
             </li>
             <div class="collapse {{$menuParent == 'laporan' ? 'show':''}}" id="collapseLap">
+                 <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'harian' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('transaksi.harian') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">view_list</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Transaksi Harian</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'jurnal' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('jurnal.index') }}">

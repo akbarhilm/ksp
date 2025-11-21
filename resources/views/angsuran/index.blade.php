@@ -35,28 +35,28 @@
 
             <div class="mb-3">
                 <label>Total Bayar</label>
-                <input type="number" id="total_bayar" name="total_bayar" class="form-control" required>
+                <input type="text" id="total_bayar" name="total_bayar" class="form-control input-jumlah" required readonly>
             </div>
 
             <div class="mb-3">
                 <label>Pokok Dibayar</label>
-                <input type="number" name="pokok" id="pokok" class="form-control" readonly required>
+                <input type="text" name="pokok" id="pokok" class="form-control input-jumlah" readonly required>
             </div>
 
             <div class="mb-3">
                 <label>Bunga Dibayar</label>
-                <input type="number" name="bunga" id="bunga" class="form-control" readonly>
+                <input type="text" name="bunga" id="bunga" class="form-control input-jumlah" readonly>
             </div>
             <div class="mb-3">
                 <label>Denda</label>
                  @php
                                         $denda = \App\Helpers\PinjamanHelper::hitungDenda($pinjaman->id_pinjaman);
                                     @endphp
-                <input type="number" name="denda" id="denda" value="{{number_format($denda,0,',','.')}}" class="form-control" readonly>
+                <input type="text" name="denda" id="denda" value={{number_format($denda,0,',','.')}} class="form-control input-jumlah" onchange="adddenda()" >
             </div>
              <div class="mb-3">
                 <label>Simpanan Pokok</label>
-                <input type="number" name="simpanan" id="simpanan" class="form-control input-jumlah" onchange="addtototal()" >
+                <input type="text" name="simpanan" id="simpanan" class="form-control input-jumlah" onchange="adddenda()" required >
             </div>
 
             <div class="mb-3">
@@ -73,8 +73,14 @@
         </select>
     </div>
             
-
-            <button type="submit" class="btn btn-info">Simpan Pembayaran</button>
+            @php
+    // cek apakah sudah ada pembayaran bulan ini
+    $bulanIni = date('Y-m');
+    $sudahBayarBulanIni = $history->contains(function($h) use ($bulanIni) {
+        return date('Y-m', strtotime($h->tanggal)) === $bulanIni;
+    });
+@endphp
+            <button type="submit" class="btn btn-info" {{ $sudahBayarBulanIni ? 'disabled' : '' }}>Simpan Pembayaran</button>
         </form>
     </div>
 </div>
@@ -93,6 +99,8 @@
                         <th>Total Bayar</th>
                         <th>Pokok</th>
                         <th>Bunga</th>
+                        <th>Denda</th>
+                        <th>Simpanan</th>
                         <th>Keterangan</th>
                     </tr>
                 </thead>
@@ -103,6 +111,8 @@
                         <td class="text-end">{{ number_format($h->total_bayar,0) }}</td>
                         <td class="text-end">{{ number_format($h->bayar_pokok,0) }}</td>
                         <td class="text-end">{{ number_format($h->bayar_bunga,0) }}</td>
+                        <td class="text-end">{{ number_format($h->bayar_denda,0) }}</td>
+                        <td class="text-end">{{ number_format($h->simpanan,0) }}</td>
                         <td>{{ 'Pembayaran Angsuran ke '.$h->cicilan_ke }}</td>
                     </tr>
                     @empty
@@ -116,18 +126,46 @@
     </div>
 </div>
     </main>
-    <x-plugins></x-plugins>
             @push('js')
 <script>
+
+    function angka(angka) {
+    if (!angka) return "";
+    angka = angka.toString().replace(/[^0-9]/g, ""); // hilangkan non-angka
+
+    return angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
     function addtototal(){
        let simpanan =  toNumber($("#simpanan").val());
         let total = toNumber(document.getElementById('total_bayar').value) 
-        document.getElementById('total_bayar').value  = total + simpanan
+        document.getElementById('total_bayar').value  = angka(total + simpanan)
     }
+
+   function adddenda() {
+
+    // Ambil denda baru dari input user
+    let dendaBaru = toNumber($("#denda").val());
+    let simpanan =  toNumber($("#simpanan").val());
+
+    // Jika kosong → pakai denda default dari server
+   if (!dendaBaru) {
+        dendaBaru = 0;
+    }
+     if (!simpanan) {
+        simpanan = 0;
+     }
+
+    // Hitung total baru (TANPA memakai total lama)
+    let totalBaru = pokokPerBulan + bungaPerBulan + dendaBaru + simpanan;
+
+    // Set ulang total
+    document.getElementById('total_bayar').value = angka(totalBaru);
+}
+
      const jumlahPinjaman = {{ $jumlahPinjaman }};  
     const sukuBunga = {{ $sukuBunga }};  
     const tenor = {{ $tenor }}; 
-    const denda = {{$denda}}          
+    const dendaDefault = {{$denda}}          
     // Hitung bunga bulanan
     const bungaPerBulan = jumlahPinjaman * (sukuBunga / 100);
 
@@ -135,12 +173,12 @@
     const pokokPerBulan = jumlahPinjaman / tenor;
 
     // Total bayar bulanan
-    const totalBulanan = pokokPerBulan + bungaPerBulan + denda ;
+    const totalBulanan = pokokPerBulan + bungaPerBulan + dendaDefault ;
 
     // Set otomatis ke form
-    document.getElementById('total_bayar').value = Math.round(totalBulanan);
-    document.getElementById('pokok').value = Math.round(pokokPerBulan);
-    document.getElementById('bunga').value = Math.round(bungaPerBulan);
+    document.getElementById('total_bayar').value = angka(totalBulanan);
+    document.getElementById('pokok').value = angka(pokokPerBulan);
+    document.getElementById('bunga').value = angka(bungaPerBulan);
 </script>
 @endpush
 </x-layout>

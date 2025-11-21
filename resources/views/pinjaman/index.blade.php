@@ -20,13 +20,7 @@
                             <input type="text" name="nama" class="form-control" placeholder="Nama Nasabah"
                                 value="{{ request('nama') }}">
                         </div>
-                        <div class="col-md-3">
-                            <select name="status" class="form-select">
-                                <option value="">Semua Status</option>
-                                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                                <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
-                            </select>
-                        </div>
+                        
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-info">Filter</button>
                             <a href="{{ route('pinjaman.index') }}" class="btn btn-secondary">Reset</a>
@@ -79,12 +73,11 @@
 
                                     
                                     <td class="text-center pt-1">
-                                        @if($info['badge'] != 'success')
+                                       
                                         <a href="{{ route('angsuran.index', $p->id_pinjaman) }}"
                                             class="btn btn-sm btn-info btn-sm">
                                             Bayar
                                         </a>
-                                        @endif
                                     </td>
                                 </tr>
                             @empty

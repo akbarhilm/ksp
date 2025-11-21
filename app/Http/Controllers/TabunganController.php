@@ -73,9 +73,15 @@ class TabunganController extends Controller
             'v_kredit' => 'required|numeric',
             'keterangan' => 'nullable|string',
         ]);
-        
-            $id_akun = '4';
-
+            if($request->jenis == 'pokok'){
+            $id_akun = '13';
+            }
+            if($request->jenis == 'wajib'){
+            $id_akun = '14';
+            }
+             if($request->jenis == 'sukarela'){
+            $id_akun = '15';
+            }
             $request->request->add(['id_akun' => $id_akun]);
 
         $id_entry =  auth()->user()->id;
@@ -84,7 +90,7 @@ class TabunganController extends Controller
         $simpanan= Simpanan::create($request->all());
 
         $datajurnalkredit = ['id_akun'=>$id_akun,'id_simpanan'=>$simpanan->id,'keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>'2','id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>'1','id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
         Jurnal::create($datajurnaldebet);
         Jurnal::create($datajurnalkredit);
 

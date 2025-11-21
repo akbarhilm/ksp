@@ -5,137 +5,104 @@
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Deposito"></x-navbars.navs.auth>
         <!-- End Navbar -->
-        <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card my-4">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Transaksi Deposito</h6>
-                            </div>
+       <div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+
+            <!-- CARD DATA NASABAH -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white py-3 px-4">
+                    <h6 class="mb-0">Transaksi Tabungan</h6>
+                </div>
+
+                <div class="card-body px-4 py-4">
+
+                    <!-- ROW 1 -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">No Nasabah</label>
+                            <input type="text" class="form-control" readonly
+                                   value="{{ str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT) }}">
                         </div>
-                        <div class="card-body px-4 pb-2 py-4">
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>No Nasabah</label>
-                                        <input type="text" readonly class="form-control" id="idnasabah"
-                                            name="nama"
-                                            value="{{ str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT) }}" />
-
-                                    </div>
-                                    @error('nama')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Nama Nasabah</label>
-                                        <input type="text" readonly class="form-control" name="nama"
-                                            value="{{ $nasabah->nama }}" />
-
-                                    </div>
-                                    @error('nama')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                     <label>Rekening</label>
-                                            <input type="text" id="nama_rekening" class="form-control" readonly name="jenis" value="{{ $rekening[0]->jenis_rekening}}"/>
-                                            <input type="hidden" id="id_rekening" name="id_rekening" value="{{ $rekening[0]->id_rekening}}"/>
-
-
-                                    </div>
-                                    @error('jenis_rekening')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                     <label>Bulan</label>
-                                            <input type="month" id="tanggal" class="form-control"  name="tanggal" value="{{ $rekening[0]->jenis_rekening}}"/>
-
-
-                                    </div>
-                                    @error('jenis_rekening')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <div class="input-group input-group-static mb-4">
-                                        <button class="btn btn-info" onclick="lihat()">Lihat</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-
-                                    <div class="input-group input-group-static mb-4 right">
-                                        <a class="btn btn-dark " href="{{ url()->previous() }}">kembali</a>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            {{-- <x-footers.auth></x-footers.auth> --}}
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nama Nasabah</label>
+                            <input type="text" class="form-control" readonly value="{{ $nasabah->nama }}">
                         </div>
                     </div>
-                    <div class="card my-4">
 
-                        <div class="card-body px-4 pb-2 py-4">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Tanggal
-                                            </th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Jenis</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Keterangan</th>
-                                            <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Debit</th>
-                                            <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Kredit</th>
+                    <!-- ROW 2 -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Rekening</label>
+                            <input type="text" class="form-control" readonly
+                                   value="{{ $rekening[0]->jenis_rekening }}">
+                            <input type="hidden" id="id_rekening" name="id_rekening"
+                                   value="{{ $rekening[0]->id_rekening }}">
+                        </div>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody id="result">
-
-
-
-                                    </tbody>
-                                    <tfoot>
-                                        {{-- <tr>
-                                            <td colspan="8">
-                                                <div class="d-flex justify-content-center">
-                                                    {{ $nasabah->links() }}
-                                                </div>
-                                            </td>
-                                        </tr> --}}
-                                    </tfoot>
-                                </table>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Bulan</label>
+                            <input type="month" class="form-control" id="tanggal" name="tanggal"
+                                   value="{{ date('Y-m') }}">
                         </div>
                     </div>
+
+                    <!-- BUTTONS -->
+                    <div class="row">
+                        <div class="col-md-10 mb-3">
+                            <button type="button" class="btn btn-info" onclick="lihat()">Lihat</button>
+                        </div>
+
+                        <div class="col-md-2 mb-3 text-end">
+                            <a class="btn btn-dark" href="{{ url()->previous() }}">Kembali</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
+            <!-- CARD TABEL -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body px-4 py-4">
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped align-items-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Jenis</th>
+                                    <th>Keterangan</th>
+                                    <th class="text-center">Debit</th>
+                                    <th class="text-center">Kredit</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="result">
+                                <!-- hasil AJAX masuk di sini -->
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <!-- SALDO AKHIR -->
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-end">
+                            <div class="text-end">
+                                <h6 class="mb-1">Saldo Akhir:</h6>
+                                <h4 id="saldo_akhir" class="fw-bold">Rp 0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
+    </div>
+</div>
 
     </main>
-    <x-plugins></x-plugins>
     @push('js')
         <script>
             function lihat() {
@@ -149,55 +116,44 @@
                         'tanggal':date
                     },
                     success: function(data) {
-                        $('#result').html(''); // kosongkan dulu
-                        if (data.length > 0) {
-                            $.each(data, function(index, simpanan) {
-                                $('#result').append(`
-                            <tr>
-                                <td>
-                                     <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-start">
-                                             ${simpanan.tanggal}
-                                        </div>
-                                    </div>
-                                </td>
-                                
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-start">
-                                            ${simpanan.jenis}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-start">
-                                            ${simpanan.keterangan}
-                                        </div>
-                                    </div>
-                                </td>
-                                 <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-end">
-                                            ${simpanan.v_debit}
-                                        </div>
-                                    </div>
-                                </td>
-                                 <td class="align-right text-center">
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-end">
-                                            ${simpanan.v_kredit}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        `);
-                            });
-                        } else {
-                            $('#result').html('<tr><td colspan="2">Tidak ada hasil</td></tr>');
-                        }
-                    }
+            $('#result').html(''); // kosongkan dulu
+
+            let totalDebit = 0;
+            let totalKredit = 0;
+
+            if (data.length > 0) {
+
+                $.each(data, function(index, simpanan) {
+
+                    // hitung total
+                    totalDebit += parseInt(simpanan.v_debit);
+                    totalKredit += parseInt(simpanan.v_kredit);
+
+                    $('#result').append(`
+                        <tr>
+                            <td>${simpanan.tanggal}</td>
+                            <td>${simpanan.jenis}</td>
+                            <td>${simpanan.keterangan}</td>
+                            <td class="text-end">${Number(simpanan.v_debit).toLocaleString()}</td>
+                            <td class="text-end">${Number(simpanan.v_kredit).toLocaleString()}</td>
+                        </tr>
+                    `);
                 });
+
+                // ======================
+                //   HITUNG SALDO AKHIR
+                // ======================
+                let saldoAkhir =  totalKredit - totalDebit;
+
+                // tampilkan saldo
+                $("#saldo_akhir").text("Rp " + saldoAkhir.toLocaleString());
+
+            } else {
+                $('#result').html('<tr><td colspan="5" class="text-center">Tidak ada hasil</td></tr>');
+                $("#saldo_akhir").text("Rp 0");
+            }
+        }
+    });
             }
 
             function setnama() {
