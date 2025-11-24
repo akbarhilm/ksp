@@ -23,6 +23,11 @@ class User extends Authenticatable
         'password', // Akan di-hash
         'role',
         'nama',
+        'nik',
+        'alamat',
+        'tgl_lahir',
+        'jabatan',
+        'no_telp',
         'id_nasabah',
     ];
     /**

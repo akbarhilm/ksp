@@ -19,11 +19,10 @@
       <table id="nasabahTable"  class="table table-striped table-hover align-middle text-sm" width="100%">
     <thead class="table-dark">
         <tr>
-            <th>ID</th>
+            <th>Kode Resort</th>
             <th>Nama</th>
             <th>Usernmae</th>
             <th>Role</th>
-            <th>ID Nasabah</th>
             <th>Aksi</th>
         </tr>
     </thead>
@@ -51,7 +50,6 @@ $(document).ready(function () {
             { data: 'nama', name: 'nama' },
             { data: 'username', name: 'username' },
             { data: 'role', name: 'role' },
-            { data: 'id_nasabah', name: 'id_nasabah' },
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
         ],
          language: {

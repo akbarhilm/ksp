@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Nasabah;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
@@ -37,15 +39,36 @@ class UserController extends Controller
             'username' => 'required|string|max:50|unique:users,username',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,bendahara,anggota',
-            'id_nasabah' => 'nullable|integer',
-        ]);
+            'alamat'=>'required',
+            'no_telp'=>'required',
+            'nik'=>'required',
+            'jabatan'=>'required',
+            'tgl_lahir'=>'required'
 
+        ]);
+       $nasabah = Nasabah::create([
+           'nik'=>$request->nik,
+           'nama'=>$request->nama,
+           'alamat'=>$request->alamat,
+           'tgl_lahir'=>$request->tgl_lahir,
+           'pekerjaan'=>'-',
+           'nama_suami_istri'=>'-',
+           'no_telp'=>$request->no_telp,
+           'sektor_ekonomi'=>'-',
+           'id_entry'=>auth()->user()->id
+        ]);
         User::create([
             'nama' => $request->nama,
             'username' => $request->username,
             'password' => $request->password, // WAJIB di-hash!
             'role' => $request->role,
-            'id_nasabah' => $request->id_nasabah,
+            'nik'=>$request->nik,
+           'nama'=>$request->nama,
+           'alamat'=>$request->alamat,
+           'jabatan'=>$request->jabatan,
+           'tgl_lahir'=>$request->tgl_lahir,
+           'no_telp'=>$request->no_telp,
+            'id_nasabah' => $nasabah->id_nasabah,
         ]);
 
         return redirect()->route('users.index')
