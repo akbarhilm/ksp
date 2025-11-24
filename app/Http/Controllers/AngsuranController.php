@@ -56,7 +56,7 @@ class AngsuranController extends Controller
     $rekening = Rekening::where('id_nasabah',$datapinjaman->id_nasabah)->where('jenis_rekening','Tabungan')->first();
     $simpanan = Simpanan::create([
         'id_rekening'=>$rekening->id_rekening,
-        'id_akun' => 13,
+        'id_akun' => 14,
         'tanggal' => $request->tanggal,
         'jenis'=>'pokok',
         'v_debit'=>0,
@@ -72,7 +72,8 @@ class AngsuranController extends Controller
     }else{
         $idakunaset = 3;
     }
-    // 1. Debet Kas (id_akun = 1)
+   
+    // 1. Debet Kas total (id_akun = 1)
     DB::table('tmjurnal')->insert([
         'id_akun' => $idakunaset, // Kas
         'id_pinjaman' => $pinjamanId,
@@ -80,6 +81,16 @@ class AngsuranController extends Controller
         'keterangan' => 'Pembayaran angsuran pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $total,
         'v_kredit' => 0,
+        'id_entry' => $userId,
+    ]);
+    // angsuran pokok 
+     DB::table('tmjurnal')->insert([
+        'id_akun' => 5, // Kas
+        'id_pinjaman' => $pinjamanId,
+        'tanggal_transaksi' => now(),
+        'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'v_debet' => 0,
+        'v_kredit' => $pokok,
         'id_entry' => $userId,
     ]);
 
@@ -110,24 +121,16 @@ class AngsuranController extends Controller
 
      // simpanan jurnal
     DB::table('tmjurnal')->insert([
-        'id_akun' => 13, // Simpanan Pokok Anggota
+        'id_akun' => 14, // Simpanan wajib Anggota
         'id_simpanan' => $simpanan->id_simpanan,
         'tanggal_transaksi' => now(),
-        'keterangan' => 'Simpanan pokok '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'keterangan' => 'Simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
         'v_kredit' => str_replace('.', '',$request->simpanan),
         'id_entry' => $userId,
     ]);
 
-    DB::table('tmjurnal')->insert([
-        'id_akun' => 5, // Kas
-        'id_pinjaman' => $pinjamanId,
-        'tanggal_transaksi' => now(),
-        'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
-        'v_debet' => 0,
-        'v_kredit' => $pokok,
-        'id_entry' => $userId,
-    ]);
+   
 
     return redirect()->route('pinjaman.index')->with('success', 'Angsuran berhasil dicatat!');
 }

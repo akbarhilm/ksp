@@ -75,17 +75,26 @@
                                 <label class="form-label">Cicilan Per Bulan</label>
                                 <input type="text" readonly name="cicilan" id="cicilan" value="{{ old('cicilan') }}" class="form-control bg-light fw-bold">
                             </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Kode Resort</label>
+                                <select name="id_karyawan" class="form-control">
+                                    <option value="">-- Pilih Kode Resort --</option>
+                                    @foreach($karyawan as $k)
+                                    <option value="{{ $k->id }}">{{$k->id .' / '. $k->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
                         <hr>
                           <h6 class="mb-3">Potongan</h6>
                           <div class="row">
                             <div class="col-md-6 mb-4">
-                                <label class="form-label">Simpanan Wajib</label>
-                                <input type="text"  name="simpanan_wajib"  value="{{ old('simpanan_wajib') }}" class="form-control format-angka  input-jumlah">
+                                <label class="form-label">Simpanan Pokok</label>
+                                <input type="text"  name="simpanan_pokok"  value="{{ old('simpanan_pokok') }}" class="form-control format-angka  input-jumlah">
                             </div>
                              <div class="col-md-6 mb-4">
-                                <label class="form-label">Admin</label>
+                                <label class="form-label">Biaya Admin</label>
                                 <input type="text"  name="admin"  value="{{ old('admin') }}" class="form-control format-angka  input-jumlah">
                             </div>
                         </div>

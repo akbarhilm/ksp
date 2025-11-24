@@ -21,7 +21,7 @@ class JurnalController extends Controller
     $tanggalAwal  = $request->tanggal_awal;
     $tanggalAkhir = $request->tanggal_akhir;
 
-    $query = Jurnal::orderBy('tanggal_transaksi', 'asc');
+    $query = Jurnal::orderBy('id_jurnal', 'asc');
 
     // Filter akun
     if ($filterAkun) {

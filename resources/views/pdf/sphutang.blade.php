@@ -202,8 +202,8 @@ perbulan atau 0.1% perhari dari saldo pinjaman.
             <td><p class="text-justify">d.</p></td>
             <td>
                 <p class="text-justify">
-                    PIHAK KESATU menyetujui potongan simpanan Rp. {{number_format($data->simpanan_wajib,0,',','.')}} dan biaya tata 
-laksana/administrasi Rp. {{number_format($data->admin,0,',','.')}} Atas dasar pinjaman tersebut, saya PIHAK KESATU dengan 
+                    PIHAK KESATU menyetujui potongan simpanan Rp. {{number_format($data->simpanan_pokok,0,',','.')}} @if($data->asuransi == 0)dan @else, @endif biaya tata 
+laksana/administrasi Rp. {{number_format($data->admin,0,',','.')}} @if($data->asuransi != 0) dan Asuransi Rp. {{number_format($data->asuransi,0,',','.')}}. @else. @endif Atas dasar pinjaman tersebut, saya PIHAK KESATU dengan 
 sukarela menitip dengan PIHAK KEDUA berupa 
                 </p>
             </td>
@@ -227,7 +227,7 @@ sukarela menitip dengan PIHAK KEDUA berupa
             <td><p class="text-justify"></p></td>
             <td>
                 <p class="text-justify">
-                     Saya tidak keberatan gaji saya diambil melalui ATM dan sisanya saya ambil dari <b>KSP SINAR 
+                     Saya tidak keberatan gaji saya diambil melalui ATM / Auto Debit dan sisanya saya ambil dari <b>KSP SINAR 
 MURNI – SEJAHTERA PASAR KEMIS<b> tunai/ non tunai dipotong cicilan pinjaman perbulan 
 sampai pinjaman saya lunas . 
                 </p>

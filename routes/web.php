@@ -75,6 +75,10 @@ Route::get('/pinjaman/{id}/angsuran', [AngsuranController::class, 'index'])->mid
 Route::post('/pinjaman/{id}/angsuran', [AngsuranController::class, 'store'])->middleware('auth')->name('angsuran.store');
 Route::get('/nasabah/datatables', [NasabahController::class, 'datatables'])
     ->name('nasabah.datatables');
+Route::get('/tabungan/penairkan', [TabunganController::class, 'penarikan'])
+    ->name('tabungan.penarikan');
+Route::post('/tabungan/penarikan/store', [TabunganController::class, 'penarikanStore'])
+    ->name('tabungan.penarikan.store');
 Route::get('/nasabah/datatablesindex', [NasabahController::class, 'datatableindex'])->name('nasabah.datatablesindex');
 Route::get('/rekening/datatablesindexrekning', [RekeningController::class, 'datatableindexrekening'])->name('rekening.datatablesindexrekening');
 Route::get('/tabungan/datatablestabungan', [TabunganController::class, 'datatablestabungan'])->name('tabungan.datatablestabungan');

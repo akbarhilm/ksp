@@ -40,6 +40,9 @@
                                     <th class="text-center">Tanggal Pengajuan</th>
                                     <th class="text-center">Jumlah Pengajuan</th>
                                     <th class="text-center">Jumlah Approve</th>
+                                    <th class="text-center">Simpanan Pokok</th>
+                                    <th class="text-center">Biaya Admin</th>
+                                    <th class="text-center">Asuransi</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -54,12 +57,21 @@
 
                                    
 
-                                    <td class="text-center">
+                                    <td class="text-end">
                                         {{ number_format($n->jumlah_pengajuan, 0) }}
                                     </td>
 
-                                    <td class="text-center">
+                                    <td class="text-end">
                                         {{ number_format($n->jumlah_pencairan, 0) }}
+                                    </td>
+                                     <td class="text-end">
+                                        {{ number_format($n->simpanan_pokok, 0) }}
+                                    </td>
+                                     <td class="text-end">
+                                        {{ number_format($n->admin, 0) }}
+                                    </td>
+                                     <td class="text-end">
+                                        {{ number_format($n->asuransi, 0) }}
                                     </td>
 
                                     <td class="text-center">

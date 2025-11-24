@@ -55,7 +55,7 @@
                 <input type="text" name="denda" id="denda" value={{number_format($denda,0,',','.')}} class="form-control input-jumlah" onchange="adddenda()" >
             </div>
              <div class="mb-3">
-                <label>Simpanan Pokok</label>
+                <label>Simpanan Wajib</label>
                 <input type="text" name="simpanan" id="simpanan" class="form-control input-jumlah" onchange="adddenda()" required >
             </div>
 
