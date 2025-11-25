@@ -209,6 +209,10 @@ class PengajuanController extends Controller
             return str_pad($row->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->rekening[0]->nasabah[0]->nama;
         })
 
+         ->addColumn('resort', function($row){
+            return $row->kode_resort;
+        })
+
        
         ->addColumn('tanggal', function($row){
             return $row->tanggal_pengajuan;

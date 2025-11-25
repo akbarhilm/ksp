@@ -15,7 +15,7 @@
     <thead class="table-dark">
         <tr>
             <th>Nasabah</th>
-           
+            <th>Resort</th>
             <th>Tanggal</th>
              <th>Tenor</th>
             <th>Bunga</th>
@@ -95,9 +95,10 @@
 
         columns: [
             { data: 'nasabah', name: 'nasabah' },
-           
+           { data: 'resort', name: 'resort',className: 'text-center' },
             { data: 'tanggal', name: 'tanggal',className: 'text-center' },
              { data: 'tenor', name: 'tenor',className: 'text-center' },
+             
             { data: 'bunga', name: 'bunga',className: 'text-center' },
             { data: 'jumlah', name: 'jumlah', className: 'text-end' },
             { data: 'status', name: 'status', className: 'text-center' },

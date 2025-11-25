@@ -5,65 +5,156 @@
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
         <!-- End Navbar -->
-        <div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
+      <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card my-4">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
+                                <h6 class="text-white text-capitalize ps-3">Tambah Karyawan</h6>
+                            </div>
+                        </div>
+                        <div class="card-body px-4 pb-2 py-4">
+                            <form method="POST" action="{{ route('users.update', $user->id) }}">
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                        {{-- resources/views/users/edit.blade.php --}}
+                                @csrf
+                                @method('PUT')
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>username</label>
+                                            <input type="text" class="form-control"  name="username"
+                                                value="{{ old('username',$user->username) }}" />
+
+                                        </div>
+                                        @error('username')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>password</label>
+                                            <input type="password" class="form-control" name="password"
+                                                value="{{ old('password',$user->password) }}" />
+
+                                        </div>
+                                        @error('password')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>No KTP</label>
+                                            <input type="text" patter="\d*" inputmode="numeric" class="form-control" maxlength="16" name="nik"
+                                                value="{{ old('nik',$user->nik) }}" />
+
+                                        </div>
+                                        @error('nik')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Nama</label>
+                                            <input type="text" class="form-control" name="nama"
+                                                value="{{ old('nama',$user->nama) }}" />
+
+                                        </div>
+                                        @error('nama')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Tanggal Lahir</label>
+                                            <input type="date" class="form-control" name="tgl_lahir"
+                                                value="{{ old('tgl_lahir',$user->tgl_lahir) }}" />
+                                        </div>
+                                        @error('tgl_lahir')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Alamat</label>
+                                            <input type="text" class="form-control" name="alamat"
+                                                value="{{ old('alamat',$user->alamat) }}" />
+                                        </div>
+                                        @error('alamat')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>No Telp</label>
+                                            <input type="text"  patter="\d*" inputmode="numeric" class="form-control" name="no_telp"
+                                                value="{{ old('no_telp',$user->no_telp) }}" />
+
+                                        </div>
+                                        @error('no_telp')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Jabatan</label>
+                                            <input type="text"  class="form-control" name="jabatan"
+                                                value="{{ old('jabatan',$user->jabatan) }}" />
+
+                                        </div>
+                                        @error('no_telp')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                   
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Role</label>
+                                            <select name='role' class='form-control'>
+                                                <option value='admin' {{$user->role =='admin'?'selected':''}}>Admin</option>
+                                                <option value='bendahara' {{$user->role =='bendahara'?'selected':''}}>Bendahara</option>
+                                                <option value='anggota' {{$user->role =='anggota'?'selected':''}}>Anggota</option>
+                                            </select>
+
+                                        </div>
+                                        @error('role')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                    
+                                   
+                                </div>
+                                
+                                
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="input-group input-group-static mb-4">
+                                            <button class="btn btn-info" type="submit">Simpan</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 ml-auto">
+                                        <div class="input-group input-group-static mb-4 right">
+                                            <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>
+                                        </div>
+                                    </div>
+                                </div>
 
 
-    <h2>Edit Pengguna: {{ $user->nama }}</h2>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('users.update', $user->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="mb-3">
-            <label for="nama" class="form-label">Nama Lengkap</label>
-            <input type="text" name="nama" class="form-control" id="nama" value="{{ old('nama', $user->nama) }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" id="username" value="{{ old('username', $user->username) }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password (Biarkan kosong jika tidak ingin mengubah)</label>
-            <input type="password" name="password" class="form-control" id="password">
-            <small class="form-text text-muted">Minimal 8 karakter.</small>
-        </div>
-        <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select name="role" class="form-select" id="role" required>
-                <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="bendahara" {{ old('role', $user->role) == 'bendahara' ? 'selected' : '' }}>Bendahara</option>
-                <option value="anggota" {{ old('role', $user->role) == 'anggota' ? 'selected' : '' }}>Anggota</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="id_nasabah" class="form-label">ID Nasabah (Opsional)</label>
-            <input type="number" name="id_nasabah" class="form-control" id="id_nasabah" value="{{ old('id_nasabah', $user->id_nasabah) }}">
-        </div>
-
-        <button type="submit" class="btn btn-info">Update</button>
-        <a href="{{ route('users.index') }}" class="btn btn-dark">Batal</a>
-    </form>
-</div>
+                                {{-- <x-footers.auth></x-footers.auth> --}}
+                        </div>
+                    </div>
+                </div>
             </div>
-         </div>
         </div>
     </main>
-    <x-plugins></x-plugins>
 
 </x-layout>

@@ -45,51 +45,83 @@ class PinjamanHelper
 
 
 
-    public static function hitungDenda($id_pinjaman)
+  public static function hitungDenda($id_pinjaman)
 {
     // Ambil aturan denda
-    $bunga = Bunga::where('jenis_bunga','Denda')->first();
-    if (!$bunga || !$bunga->persentase) {
-        return 0;
-    }
+    $bunga = Bunga::where('jenis_bunga', 'Denda')->first();
+   
+    $persenDenda = $bunga->persentase; // persen per hari, contoh: 0.5 = 0.5%
 
-    $persenDenda = $bunga->persentase;
-
-    // Cek apakah bulan ini sudah bayar
+    // Jika sudah bayar bulan ini → denda = 0
     $bulanIni = date('Y-m');
-
-    $pembayaranBulanIni = Angsuran::where('id_pinjaman', $id_pinjaman)
+    $adaBayarBulanIni = Angsuran::where('id_pinjaman', $id_pinjaman)
         ->whereRaw("DATE_FORMAT(tanggal, '%Y-%m') = ?", [$bulanIni])
         ->exists();
-
-    // ✔ Sudah bayar bulan ini → denda = 0
-    if ($pembayaranBulanIni) {
-        return 0;
+    if ($adaBayarBulanIni) {
+        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success'];
     }
 
-    // Jika belum bayar → cek keterlambatan
+    // ambil pinjaman
+    $pinjaman = Pinjaman::where('id_pinjaman', $id_pinjaman)->first();
+   
+
+    // ambil tanggal acuan: pembayaran terakhir jika ada, kalau tidak pakai created_at (pencairan)
+    $lastPay = Angsuran::where('id_pinjaman', $id_pinjaman)
+        ->orderBy('id_pembayaran', 'DESC')
+        ->first();
+
+    if ($lastPay) {
+        $acuan = Carbon::parse($lastPay->tanggal);
+    } else {
+        $acuan = Carbon::parse($pinjaman->created_at);
+    }
+
+    // jatuh tempo setiap tanggal (misal 20)
     $jatuhTempoTanggal = 20;
+
+    // dueDate pertama yang terlewat = tanggal jatuhTempo pada bulan berikutnya setelah bulan acuan
+    $firstMissedDue = $acuan->copy()->addMonth()->startOfMonth()->setDay($jatuhTempoTanggal);
+
+    // jika bulan acuan memiliki tanggal > days in month (misal setDay overflow), Carbon akan handle.
+    // pastikan firstMissedDue valid (Carbon setDay menangani)
+
     $today = Carbon::today();
-    $jatuhTempo = Carbon::today()->setDay($jatuhTempoTanggal);
 
-    // Belum lewat jatuh tempo → tidak ada denda
-    if ($today->lte($jatuhTempo)) {
-        return 0;
+    // kalau hari ini belum melewati due date pertama → belum terlambat
+    if ($today->lte($firstMissedDue)) {
+        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success'];
     }
 
-    // Sudah lewat jatuh tempo → hitung hari telat
-    $hariTelat = $jatuhTempo->diffInDays($today);
-
-    $pinjaman = Pinjaman::where('id_pinjaman',$id_pinjaman)->first();
-    if (!$pinjaman) {
-        return 0;
+    // hari telat = selisih hari antara due date pertama terlewat dan hari ini
+    $hariTelat = $firstMissedDue->diffInDays($today);
+    // dasar perhitungan denda:
+    // gunakan sisa pokok (lebih akurat) kalau ada field saldo_pokok, jika tidak fallback ke total_pinjaman
+    $dasar = $pinjaman->sisa_pokok;
+    $kolek = "C1";
+     $kolekBadge = "success";
+    if ($hariTelat >= 1  && $hariTelat <= 30) {
+        $kolek = "C2";
+        $kolekBadge = "info";
+    } elseif ($hariTelat >= 31  && $hariTelat <= 60) {
+        $kolek = "C3";
+        $kolekBadge = "warning";
+    } elseif ($hariTelat >= 61 && $hariTelat <= 90) {
+        $kolek = "C4";
+        $kolekBadge = "danger";
+    } elseif ($hariTelat > 90)  {
+        $kolek = "C5";
+        $kolekBadge = "dark";
+   
     }
 
-    // Rumus denda
-    $denda = $pinjaman->total_pinjaman * ($persenDenda / 100) * $hariTelat;
+    // jika dasar 0 → tidak ada denda
+  
 
-    return $denda;
+    // rumus denda: dasar * (persen/100) * hariTelat
+    $denda = $dasar * ($persenDenda / 100) * $hariTelat;
+
+    // opsi: dibulatkan ke integer
+    return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$kolekBadge];
 }
-
 
 }

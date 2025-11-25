@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pinjaman;
+use App\Models\Pengajuan;
+
 use App\Models\Nasabah;
 use Illuminate\Http\Request;
 
@@ -10,7 +12,7 @@ class PinjamanController extends Controller
   public function index(Request $request)
 {
     // Mulai query
-    $query = Pinjaman::query()->with('nasabah');
+    $query = Pinjaman::query()->with('nasabah','pengajuan');
 
     // Filter by id_nasabah
     if ($request->filled('id_nasabah')) {

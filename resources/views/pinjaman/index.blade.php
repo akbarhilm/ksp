@@ -31,13 +31,14 @@
 
             <!-- Tabel Pinjaman -->
             <div class="card">
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <table class="table table-striped table-bordered align-middle text-sm">
                         <thead class="table-dark">
                             <tr>
 
                                 <th>Nasabah</th>
-                                <th>Total Pinjaman</th>
+                                <th>Resort</th>
+                                <th>Pinjaman</th>
                                 <th>Sisa Pokok</th>
                                 <th>Sisa Bunga</th>
                                 <th>Status</th>
@@ -52,6 +53,9 @@
                                     <td class="">
                                         {{ str_pad($p->id_nasabah, 5, '0', STR_PAD_LEFT) . ' / ' . $p->nasabah->nama ?? '-' }}
                                     </td>
+                                    <td class="text-center">
+                                        {{ $p->pengajuan->kode_resort }}
+                                    </td>
                                     <td class="text-end font-weight-bolder">{{ number_format($p->total_pinjaman, 0) }}
                                     </td>
                                     <td class="text-end font-weight-bolder">{{ number_format($p->sisa_pokok, 0) }}</td>
@@ -65,10 +69,14 @@
                                         <span class="badge bg-{{ $info['badge'] }}">
                                             {{ $info['status'] }}
                                         </span>
+                                   
+                                        <span class="badge bg-{{ $denda['kolekBadge'] }}">
+                                            {{ $denda['kolek'] }}
+                                        </span>
                                     </td>
 
                                     <td>
-                                        Rp {{ number_format($denda, 0, ',', '.') }}
+                                        Rp {{ number_format($denda['denda'], 0, ',', '.') }}
                                     </td>
 
                                     
