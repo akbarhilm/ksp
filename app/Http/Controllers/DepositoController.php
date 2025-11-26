@@ -59,9 +59,9 @@ class DepositoController extends Controller
         $idnasabah = $request->query('id_nasabah');
         $nasabah = Nasabah::find($idnasabah);
        
-        $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Deposito')->get();
+        $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Deposito')->where('status','aktif')->get();
         if(!$rekening->count()){
-            return redirect()->route('deposito.index')->with('error', 'Nasabah belum memiliki rekening Deposito. Silakan buat rekening terlebih dahulu.');
+            return redirect()->route('rekening.edit',$idnasabah)->with('error', 'Rekening Deposito Belum Aktif.');
         }else{
         return view('deposito.create', compact('nasabah', 'rekening'));
         }

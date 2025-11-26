@@ -47,6 +47,26 @@ class PengajuanController extends Controller
        
     }
 
+        public function topup(Request $request)
+    {
+     
+    $idnasabah = $request->query('id_nasabah');
+        $karyawan = User::all();
+        $nasabah = Nasabah::find($idnasabah);
+        $pinjaman = Pinjaman::where('id_nasabah',$idnasabah)->where('status','aktif')->first();
+        $jaminan = PengajuanJaminan::whereHas('pengajuan', function($q) use ($idnasabah){
+            $q->where('status','cair');
+        })->get();
+       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->where('status','aktif')->get();
+        if(!$rekening->count()){
+            return redirect()->route('rekening.edit',$idnasabah)->with('error', 'Rekening pinjaman Belum Aktif.');
+        }else{
+        return view('pengajuan.topup', compact('nasabah', 'rekening','pinjaman','karyawan','jaminan') );
+        }
+        
+       
+    }
+
     public function store(Request $request)
     {
          $request->merge([

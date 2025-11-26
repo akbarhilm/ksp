@@ -23,6 +23,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\TransaksiHarianController;
+use App\Http\Controllers\TutupBukuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,7 @@ Route::get('/pengajuan/cair/{id}', [PengajuanController::class, 'cair'])->name('
 
 Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
 Route::get('/deposito/cari', [DepositoController::class, 'cari'])->middleware('auth')->name('deposito.cari');
+Route::get('/pengajuan/topup', [PengajuanController::class, 'topup'])->middleware('auth')->name('pengajuan.topup');
 
 Route::get('/pengajuan/approval', [PengajuanController::class, 'approval'])->middleware('auth')->name('pengajuan.approval');
 Route::get('/pengajuan/pencairan', [PengajuanController::class, 'pencairan'])->middleware('auth')->name('pengajuan.pencairan');
@@ -109,6 +111,7 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('jurnal', JurnalController::class);
 	 Route::resource('bunga', BungaController::class);
 	 Route::resource('akun', AkunController::class);
+	  Route::resource('tutupbuku', TutupBukuController::class);
 
 
 });

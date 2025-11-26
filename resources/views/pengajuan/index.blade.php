@@ -19,9 +19,9 @@
                                     <tr>
                                         <th style="width: 5%">Nomor Nasabah</th>
                                         <th>No KTP</th>
-                                        <th>Nama</th>
                                         <th style="width: 5%">Tgl Lahir</th>
                                         <th>No Telp</th>
+                                        <th>Sisa Pokok</th>
                                         <th class="text-center" style="width: 5%">Aksi</th>
                                     </tr>
                                 </thead>
@@ -55,10 +55,7 @@
                             data: 'nik',
                             name: 'nik'
                         },
-                        {
-                            data: 'nama',
-                            name: 'nama'
-                        },
+                        
                         {
                             data: 'tgl_lahir',
                             name: 'tgl_lahir'
@@ -66,6 +63,10 @@
                         {
                             data: 'no_telp',
                             name: 'no_telp'
+                        },
+                        {
+                            data: 'sisa_pokok',
+                            name: 'sisa_pokok'
                         },
                         {
                             data: 'aksi',

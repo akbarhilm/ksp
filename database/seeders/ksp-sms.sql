@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2025 at 09:12 AM
+-- Generation Time: Nov 26, 2025 at 09:58 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -69,7 +69,9 @@ INSERT INTO `tmjurnal` (`id_jurnal`, `id_akun`, `id_simpanan`, `id_pinjaman`, `t
 (42, 14, NULL, NULL, '2025-11-21', 'Simpanan wajib 00050', '0', '14000', 1, '2025-11-21', NULL),
 (43, 5, NULL, 4, '2025-11-21', 'Piutang pinjaman 00050', '0', '1000000', 1, '2025-11-21', NULL),
 (44, 13, NULL, NULL, '2025-11-24', 'Penarikan Tabungan 00042', '1000000', '0', 1, '2025-11-24', '2025-11-24'),
-(45, 1, NULL, NULL, '2025-11-24', 'Penarikan Tabungan 00042', '0', '1000000', 1, '2025-11-24', '2025-11-24');
+(45, 1, NULL, NULL, '2025-11-24', 'Penarikan Tabungan 00042', '0', '1000000', 1, '2025-11-24', '2025-11-24'),
+(46, 31, NULL, NULL, '2025-11-26', 'Beban bunga simpanan  00043', '3000', '0', 1, '2025-11-26', '2025-11-26'),
+(47, 14, NULL, NULL, '2025-11-26', 'Penambahan simpanan dari bunga 00043', '0', '3000', 1, '2025-11-26', '2025-11-26');
 
 -- --------------------------------------------------------
 
@@ -122,6 +124,7 @@ CREATE TABLE `tmpengajuan` (
   `admin` decimal(10,0) NOT NULL,
   `asuransi` decimal(10,0) NOT NULL,
   `kode_resort` int(11) NOT NULL,
+  `jenis` enum('baru','topup') NOT NULL DEFAULT 'baru',
   `id_entry` int(11) NOT NULL,
   `created_at` date NOT NULL DEFAULT current_timestamp(),
   `updated_at` date DEFAULT NULL
@@ -131,10 +134,10 @@ CREATE TABLE `tmpengajuan` (
 -- Dumping data for table `tmpengajuan`
 --
 
-INSERT INTO `tmpengajuan` (`id_pengajuan`, `id_rekening`, `bunga`, `tenor`, `tanggal_pengajuan`, `tanggal_approval`, `tanggal_pencairan`, `jumlah_pengajuan`, `jumlah_pencairan`, `status`, `simpanan_pokok`, `admin`, `asuransi`, `kode_resort`, `id_entry`, `created_at`, `updated_at`) VALUES
-(3, 6, 0, 0, '2025-11-15', '2025-11-15', '2025-10-10', '3000000.00', '3000000.00', 'cair', '0', '0', '0', 1, 1, '2025-11-15', '2025-11-15'),
-(4, 5, 0, 0, '2025-11-17', '2025-11-17', '2025-11-17', '3000000.00', '3000000.00', 'cair', '0', '0', '0', 1, 1, '2025-11-17', '2025-11-17'),
-(13, 19, 2, 6, '2025-11-20', '2025-11-20', '2025-10-20', '6000000.00', '6000000.00', 'cair', '100000', '100000', '0', 1, 1, '2025-11-20', '2025-11-20');
+INSERT INTO `tmpengajuan` (`id_pengajuan`, `id_rekening`, `bunga`, `tenor`, `tanggal_pengajuan`, `tanggal_approval`, `tanggal_pencairan`, `jumlah_pengajuan`, `jumlah_pencairan`, `status`, `simpanan_pokok`, `admin`, `asuransi`, `kode_resort`, `jenis`, `id_entry`, `created_at`, `updated_at`) VALUES
+(3, 6, 0, 0, '2025-11-15', '2025-11-15', '2025-10-10', '3000000.00', '3000000.00', 'cair', '0', '0', '0', 1, 'baru', 1, '2025-11-15', '2025-11-15'),
+(4, 5, 0, 0, '2025-11-17', '2025-11-17', '2025-11-17', '3000000.00', '3000000.00', 'cair', '0', '0', '0', 1, 'baru', 1, '2025-11-17', '2025-11-17'),
+(13, 19, 2, 6, '2025-11-20', '2025-11-20', '2025-10-20', '6000000.00', '6000000.00', 'cair', '100000', '100000', '0', 1, 'baru', 1, '2025-11-20', '2025-11-20');
 
 -- --------------------------------------------------------
 
@@ -160,8 +163,8 @@ INSERT INTO `tmpengajuandetail` (`id_pengajuandetail`, `id_pengajuan`, `jenis_ja
 (3, 12, 'ATM', 'BCA 5621322485', 1, '2025-11-19', '2025-11-19'),
 (4, 12, 'PIN ATM', '1234567', 1, '2025-11-19', '2025-11-19'),
 (5, 12, 'JAMSOSTEK', '987456124', 1, '2025-11-19', '2025-11-19'),
-(6, 13, 'ATM', 'BCA 5621322485', 1, '2025-11-20', '2025-11-20'),
-(7, 13, 'PIN ATM', '1234567', 1, '2025-11-20', '2025-11-20');
+(6, 4, 'ATM', 'BCA 5621322485', 1, '2025-11-20', '2025-11-20'),
+(7, 4, 'PIN ATM', '1234567', 1, '2025-11-20', '2025-11-20');
 
 -- --------------------------------------------------------
 
@@ -216,7 +219,7 @@ INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `jenis_rek
 (2, 42, '12500042', 'Tabungan', 'nonaktif', 1, '2025-10-30', '2025-10-30'),
 (3, 42, '22500042', 'Deposito', 'nonaktif', 1, '2025-10-30', '2025-10-30'),
 (4, 43, '12500043', 'Tabungan', 'nonaktif', 1, '2025-11-03', '2025-11-03'),
-(5, 42, '32500042', 'Pinjaman', 'nonaktif', 1, '2025-11-05', '2025-11-05'),
+(5, 42, '32500042', 'Pinjaman', 'aktif', 1, '2025-11-26', '2025-11-05'),
 (6, 43, '32500043', 'Pinjaman', 'nonaktif', 1, '2025-11-15', '2025-11-15'),
 (7, 45, '12500045', 'Tabungan', 'nonaktif', 1, '2025-11-16', '2025-11-16'),
 (17, 50, '12500050', 'Tabungan', 'aktif', 1, '2025-11-19', '2025-11-19'),
@@ -252,7 +255,8 @@ INSERT INTO `tmsimpanan` (`id_simpanan`, `id_rekening`, `id_akun`, `tanggal`, `j
 (14, 3, 16, '2025-11-15', 'wajib', '0.00', '25000000.00', 'deposit', 1, '2025-11-15', '2025-11-15'),
 (19, 4, 14, '2025-11-15', 'pokok', '0.00', '1000000.00', 'tabungan', 1, '2025-11-15', '2025-11-15'),
 (22, 17, 14, '2025-11-21', 'wajib', '0.00', '14000.00', 'Simpanan dari angsuran', 1, '2025-11-21', '2025-11-21'),
-(24, 2, 0, '2025-11-24', 'penarikan', '1000000.00', '0.00', 'Penarikan Tabungan 00042', 1, '2025-11-24', '2025-11-24');
+(24, 2, 0, '2025-11-24', 'penarikan', '1000000.00', '0.00', 'Penarikan Tabungan 00042', 1, '2025-11-24', '2025-11-24'),
+(27, 4, 0, '2025-11-26', 'wajib', '0.00', '3000.00', 'Bunga simpanan November 2025', 1, '2025-11-26', '2025-11-26');
 
 -- --------------------------------------------------------
 
@@ -357,7 +361,7 @@ CREATE TABLE `trbunga` (
 
 INSERT INTO `trbunga` (`id_bunga`, `jenis_bunga`, `nama_bunga`, `persentase`, `threshold`, `persentase2`, `threshold2`, `id_entry`, `updated_at`, `created_at`) VALUES
 (1, 'Simpanan', 'Simpanan tabungan', 0.3, 500000, 0, 0, 0, NULL, '2025-10-29'),
-(2, 'Simpanan', 'Simpanan Deposito', 3, 0, 0, 0, 0, NULL, '2025-10-29'),
+(2, 'Deposito', 'Simpanan Deposito', 3, 0, 0, 0, 0, NULL, '2025-10-29'),
 (4, 'Denda', 'denda test', 0.1, 1, 1, 30, 1, '2025-11-20', '2025-11-20');
 
 -- --------------------------------------------------------
@@ -543,7 +547,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `tmjurnal`
 --
 ALTER TABLE `tmjurnal`
-  MODIFY `id_jurnal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id_jurnal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `tmpembayaran`
@@ -579,7 +583,7 @@ ALTER TABLE `tmrekening`
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `tmtransaksi`

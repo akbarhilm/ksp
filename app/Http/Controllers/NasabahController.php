@@ -149,31 +149,55 @@ public function datatableindex(Request $request)
 
     public function datatables()
 {
-    $query = Nasabah::select([
-        'id_nasabah',
-        'nik',
-        'nama',
-       
-        'tgl_lahir',
-        'no_telp'
-        
-    ])->orderBy('id_nasabah','desc')->get();
+    $query = Nasabah::with(['pinjaman' => function ($q) {
+        $q->where('status', 'aktif');
+    }])
+    ->orderBy('id_nasabah','desc');
+
 
     return DataTables::of($query)
     ->addColumn('nomor_nasabah', function($row){
-            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->nama;
+        })
+
+    ->addColumn('sisa_pokok', function($row){
+            if($row->pinjaman->count() > 0)
+            return number_format($row->pinjaman->first()->sisa_pokok,0,',','.');
+            else
+            return '0';
         })
         
-        ->addColumn('aksi', function ($n) {
-            return '
-                <a href="'.route('pengajuan.create',['id_nasabah'=>$n->id_nasabah]).'"
-                   class="btn btn-sm btn-info">
-                    <i class="material-icons">add</i>
-                </a>
-            ';
-        })
-        ->rawColumns(['aksi'])
-        ->make(true);
+     ->addColumn('aksi', function ($n) {
+
+    // ada pinjaman aktif?
+    $punyaPinjamanAktif = $n->pinjaman->count() > 0;
+
+    // route
+    $routePengajuan = route('pengajuan.create', ['id_nasabah' => $n->id_nasabah]);
+    $routeTopup     = route('pengajuan.topup', ['id_nasabah' => $n->id_nasabah]);
+
+    if ($punyaPinjamanAktif) {
+
+        // ✅ ADA PINJAMAN AKTIF → TOPUP
+        return '
+            <a href="'.$routeTopup.'" class="btn btn-sm btn-warning">
+                <i class="material-icons">add_circle</i> Topup
+            </a>
+        ';
+
+    } else {
+
+        // ✅ TIDAK ADA / LUNAS → PENGAJUAN BARU
+        return '
+            <a href="'.$routePengajuan.'" class="btn btn-sm btn-info">
+                <i class="material-icons">add</i> Ajukan
+            </a>
+        ';
+    }
+})
+->rawColumns(['aksi'])
+->make(true);
+
 }
 
 }

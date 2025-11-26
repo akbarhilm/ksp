@@ -28,7 +28,9 @@
                     <label class="form-label">Jenis Bunga</label>
                     <select class="form-control"  name="jenis_bunga" required>
                         <option value="">--Pilih Jenis--</option>
-                        <option value="Simpanan">Simpanan</option>
+                        <option value="Simpanan">Tabungan</option>
+                        <option value="Deposito">Deposito</option>
+
                         <option value="Denda">Denda</option>
                     </select>
                 </div>
