@@ -10,7 +10,7 @@
                 <div class="col-12">
 
                     <div class="card shadow-sm mb-4">
-                        <div class="card-body">
+                        <div class="card-body overflow-auto ">
       <table class="table table-striped table-hover align-middle" id="pengajuanTable">
     <thead class="table-dark">
         <tr>
@@ -20,7 +20,8 @@
              <th>Tenor</th>
             <th>Bunga</th>
             <th>Jumlah Pengajuan</th>
-            <th>Status</th>
+            <th style="display: none">data</th>
+            <th>Jenis</th>
             <th class="text-center">Aksi</th>
         </tr>
     </thead>
@@ -50,6 +51,29 @@
                 <div class="modal-body">
 
                     <input type="hidden" name="id_pengajuan" id="id_pengajuan">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Simpanan Pokok</label>
+                            <input type="text" id="simpanan_pokok" class="form-control " disabled>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Biaya Admin</label>
+                            <input type="text" name="admin" id="admin" class="form-control input-jumlah " disabled>
+                        </div>
+
+                    </div>
+                     <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Asuransi</label>
+                            <input type="text" id="asuransi" class="form-control " disabled>
+                        </div>
+
+                      
+
+                    </div>
 
                     <div class="row g-3">
 
@@ -100,7 +124,10 @@
              { data: 'tenor', name: 'tenor',className: 'text-center' },
              
             { data: 'bunga', name: 'bunga',className: 'text-center' },
+
             { data: 'jumlah', name: 'jumlah', className: 'text-end' },
+             { data: 'simpanan_pokok', name: 'data',className: 'text-center d-none' },
+
             { data: 'status', name: 'status', className: 'text-center' },
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false, className: 'text-center' }
         ], language: {
@@ -119,6 +146,10 @@
         $('#id_pengajuan').val($(this).data('id'));
         $('#v_pengajuan').val($(this).data('jumlah'));
         $('#v_appr').val($(this).data('jumlah'));
+        $('#admin').val($(this).data('admin'));
+        $('#asuransi').val($(this).data('asuransi'));
+         $('#simpanan_pokok').val($(this).data('simpanan_pokok'));
+       
     });
 
 });

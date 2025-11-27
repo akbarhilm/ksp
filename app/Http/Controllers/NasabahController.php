@@ -149,9 +149,14 @@ public function datatableindex(Request $request)
 
     public function datatables()
 {
-    $query = Nasabah::with(['pinjaman' => function ($q) {
-        $q->where('status', 'aktif');
-    }])
+    $query = Nasabah::with([
+        'pinjaman' => function ($q) {
+            $q->where('tmpinjaman.status', 'aktif');
+        },
+        'pengajuan' => function ($q) {
+            $q->where('tmpengajuan.status', 'pengajuan'); // sesuaikan
+        }
+    ])
     ->orderBy('id_nasabah','desc');
 
 
@@ -169,12 +174,20 @@ public function datatableindex(Request $request)
         
      ->addColumn('aksi', function ($n) {
 
+        $punyaPengajuan = $n->pengajuan->count() > 0;
+
     // ada pinjaman aktif?
     $punyaPinjamanAktif = $n->pinjaman->count() > 0;
 
     // route
     $routePengajuan = route('pengajuan.create', ['id_nasabah' => $n->id_nasabah]);
     $routeTopup     = route('pengajuan.topup', ['id_nasabah' => $n->id_nasabah]);
+    
+      if ($punyaPengajuan) {
+
+        return '<span class="badge bg-secondary">Dalam Proses</span>';
+
+    }
 
     if ($punyaPinjamanAktif) {
 

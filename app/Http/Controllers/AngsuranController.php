@@ -52,6 +52,10 @@ class AngsuranController extends Controller
     $datapinjaman = Pinjaman::find($pinjamanId);
     $datapinjaman->update(['sisa_pokok'=>$datapinjaman->sisa_pokok - $pokok,'sisa_bunga'=>$datapinjaman->sisa_bunga - $bunga]);
 
+    if($datapinjaman->sisa_pokok <=0 && $datapinjaman->sisa_bunga <=0){
+        $datapinjaman->update(['status'=>'Lunas']);
+    }
+
     //add kesimpanan
     $rekening = Rekening::where('id_nasabah',$datapinjaman->id_nasabah)->where('jenis_rekening','Tabungan')->first();
     $simpanan = Simpanan::create([
@@ -135,5 +139,126 @@ class AngsuranController extends Controller
     return redirect()->route('pinjaman.index')->with('success', 'Angsuran berhasil dicatat!');
 }
 
+public function pelunasan($id_pinjaman)
+
+{
+   
+    $pinjaman = Pinjaman::with('pengajuan')->where('id_pinjaman',$id_pinjaman)->firstOrFail();
+    $id_rekening = Rekening::where('id_nasabah', $pinjaman->id_nasabah)
+        ->where('jenis_rekening', 'Tabungan')   
+        ->value('id_rekening');
+        $simpananpokok =  Simpanan::where('id_rekening', $id_rekening)->where('jenis','pokok')->sum('v_kredit') - Simpanan::where('id_rekening', $id_rekening)->where('jenis','pokok')->sum('v_debit');   
+        $simpananwajib = Simpanan::where('id_rekening', $id_rekening)->where('jenis','wajib')->sum('v_kredit')  - Simpanan::where('id_rekening', $id_rekening)->where('jenis','wajib')->sum('v_debit');
+
+    $history = Angsuran::where('id_pinjaman', $id_pinjaman)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+    return view('angsuran.pelunasan', compact('pinjaman', 'history', 'simpananpokok','simpananwajib'));
+
+}
+
+public function storePelunasan(Request $request, $id_pinjaman)
+{
+ DB::beginTransaction();
+         try {
+    $pinjamanId = $id_pinjaman;
+    $total =str_replace(',', '', $request->total_bayar);
+    if($request->metode=="Cash"){
+        $idakunaset=1;
+    }else{
+        $idakunaset=3;
+    }
+    $userId = auth()->id();
+
+    //bayar pelunasan
+     $angsuran = Angsuran::create([
+        'id_pinjaman' => $pinjamanId,
+        'bayar_pokok' => $total,
+        'bayar_bunga' => 0,
+        'total_bayar' => $total,
+        'tanggal' => $request->tanggal,
+        'cicilan_ke' => 0,
+        'id_entry' =>$userId,
+        'metode' => $request->metode,
+        'bayar_denda' => 0,
+        'simpanan' => 0
+    ]);
+
+    //update pinjaman
+    $datapinjaman = Pinjaman::find($pinjamanId);
+    $datapinjaman->update(['sisa_pokok'=>0,'sisa_bunga'=>0,'status'=>'Lunas']);
+    // 1. Debet Kas total (id_akun = 1)
+    DB::table('tmjurnal')->insert([
+        'id_akun' => $idakunaset, // Kas
+        'id_pinjaman' => $pinjamanId,
+        'tanggal_transaksi' => now(),
+        'keterangan' => 'Pelunasan pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'v_debet' => $total,
+        'v_kredit' => 0,
+        'id_entry' => $userId,
+    ]);
+    // angsuran pokok 
+     DB::table('tmjurnal')->insert([
+        'id_akun' => 5, // Kas
+        'id_pinjaman' => $pinjamanId,
+        'tanggal_transaksi' => now(),
+        'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'v_debet' => 0,
+        'v_kredit' => $total+$request->simpananpokok+$request->simpananwajib,
+        'id_entry' => $userId,
+    ]);
+
+    // potong simpanan pokok dan wajib
+    Simpanan::create([
+        'id_rekening'=>Rekening::where('id_nasabah', $datapinjaman->id_nasabah)
+        ->where('jenis_rekening', 'Tabungan')->value('id_rekening'),
+        'id_akun' => 14,
+        'tanggal' => $request->tanggal,
+        'jenis'=>'wajib',
+        'v_debit'=>$request->simpananwajib,
+        'v_kredit'=>0,
+        'keterangan'=>'Penarikan untuk pelunasan',
+        'id_entry'=>$userId]);
+   Simpanan::create([
+        'id_rekening'=>Rekening::where('id_nasabah', $datapinjaman->id_nasabah)
+        ->where('jenis_rekening', 'Tabungan')->value('id_rekening'),
+        'id_akun' => 13,
+        'tanggal' => $request->tanggal,
+        'jenis'=>'pokok',
+        'v_debit'=>$request->simpananpokok,
+        'v_kredit'=>0,
+        'keterangan'=>'Penarikan untuk pelunasan',
+        'id_entry'=>$userId]);
+        
+        DB::table('tmjurnal')->insert([
+        'id_akun' => 14, // Simpanan wajib Anggota
+        'tanggal_transaksi' => now(),
+        'keterangan' => 'Penarikan simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'v_debet' => $request->simpananwajib??0,
+        'v_kredit' => 0,
+        'id_entry' => $userId,
+    ]);
+        DB::table('tmjurnal')->insert([
+        'id_akun' => 13, // Simpanan Pokok Anggota
+        'tanggal_transaksi' => now(),
+        'keterangan' => 'Penarikan simpanan pokok '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'v_debet' => $request->simpananpokok??0,
+        'v_kredit' => 0,
+        'id_entry' => $userId,
+    ]);
+
+
+   DB::commit();
+   return redirect()->route('pelunasan.index')->with('success', 'Pelunasan berhasil dicatat!'); 
+    } catch (\Exception $e) {
+        DB::rollBack();
+         dd($e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
+    }
+
+    
+}
  
 }
+

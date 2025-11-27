@@ -7,12 +7,13 @@ use App\Models\Pengajuan;
 use App\Models\Nasabah;
 use Illuminate\Http\Request;
 
-class PinjamanController extends Controller
+class PelunasanController extends Controller
 {
   public function index(Request $request)
 {
     // Mulai query
     $query = Pinjaman::query()->with('nasabah','pengajuan');
+
     // Filter by id_nasabah
     if ($request->filled('id_nasabah')) {
         $query->where('id_nasabah', $request->id_nasabah);
@@ -26,16 +27,12 @@ class PinjamanController extends Controller
     }
 
     // Filter by status
-    if ($request->filled('status') 
-        && in_array($request->status, ['aktif', 'lunas'])) 
-    {
-      
-    }
+   
 
     // Eksekusi query
-      $query->where('status', 'aktif');
+     $query->where('status', 'aktif');
     $pinjaman = $query->orderBy('created_at', 'desc')->get();
-    return view('pinjaman.index', compact('pinjaman'));
+    return view('pinjaman.pelunasan', compact('pinjaman'));
 }
 
 }

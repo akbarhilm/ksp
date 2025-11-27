@@ -26,6 +26,19 @@ class Nasabah extends Model
     public function user() {
         return $this->hasOne(User::class, 'id_nasabah');
     }
+
+    public function pengajuan()
+{
+    return $this->hasManyThrough(
+        Pengajuan::class,        // model tujuan akhir
+        Rekening::class,         // model perantara
+        'id_nasabah',            // FK di rekening
+        'id_rekening',           // FK di pengajuan
+        'id_nasabah',            // PK di nasabah
+        'id_rekening'            // PK di rekening
+    );
+}
+
     public function getRouteKeyName()
 {
     return 'id_nasabah';

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Nasabah;
-
+use App\Models\Rekening;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
@@ -46,6 +47,7 @@ class UserController extends Controller
             'tgl_lahir'=>'required'
 
         ]);
+        try{
        $nasabah = Nasabah::create([
            'nik'=>$request->nik,
            'nama'=>$request->nama,
@@ -57,6 +59,16 @@ class UserController extends Controller
            'sektor_ekonomi'=>'-',
            'id_entry'=>auth()->user()->id
         ]);
+        }catch(QueryException $e){
+            if ($e->getCode() == 23000) {
+                // Duplicate entry error
+                return redirect()->back()->withInput()->with('error','NIK KTP sudah terdaftar');
+            }
+           throw $e;
+        }
+          $tabungan =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'1'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Tabungan','status'=>'aktif','id_entry'=>auth()->user()->id]);
+       $deposito =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'2'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Deposito','id_entry'=>auth()->user()->id]);
+       $pinjaman =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'3'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Pinjaman','id_entry'=>auth()->user()->id]);
         User::create([
             'nama' => $request->nama,
             'username' => $request->username,
@@ -96,19 +108,30 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
+         $request->validate([
             'nama' => 'required|string|max:200',
-            'username' => 'required|string|max:50|unique:users,username,' . $user->id,
-            'password' => 'nullable|string|min:8', // Opsional, hanya isi jika ingin mengubah
+            'username' => 'required|string|max:50|unique:users,username',
+            'password' => 'required|string|min:8',
             'role' => 'required|in:admin,bendahara,anggota',
-            'id_nasabah' => 'nullable|integer',
+            'alamat'=>'required',
+            'no_telp'=>'required',
+            'nik'=>'required',
+            'jabatan'=>'required',
+            'tgl_lahir'=>'required'
+
         ]);
+        
 
         $data = [
             'nama' => $request->nama,
             'username' => $request->username,
             'role' => $request->role,
-            'id_nasabah' => $request->id_nasabah,
+            'nik'=>$request->nik,
+           'nama'=>$request->nama,
+           'alamat'=>$request->alamat,
+           'jabatan'=>$request->jabatan,
+           'tgl_lahir'=>$request->tgl_lahir,
+           'no_telp'=>$request->no_telp,
         ];
 
         // Hanya update password jika diisi

@@ -13,6 +13,8 @@ use App\Models\Jurnal;
 use App\Models\Pinjaman;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
+use DB;
+
 
 
 use Illuminate\Http\Request;
@@ -65,6 +67,44 @@ class PengajuanController extends Controller
         }
         
        
+    }
+
+    public function storeTopup(Request $request)
+    {
+
+         $request->merge([
+        'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
+        'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
+        'admin' => str_replace('.', '', $request->admin),
+        'asuransi' => str_replace('.', '', $request->asuransi)
+    ]);
+        $request->validate([
+            'id_rekening' => 'required',
+            
+            'jumlah_pengajuan' => 'required|numeric',
+           'tenor'            => 'required|numeric|min:1',
+        'bunga'            => 'required|numeric|min:0',
+        'simpanan_pokok'            => 'required|numeric',
+        'kode_resort'            => 'required',
+        'admin'            => 'required|numeric',
+        'asuransi'            => 'required|numeric',
+        'jenis_jaminan.*'  => 'required|string|max:100',
+        'keterangan.*'     => 'required|string|max:255'
+        ]);
+       
+        $request->request->add(['id_entry' => auth()->user()->id,'jenis'=>'topup']);
+        $pengajuan = Pengajuan::create($request->all());
+        if ($request->jenis_jaminan) {
+        foreach ($request->jenis_jaminan as $i => $j) {
+            PengajuanJaminan::create([
+                'id_pengajuan'  => $pengajuan->id_pengajuan,
+                'jenis_jaminan' => $j,
+                'keterangan'    => $request->keterangan[$i] ?? null,
+                'id_entry'      => auth()->user()->id
+            ]);
+        }
+    }
+        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan.');
     }
 
     public function store(Request $request)
@@ -142,7 +182,8 @@ class PengajuanController extends Controller
 
       public function pencairan(){
         $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->orderBy('updated_at','desc')->get();
-        
+
+       
         return view('pengajuan.pencairan', compact('pinjaman'));
     }
     
@@ -162,10 +203,24 @@ class PengajuanController extends Controller
     }
 
     public function cair($id){
+        DB::beginTransaction();
+         try {
         $data = Pengajuan::where('id_pengajuan',$id)->where('status','=','approv')->with('rekening.nasabah','jaminan')->first();
-       
        $pengajuan = Pengajuan::where('id_pengajuan',$id)->first();
        $pengajuan->update(['status'=>'cair', 'tanggal_pencairan'=>date('Y-m-d')]);
+       $pinjamanLama = null;
+       $sisa_pokok_lama = 0;
+        if($data->jenis=='topup'){
+        $pinjamanLama = Pinjaman::where('id_nasabah',$data->rekening[0]->id_nasabah)->where('status','aktif')->first(); 
+        $datajurnaldebet = ['id_akun'=>'1','id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Kas','v_debet'=>$pinjamanLama->sisa_pokok,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
+$sisa_pokok_lama = $pinjamanLama->sisa_pokok;
+      $datajurnalkredit = ['id_akun'=>'5','id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Piutang Pinjaman Lama Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$pinjamanLama->sisa_pokok,'id_entry'=>auth()->user()->id];
+    $pinjamanLama->update(['status'=>'lunas', 'sisa_pokok'=>0,'sisa_bunga'=>0]);   
+         Jurnal::create($datajurnaldebet);
+    Jurnal::create($datajurnalkredit);
+    }
+       
+
         $pinjaman = Pinjaman::create([
         'id_pengajuan'     => $data->id_pengajuan,
         'id_nasabah'       => $data->rekening[0]->id_nasabah,
@@ -175,36 +230,55 @@ class PengajuanController extends Controller
         'status'           => 'aktif',
         'id_entry' => auth()->user()->id
     ]);
-        $rekening = Rekening::where('id_nasabah',$data->rekening[0]->id_nasabah)->where('jenis_tabungan','Tabungan')->first();
+        $rekening = Rekening::where('id_nasabah',$data->rekening[0]->id_nasabah)->where('jenis_rekening','Tabungan')->first();
         $simpanan = Simpanan::create([
             'id_rekening'=>$rekening->id_rekening,
             'id_akun'=>13,
             'jenis'=>'pokok',
+            'keterangan'=>'Simpanan pokok Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),
             'v_debit'=>0,
-            'v_kredit'=>$pengajuan->simpanan_pokok
+            'v_kredit'=>$pengajuan->simpanan_pokok,
+            'id_entry'=>auth()->user()->id,
         ]);
-       $datajurnaldebet = ['id_akun'=>'5','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Piutang Pinjaman Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>$data->jumlah_pencairan,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
-       $datajurnalkredit = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan,'id_entry'=>auth()->user()->id];
-       $datajurnalsimpanandebet = ['id_akun'=>'1','id_simpanan'=>$simpanan->id_simpanan,'keterangan'=>'Kas','v_debet'=>$pengajuan->simpanan_pokok,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
-       $datajurnalsimpanankredit = ['id_akun'=>'13','id_simpanan'=>$simpanan->id_simpanan,'keterangan'=>'Simpanan pokok Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$pengajuan->simpanan_pokok,'id_entry'=>auth()->user()->id];
        
-        $dataadmindebet = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>$data->jumlah_pencairan,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
-       $dataadminkredit = ['id_akun'=>'27','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Admin pinjaman Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan,'id_entry'=>auth()->user()->id];
+      
+       
+       
+       $datajurnaldebet = ['id_akun'=>'5','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Piutang Pinjaman '.$data->jenis.' Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>$data->jumlah_pencairan,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
 
        Jurnal::create($datajurnaldebet);
-    Jurnal::create($datajurnalkredit);
+     if($data->jenis=='topup'){
+       $datajurnalkredit = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan-$sisa_pokok_lama,'id_entry'=>auth()->user()->id];
+
+        $datakreditoldpinjaman = ['id_akun'=>'5','id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Piutang Pinjaman Lama Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$sisa_pokok_lama,'id_entry'=>auth()->user()->id];
+       Jurnal::create($datajurnalkredit);
+      
+        Jurnal::create($datakreditoldpinjaman);
+    }else{
+       $datajurnalkredit = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan,'id_entry'=>auth()->user()->id];
+
+         Jurnal::create($datajurnalkredit);
+    }
+     $datajurnalsimpanandebet = ['id_akun'=>'1','id_simpanan'=>$simpanan->id_simpanan,'keterangan'=>'Kas','v_debet'=>$pengajuan->simpanan_pokok,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
+       $datajurnalsimpanankredit = ['id_akun'=>'13','id_simpanan'=>$simpanan->id_simpanan,'keterangan'=>'Simpanan pokok Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$pengajuan->simpanan_pokok,'id_entry'=>auth()->user()->id];
     Jurnal::create($datajurnalsimpanandebet);
     Jurnal::create($datajurnalsimpanankredit);
+     $dataadmindebet = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>$data->admin,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
+       $dataadminkredit = ['id_akun'=>'27','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Admin pinjaman Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$data->admin,'id_entry'=>auth()->user()->id];
      Jurnal::create($dataadmindebet);
     Jurnal::create($dataadminkredit);
    
      $pdfFileName = 'SP_Hutang_'.$id.'.pdf';
     session(['pdf_data_'.$id => $data]);
-
+  DB::commit();
     return response()->json([
         'success' => true,
         'pdf_url' => route('pdf.sphutang.download', $id)
     ]);
+    } catch (\Exception $e) {
+            dd($e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
+        }
 
           //return view('pdf.sphutang', compact('data'));
     }
@@ -249,9 +323,11 @@ class PengajuanController extends Controller
         ->addColumn('jumlah', function($row){
             return number_format($row->jumlah_pengajuan, 0,',','.');
         })
+        
+       
 
         ->addColumn('status', function($row){
-            return $row->status;
+            return $row->jenis;
         })
 
         ->addColumn('aksi', function($row){
@@ -260,6 +336,9 @@ class PengajuanController extends Controller
             <button class="btn btn-sm btn-success me-1 appr-btn"
                 data-id="'.$row->id_pengajuan.'"
                 data-jumlah="'.number_format($row->jumlah_pengajuan, 0,',','.').'"
+                data-simpanan_pokok="'.number_format($row->simpanan_pokok, 0,',','.').'"
+                data-admin="'.number_format($row->admin, 0,',','.').'"
+                data-asuransi="'.number_format($row->asuransi, 0,',','.').'"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
                 title="Approve">

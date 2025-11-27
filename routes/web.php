@@ -16,9 +16,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AngsuranController;
 use App\Http\Controllers\BungaController;
 use App\Http\Controllers\AkunController;
-
-
-
+use App\Http\Controllers\PelunasanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
@@ -59,6 +57,7 @@ Route::get('/pengajuan/cair/{id}', [PengajuanController::class, 'cair'])->name('
 Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
 Route::get('/deposito/cari', [DepositoController::class, 'cari'])->middleware('auth')->name('deposito.cari');
 Route::get('/pengajuan/topup', [PengajuanController::class, 'topup'])->middleware('auth')->name('pengajuan.topup');
+Route::post('/pengajuan/topup/store', [PengajuanController::class, 'storeTopup'])->middleware('auth')->name('pengajuan.topup.store');
 
 Route::get('/pengajuan/approval', [PengajuanController::class, 'approval'])->middleware('auth')->name('pengajuan.approval');
 Route::get('/pengajuan/pencairan', [PengajuanController::class, 'pencairan'])->middleware('auth')->name('pengajuan.pencairan');
@@ -75,6 +74,8 @@ Route::get('/bukubesar', [JurnalController::class, 'bukuBesar'])->middleware('au
 
 Route::get('/pinjaman/{id}/angsuran', [AngsuranController::class, 'index'])->middleware('auth')->name('angsuran.index');
 Route::post('/pinjaman/{id}/angsuran', [AngsuranController::class, 'store'])->middleware('auth')->name('angsuran.store');
+Route::get('/pinjaman/{id}/pelunasan', [AngsuranController::class, 'pelunasan'])->middleware('auth')->name('angsuran.pelunasan');
+Route::post('/pinjaman/{id}/pelunasan', [AngsuranController::class, 'storePelunasan'])->middleware('auth')->name('angsuran.store.pelunasan');
 Route::get('/nasabah/datatables', [NasabahController::class, 'datatables'])
     ->name('nasabah.datatables');
 Route::get('/tabungan/penairkan', [TabunganController::class, 'penarikan'])
@@ -102,6 +103,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tabungan', TabunganController::class);
 	 Route::resource('deposito', DepositoController::class);
     Route::resource('pinjaman', PinjamanController::class);
+    Route::resource('pelunasan', PelunasanController::class);
+
 	 Route::resource('pengajuan', PengajuanController::class);
 	 Route::resource('nasabah', NasabahController::class);
 	 Route::resource('rekening', RekeningController::class);

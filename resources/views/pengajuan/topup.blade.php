@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="card-body px-4 py-4">
-                    <form method="POST" action="{{ route('pengajuan.store') }}">
+                    <form method="POST" action="{{ route('pengajuan.topup.store') }}">
                         @csrf
 
                         {{-- DATA NASABAH --}}
@@ -77,12 +77,14 @@
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Kode Resort</label>
-                                <select name="id_karyawan" class="form-control">
+                                <select name="kode_resort" class="form-control">
                                     <option value="">-- Pilih Kode Resort --</option>
                                     @foreach($karyawan as $k)
                                     <option value="{{ $k->id }}">{{$k->id .' / '. $k->nama }}</option>
                                     @endforeach
                                 </select>
+                                @error('kode_resort') <small class="text-danger">{{ $message }}</small> @enderror
+
                             </div>
                         </div>
 
@@ -92,20 +94,26 @@
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Simpanan Pokok</label>
                                 <input type="text"  name="simpanan_pokok"  value="{{ old('simpanan_pokok') }}" class="form-control format-angka  input-jumlah">
+                                @error('simpanan_pokok') <small class="text-danger">{{ $message }}</small> @enderror
+                                
                             </div>
                              <div class="col-md-6 mb-4">
                                 <label class="form-label">Biaya Admin</label>
                                 <input type="text"  name="admin"  value="{{ old('admin') }}" class="form-control format-angka  input-jumlah">
+                                @error('admin') <small class="text-danger">{{ $message }}</small> @enderror
+                            
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Asuransi</label>
                                 <input type="text"  name="asuransi" value="{{ old('asuransi') }}" class="form-control format-angka  input-jumlah">
+                                @error('asuransi') <small class="text-danger">{{ $message }}</small> @enderror
+                                
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Sisa Pokok Pinjaman</label>
-                                <input type="text"  name="sisa_pokok" value="{{number_format($pinjaman->sisa_pokok,0) }}" class="form-control format-angka  input-jumlah">
+                                <input type="text"  name="sisa_pokok" disabled value="{{number_format($pinjaman->sisa_pokok,0) }}" class="form-control format-angka  input-jumlah">
                             </div>
                         </div>
 
