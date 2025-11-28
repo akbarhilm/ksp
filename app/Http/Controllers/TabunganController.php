@@ -72,11 +72,15 @@ class TabunganController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'v_kredit' => str_replace('.', '', $request->v_kredit),
+        ]);
         $request->validate([
             'id_rekening' => 'required',
             'jenis' => 'required',
             'v_kredit' => 'required|numeric',
             'keterangan' => 'nullable|string',
+            'tanggal' => 'required|date',
         ]);
             if($request->jenis == 'pokok'){
             $id_akun = '13';

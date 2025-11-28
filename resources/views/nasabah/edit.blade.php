@@ -24,7 +24,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No KTP</label>
-                                            <input type="text" class="form-control" name="nik"
+                                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control" name="nik"
                                                 value="{{$nasabah->nik}}" />
 
                                         </div>
@@ -70,7 +70,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No Telp</label>
-                                            <input type="text" class="form-control" name="no_telp"
+                                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control" name="no_telp"
                                                 value="{{ $nasabah->no_telp }}" />
 
                                         </div>
@@ -117,13 +117,10 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-10">
-                                        <div class="input-group input-group-static mb-4">
+                                    <div class="col-md-4">
+                                        <div class="d-flex gap-2 input-group input-group-static mb-4">
                                             <button class="btn btn-info" type="submit">Simpan</button>
-                                        </div>
-                                    </div>
-                                     <div class="col-md-2 ">
-                                        <div class="input-group input-group-static mb-4 right">
+                                       
                                             <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>
                                         </div>
                                     </div>

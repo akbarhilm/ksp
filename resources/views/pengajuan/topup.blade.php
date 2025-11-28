@@ -111,15 +111,25 @@
                                 @error('asuransi') <small class="text-danger">{{ $message }}</small> @enderror
                                 
                             </div>
+                            
+                        </div>
+<hr>
+                          <h6 class="mb-3">Pinjaman Sebelumnya</h6>
+                        <div class="row">
                             <div class="col-md-6 mb-4">
+                                <label class="form-label">Jumlah Pinjaman Sebelumnya</label>
+                                <input type="text"  name="jumlah_pinjaman_lama" disabled value="{{number_format($pinjaman->total_pinjaman,0) }}" class="form-control format-angka  input-jumlah">
+                            </div> 
+
+
+                        <div class="col-md-6 mb-4">
                                 <label class="form-label">Sisa Pokok Pinjaman</label>
                                 <input type="text"  name="sisa_pokok" disabled value="{{number_format($pinjaman->sisa_pokok,0) }}" class="form-control format-angka  input-jumlah">
                             </div>
                         </div>
 
-                        <hr>
-
                         {{-- INPUT JAMINAN DINAMIS --}}
+                        <hr>
                         <h6 class="mb-3">Jaminan</h6>
 
                         <div id="jaminan-container">

@@ -3,7 +3,7 @@
     <x-navbars.sidebar activePage="karyawan" menuParent="admin"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Managemen Karyawan"></x-navbars.navs.auth>
         <!-- End Navbar -->
         {{-- resources/views/users/create.blade.php --}}
 
@@ -37,7 +37,7 @@
                                             <label>password</label>
                                             <input type="password" class="form-control" name="password"
                                                 value="{{ old('password') }}" />
-
+                                            <span class="text-xs">Password min 8 karakter</span>
                                         </div>
                                         @error('password')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
@@ -48,7 +48,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No KTP</label>
-                                            <input type="text" patter="\d*" inputmode="numeric" class="form-control" maxlength="16" name="nik"
+                                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')" patter="\d*" inputmode="numeric" class="form-control" maxlength="16" name="nik"
                                                 value="{{ old('nik') }}" />
 
                                         </div>
@@ -94,7 +94,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>No Telp</label>
-                                            <input type="text"  patter="\d*" inputmode="numeric" class="form-control" name="no_telp"
+                                            <input type="text"  oninput="this.value = this.value.replace(/[^0-9]/g, '')"  pattern="\d*" inputmode="numeric" class="form-control" name="no_telp"
                                                 value="{{ old('no_telp') }}" />
 
                                         </div>
@@ -136,13 +136,10 @@
                                 
                                 
                                 <div class="row">
-                                    <div class="col-md-10">
-                                        <div class="input-group input-group-static mb-4">
+                                    <div class="col-md-4">
+                                        <div class="d-flex gap-2 input-group input-group-static mb-4">
                                             <button class="btn btn-info" type="submit">Simpan</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 ">
-                                        <div class="input-group input-group-static mb-4 right">
+                                    
                                             <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>
                                         </div>
                                     </div>

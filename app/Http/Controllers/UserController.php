@@ -8,6 +8,7 @@ use App\Models\Rekening;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -110,7 +111,7 @@ class UserController extends Controller
     {
          $request->validate([
             'nama' => 'required|string|max:200',
-            'username' => 'required|string|max:50|unique:users,username',
+            'username' => ['required','string','max:50',Rule::unique('users','username')->ignore($user->id)],    
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,bendahara,anggota',
             'alamat'=>'required',
@@ -138,6 +139,7 @@ class UserController extends Controller
         if ($request->filled('password')) {
             $data['password'] = $request->password;
         }
+    
 
         $user->update($data);
 

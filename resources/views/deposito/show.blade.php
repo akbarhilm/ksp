@@ -12,7 +12,7 @@
             <!-- CARD DATA NASABAH -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-info text-white py-3 px-4">
-                    <h6 class="mb-0">Transaksi Tabungan</h6>
+                    <h6 class="mb-0 text-white">Transaksi Tabungan</h6>
                 </div>
 
                 <div class="card-body px-4 py-4">
@@ -50,12 +50,12 @@
 
                     <!-- BUTTONS -->
                     <div class="row">
-                        <div class="col-md-10 mb-3">
+                        <div class="col-md-4">
+                            <div class="d-flex gap-2">
                             <button type="button" class="btn btn-info" onclick="lihat()">Lihat</button>
-                        </div>
-
-                        <div class="col-md-2 mb-3 text-end">
+                       
                             <a class="btn btn-dark" href="{{ url()->previous() }}">Kembali</a>
+                            </div>
                         </div>
                     </div>
 

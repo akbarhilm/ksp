@@ -40,14 +40,14 @@
 
         {{-- Data dari backend --}}
         @php
-            $sisa = $pinjaman->sisa_pokok - $simpananpokok+$simpananwajib;
+            $sisa = $pinjaman->sisa_pokok - ($simpananpokok+$simpananwajib);
            
         @endphp
 
         <form action="{{ route('angsuran.store.pelunasan', $pinjaman->id_pinjaman) }}" method="POST">
             @csrf
 
-            <div class="mb-3">
+            <div class="mb-3 col-md-3">
                 <label>Total Pelunasan</label>
                 <input type="hidden" id="simpanan" name="simpananpokok" class="form-control input-jumlah" value="{{$simpananpokok}}" > 
                 <inpu type="hidden" id="simpananwajib" name="simpananwajib" class="form-control input-jumlah" value="{{$simpananwajib}}" >
@@ -55,7 +55,7 @@
             </div>
 
 
-            <div class="mb-3">
+            <div class="mb-3 col-md-3">
                 <label>Tanggal Bayar</label>
                 <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
             </div>

@@ -61,7 +61,7 @@ class PengajuanController extends Controller
         })->get();
        $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->where('status','aktif')->get();
         if(!$rekening->count()){
-            return redirect()->route('rekening.edit',$idnasabah)->with('error', 'Rekening pinjaman Belum Aktif.');
+            return redirect()->route('rekening.edit',$idnasabah)->with('warning', 'Rekening pinjaman Belum Aktif.');
         }else{
         return view('pengajuan.topup', compact('nasabah', 'rekening','pinjaman','karyawan','jaminan') );
         }

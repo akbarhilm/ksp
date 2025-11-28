@@ -82,6 +82,12 @@ Route::get('/tabungan/penairkan', [TabunganController::class, 'penarikan'])
     ->name('tabungan.penarikan');
 Route::post('/tabungan/penarikan/store', [TabunganController::class, 'penarikanStore'])
     ->name('tabungan.penarikan.store');
+
+Route::get('/deposito/penairkan', [DepositoController::class, 'penarikan'])
+    ->name('deposito.penarikan');
+Route::post('/deposito/penarikan/store', [DepositoController::class, 'penarikanStore'])
+    ->name('deposito.penarikan.store');
+	
 Route::get('/nasabah/datatablesindex', [NasabahController::class, 'datatableindex'])->name('nasabah.datatablesindex');
 Route::get('/rekening/datatablesindexrekning', [RekeningController::class, 'datatableindexrekening'])->name('rekening.datatablesindexrekening');
 Route::get('/tabungan/datatablestabungan', [TabunganController::class, 'datatablestabungan'])->name('tabungan.datatablestabungan');

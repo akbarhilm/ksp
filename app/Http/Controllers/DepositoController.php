@@ -34,15 +34,18 @@ class DepositoController extends Controller
             return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
         })
         ->addColumn('aksi', function ($row) {
-            $create = route('deposito.create', $row->id_nasabah);
+            $create = route('deposito.create',  ['id_nasabah'=>$row->id_nasabah]);
             $edit = route('deposito.show', $row->id_nasabah);
-
+ $tarik = route('deposito.penarikan', ['id_nasabah'=>$row->id_nasabah]);
             return '
                 <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="edit">
                     <i class="material-icons">add</i>
                 </a>
-                 <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="lihat">
+                 <a href="'.$edit.'" class="btn btn-sm btn-warning btn-link" title="lihat">
                     <i class="material-icons">visibility</i>
+                </a>
+                <a href="'.$tarik.'" class="btn btn-sm btn-success btn-link" title="penarikan">
+                    <i class="material-icons">south</i>
                 </a>
             ';
         })
@@ -61,7 +64,7 @@ class DepositoController extends Controller
        
         $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Deposito')->where('status','aktif')->get();
         if(!$rekening->count()){
-            return redirect()->route('rekening.edit',$idnasabah)->with('error', 'Rekening Deposito Belum Aktif.');
+            return redirect()->route('rekening.edit',$idnasabah)->with('warning', 'Rekening Deposito Belum Aktif.');
         }else{
         return view('deposito.create', compact('nasabah', 'rekening'));
         }
@@ -70,14 +73,16 @@ class DepositoController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'v_kredit' => str_replace('.', '', $request->v_kredit),
+        ]); 
         $request->validate([
             'id_rekening' => 'required',
-            'jenis' => 'required',
             'v_kredit' => 'required|numeric',
             'keterangan' => 'nullable|string',
         ]); 
         
-            $id_akun = '5';
+            $id_akun = '16';
         
             $request->request->add(['id_akun' => $id_akun]);
 
@@ -87,11 +92,11 @@ class DepositoController extends Controller
         $simpanan = Simpanan::create($request->all());
 
          $datajurnalkredit = ['id_akun'=>$id_akun,'id_simpanan'=>$simpanan->id,'keterangan'=>'Deposito anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>'2','id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>'1','id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
         Jurnal::create($datajurnaldebet);
         Jurnal::create($datajurnalkredit);
 
-        return redirect()->route('deposito.index')->with('success', 'Simpanan berhasil ditambahkan.');
+        return redirect()->route('deposito.index')->with('success', 'Deposito berhasil ditambahkan.');
     }
 
     public function cari(Request $request)
@@ -152,9 +157,11 @@ $nasabah = $query->paginate(10);
     {
        
         $nasabah = Nasabah::find($id);
-       $rekening = Rekening::where('id_nasabah', $id)->where('jenis_rekening','=','Deposito')->get();
+       $rekening = Rekening::where('id_nasabah', $id)->where('jenis_rekening','=','Deposito')->where('status','aktif')->get();
+
         if(!$rekening->count()){
-            return redirect()->route('deposito.index')->with('error', 'Nasabah belum memiliki rekening Deposito. Silakan buat rekening terlebih dahulu.');
+            return redirect()->route('rekening.edit',$id)->with('warning', 'Rekening Deposito Belum Aktif.');
+            
         }else{
         return view('deposito.show', compact('nasabah', 'rekening'));
         }
@@ -179,4 +186,26 @@ $nasabah = $query->paginate(10);
         $simpanan->delete();
         return redirect()->route('deposito.index')->with('success', 'Simpanan berhasil dihapus.');
     }
+
+    public function penarikan(Request $request){
+        $nasabah = Nasabah::where('id_nasabah',$request->id_nasabah)->first();
+        $rekening = Rekening::where('id_nasabah',$request->id_nasabah)->where('jenis_rekening','Deposito')->first();
+        $simpanan = Simpanan::where('id_rekening',$rekening->id_rekening)->get();
+        $totaldebit = 0;
+        $totalkredit = 0;
+        $saldo = 0;
+        foreach($simpanan as $s){
+            
+         
+               $totaldebit = $totaldebit + $s->v_debit;
+            $totalkredit= $totalkredit+ $s->v_kredit;
+            
+           
+        }
+      
+        $saldo = $totalkredit - $totaldebit;
+       
+        return view('deposito.penarikan',compact('nasabah','rekening','saldo'));
+    }
+
 }

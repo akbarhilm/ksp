@@ -59,15 +59,12 @@
 
                                      <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>Jenis Simpanan</label>
-                                           <select class="form-control" name="jenis">
-                                            <option value="">--Pilih Jenis Simpanan--</option>
-                                            <option value="pokok">Simpanan Pokok</option>
-                                            <option value="wajib">Simpanan Wajib</option>
-                                            <option value="sukarela">Simpanan Sukarela</option>
-                                           </select>
+                                            <label>Tanggal</label>
+                                           <input type="date" class="form-control" name="tanggal"
+                                                value="{{ old('tanggal',date('Y-m-d')) }}" 
+                                                />
                                         </div>
-                                        @error('no_rekening')
+                                        @error('tanggal')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
@@ -77,7 +74,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Jumlah</label>
-                                            <input type="text"  class="form-control" name="v_kredit"
+                                            <input type="text"  class="form-control input-jumlah" name="v_kredit"
                                                 value="{{old('v_kredit') }}" 
                                                 />
 
@@ -102,14 +99,10 @@
                                     </div>
                                 </div>
                                  <div class="row">
-                            <div class="col-md-10">
-                                <div class="input-group input-group-static mb-4">
+                            <div class="col-md-4">
+                                <div class="d-flex gap-2 input-group input-group-static mb-4">
                                     <button class="btn btn-info" type="submit">Simpan</button>
-                                </div>
-                            </div>
-                             <div class="col-md-2">
                                 
-                                 <div class="input-group input-group-static mb-4 right">
                                     <a class="btn btn-dark " href="{{ url()->previous() }}">kembali</a>
                                 </div>
                             </div>
