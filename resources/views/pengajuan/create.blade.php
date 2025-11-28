@@ -77,12 +77,14 @@
                             </div>
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Kode Resort</label>
-                                <select name="id_karyawan" class="form-control">
+                                <select name="kode_resort" class="form-control">
                                     <option value="">-- Pilih Kode Resort --</option>
                                     @foreach($karyawan as $k)
                                     <option value="{{ $k->id }}">{{$k->id .' / '. $k->nama }}</option>
                                     @endforeach
                                 </select>
+                                @error('kode_resort') <small class="text-danger">{{ $message }}</small> @enderror
+
                             </div>
                         </div>
 

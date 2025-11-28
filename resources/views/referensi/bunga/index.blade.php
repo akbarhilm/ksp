@@ -7,12 +7,12 @@
         <!-- End Navbar -->
      <div class="container">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    {{-- <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="m-0">Data Bunga</h4>
         <a href="{{ route('bunga.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Tambah Bunga
         </a>
-    </div>
+    </div> --}}
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

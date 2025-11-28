@@ -77,14 +77,14 @@
                                     Edit
                                 </a>
 
-                                <form action="{{ route('akun.destroy', $d->id_akun) }}" 
+                                {{-- <form action="{{ route('akun.destroy', $d->id_akun) }}" 
                                       method="POST" 
                                       class="d-inline"
                                       onsubmit="return confirm('Hapus akun ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-danger">Hapus</button>
-                                </form>
+                                </form> --}}
                             </td>
                         </tr>
                     @empty

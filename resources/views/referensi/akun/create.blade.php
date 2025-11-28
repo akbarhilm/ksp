@@ -18,12 +18,18 @@
 
                 <div class="mb-3">
                     <label>Kode Akun</label>
-                    <input type="text" name="kode_akun" class="form-control" value="{{ old('kode_akun') }}">
+                    <input type="text" name="kode_akun" class="form-control" value="{{ old('kode_akun') }}" required>
+                     @error('kode_akun')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
                 </div>
 
                 <div class="mb-3">
                     <label>Nama Akun</label>
-                    <input type="text" name="nama_akun" class="form-control" value="{{ old('nama_akun') }}">
+                    <input type="text" name="nama_akun" class="form-control" value="{{ old('nama_akun') }}" required>
+                     @error('nama_akun')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
                 </div>
 
                 <div class="mb-3">
@@ -35,6 +41,9 @@
                         <option value="Pendapatan">Pendapatan</option>
                         <option value="Beban">Beban</option>
                     </select>
+                     @error('tipe_akun')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
                 </div>
 
                 <div class="mb-3">

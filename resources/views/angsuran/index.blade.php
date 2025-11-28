@@ -52,7 +52,7 @@
                  @php
                                         $denda = \App\Helpers\PinjamanHelper::hitungDenda($pinjaman->id_pinjaman);
                                     @endphp
-                <input type="text" name="denda" id="denda" value={{number_format($denda,0,',','.')}} class="form-control input-jumlah" onchange="adddenda()" >
+                <input type="text" name="denda" id="denda" value={{number_format($denda['denda'],0,',','.')}} class="form-control input-jumlah" onchange="adddenda()" >
             </div>
              <div class="mb-3">
                 <label>Simpanan Wajib</label>
@@ -165,7 +165,7 @@
      const jumlahPinjaman = {{ $jumlahPinjaman }};  
     const sukuBunga = {{ $sukuBunga }};  
     const tenor = {{ $tenor }}; 
-    const dendaDefault = {{$denda}}          
+    const dendaDefault = {{$denda['denda']}};          
     // Hitung bunga bulanan
     const bungaPerBulan = jumlahPinjaman * (sukuBunga / 100);
 

@@ -109,7 +109,7 @@
                                                 value="{{ old('jabatan') }}" />
 
                                         </div>
-                                        @error('no_telp')
+                                        @error('jabatan')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
@@ -120,9 +120,9 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label>Role</label>
                                             <select name='role' class='form-control'>
+                                                <option value='superadmin'>Super Admin</option>
+                                                <option value='kepalaadmin'>Kepala Admin</option>
                                                 <option value='admin'>Admin</option>
-                                                <option value='bendahara'>Bendahara</option>
-                                                <option value='anggota'>Anggota</option>
                                             </select>
 
                                         </div>

@@ -111,10 +111,11 @@ class PengajuanController extends Controller
     {
          $request->merge([
         'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
-        'simpanan_pokok' => str_replace('.', '', $request->simpanan_wajib),
+        'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
         'admin' => str_replace('.', '', $request->admin),
         'asuransi' => str_replace('.', '', $request->asuransi)
     ]);
+
         $request->validate([
             'id_rekening' => 'required',
             
@@ -125,10 +126,13 @@ class PengajuanController extends Controller
         'admin'            => 'required|numeric',
         'asuransi'            => 'required|numeric',
         'jenis_jaminan.*'  => 'required|string|max:100',
-        'keterangan.*'     => 'required|string|max:255'
+        'keterangan.*'     => 'required|string|max:255',
+        'kode_resort'            => 'required',
         ]);
        
         $request->request->add(['id_entry' => auth()->user()->id]);
+        $request->request->add(['jenis'=>'baru']);
+         
         $pengajuan = Pengajuan::create($request->all());
         if ($request->jenis_jaminan) {
         foreach ($request->jenis_jaminan as $i => $j) {

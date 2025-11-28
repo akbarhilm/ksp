@@ -35,7 +35,7 @@ class AkunController extends Controller
     {
         $request->validate([
             'kode_akun' => 'required|max:5|unique:trakun,kode_akun',
-            'nama_akun' => 'required|max:100',
+            'nama_akun' => 'required',
             'tipe_akun' => 'required',
             'status' => 'required',
         ]);

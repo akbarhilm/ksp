@@ -19,11 +19,17 @@
                 <div class="mb-3">
                     <label>Kode Akun</label>
                     <input type="text" name="kode_akun" class="form-control" value="{{ $akun->kode_akun }}">
+                      @error('kode_akun')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
                 </div>
 
                 <div class="mb-3">
                     <label>Nama Akun</label>
                     <input type="text" name="nama_akun" class="form-control" value="{{ $akun->nama_akun }}">
+                @error('nama_akun')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
                 </div>
 
                 <div class="mb-3">
@@ -33,6 +39,9 @@
                             <option {{ $akun->tipe_akun == $t ? 'selected':'' }}>{{ $t }}</option>
                         @endforeach
                     </select>
+                     @error('tipe_akun')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
                 </div>
 
                 <div class="mb-3">

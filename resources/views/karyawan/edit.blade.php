@@ -119,9 +119,9 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label>Role</label>
                                             <select name='role' class='form-control'>
+                                                <option value='superadmin' {{$user->role =='superadmin'?'selected':''}}>Super Admin</option>
+                                                <option value='kepalaadmin' {{$user->role =='kepalaadmin'?'selected':''}}>Kepala Admin</option>
                                                 <option value='admin' {{$user->role =='admin'?'selected':''}}>Admin</option>
-                                                <option value='bendahara' {{$user->role =='bendahara'?'selected':''}}>Bendahara</option>
-                                                <option value='anggota' {{$user->role =='anggota'?'selected':''}}>Anggota</option>
                                             </select>
 
                                         </div>

@@ -43,7 +43,8 @@ class UserController extends Controller
             'role' => 'required|in:admin,bendahara,anggota',
             'alamat'=>'required',
             'no_telp'=>'required',
-            'nik'=>'required',
+                        'nik'=>'required|numeric|max:16',
+
             'jabatan'=>'required',
             'tgl_lahir'=>'required'
 
@@ -116,7 +117,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,bendahara,anggota',
             'alamat'=>'required',
             'no_telp'=>'required',
-            'nik'=>'required',
+            'nik'=>'required|numeric|max:16',
             'jabatan'=>'required',
             'tgl_lahir'=>'required'
 

@@ -7,31 +7,66 @@ use App\Models\Simpanan;
 use App\Models\Pinjaman;
 use App\Models\Angsuran;
 use App\Models\Transaksi;
+use App\Models\Jurnal;
+use App\Models\Nasabah;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-         // Total simpanan anggota
-        //$totalSimpanan = Simpanan::sum('jumlah');
+     //============laba rugi bulanan ===================
+    $tanggal  = now();
+    // Query jurnal join akun
+    $query = Jurnal::with('akun')
+       ->whereMonth('tanggal_transaksi', $tanggal->month)
+    ->whereYear('tanggal_transaksi', $tanggal->year);
 
-        // Total pinjaman yang masih berjalan
-       // $totalPinjaman = Pinjaman::where('status', 'berjalan')->sum('jumlah_pinjaman');
+    $jurnal = $query->get();
 
-       // // Total angsuran yang sudah dibayar
-       // $totalAngsuran = Angsuran::sum('jumlah_bayar');
+    // Hitung total pendapatan & beban
+    $totalPendapatan = 0;
+    $totalBeban      = 0;
 
-        // Saldo kas (uang masuk - uang keluar)
-       // $totalDebit = Transaksi::sum('debit');
-       // $totalKredit = Transaksi::sum('kredit');
-       // $saldoKas = $totalDebit - $totalKredit;
+    foreach ($jurnal as $row) {
 
-        return view('dashboard.index');
-        // , compact(
-        //     'totalSimpanan',
-        //     'totalPinjaman',
-        //     'totalAngsuran',
-        //     'saldoKas'
-        // ));
+        // Pendapatan → saldo normal kredit
+        if ($row->akun->tipe_akun === 'Pendapatan') {
+            $totalPendapatan += ($row->v_kredit - $row->v_debet);
+        }
+
+        // Beban → saldo normal debit
+        if (in_array($row->akun->tipe_akun, ['Beban', 'Biaya'])) {
+            $totalBeban += ($row->v_debet - $row->v_kredit);
+        }
     }
+
+    $laba = $totalPendapatan - $totalBeban;
+//===============================================
+//=================jumlah pinjaman===================
+ $totalPinjaman = Pinjaman::whereMonth('created_at', $tanggal->month)
+    ->whereYear('created_at', $tanggal->year)->sum('total_pinjaman');
+//===============================================
+//================jumlah nasabah======================
+$totalnasabah = Nasabah::where('status','Aktif ')->count();
+//===============================================
+//================jumlah simpanan======================
+$totalsimpanan = Simpanan::whereMonth('tanggal', $tanggal->month)
+    ->whereYear('tanggal', $tanggal->year)->sum('v_kredit') - Simpanan::whereMonth('tanggal', $tanggal->month)
+    ->whereYear('tanggal', $tanggal->year)->sum('v_debit');
+//===============================================
+//================List Pinjaman======================
+$listpinjaman = Pinjaman::with('nasabah','pengajuan')->get();
+$lunas = Pinjaman::where('status','lunas')->whereMonth('updated_at', $tanggal->month)->whereYear('updated_at', $tanggal->year)->count();
+//===============================================
+   return view('dashboard.index', [
+        'laba'             => $laba,
+        'totalPinjaman'    => $totalPinjaman,
+        'totalnasabah'     => $totalnasabah,
+        'totalsimpanan'    => $totalsimpanan,
+        'listpinjaman'     => $listpinjaman,
+        'lunas'            => $lunas,
+        
+    ]);
+}
+
 }

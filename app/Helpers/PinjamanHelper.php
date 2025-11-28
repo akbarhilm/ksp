@@ -26,7 +26,7 @@ class PinjamanHelper
 
     // ✔ 1. Sudah bayar bulan ini
     if ($lastPay) {
-        return ['status' => 'Lunas Bulan Ini', 'badge' => 'success'];
+        return ['status' => 'Sudah Bayar', 'badge' => 'success'];
     }
 
     // ✔ 2. Belum bayar dan hari ini sebelum jatuh tempo
