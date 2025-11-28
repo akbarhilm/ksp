@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 26, 2025 at 09:58 AM
+-- Generation Time: Nov 28, 2025 at 09:26 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -71,7 +71,35 @@ INSERT INTO `tmjurnal` (`id_jurnal`, `id_akun`, `id_simpanan`, `id_pinjaman`, `t
 (44, 13, NULL, NULL, '2025-11-24', 'Penarikan Tabungan 00042', '1000000', '0', 1, '2025-11-24', '2025-11-24'),
 (45, 1, NULL, NULL, '2025-11-24', 'Penarikan Tabungan 00042', '0', '1000000', 1, '2025-11-24', '2025-11-24'),
 (46, 31, NULL, NULL, '2025-11-26', 'Beban bunga simpanan  00043', '3000', '0', 1, '2025-11-26', '2025-11-26'),
-(47, 14, NULL, NULL, '2025-11-26', 'Penambahan simpanan dari bunga 00043', '0', '3000', 1, '2025-11-26', '2025-11-26');
+(47, 14, NULL, NULL, '2025-11-26', 'Penambahan simpanan dari bunga 00043', '0', '3000', 1, '2025-11-26', '2025-11-26'),
+(85, 1, NULL, 3, '2025-11-27', 'Kas', '2500000', '0', 1, '2025-11-27', '2025-11-27'),
+(86, 5, NULL, 3, '2025-11-27', 'Piutang Pinjaman Lama Anggota 00042', '0', '2500000', 1, '2025-11-27', '2025-11-27'),
+(87, 5, NULL, 13, '2025-11-27', 'Piutang Pinjaman topup Anggota 00042', '6000000', '0', 1, '2025-11-27', '2025-11-27'),
+(88, 1, NULL, 13, '2025-11-27', 'Kas', '0', '3500000', 1, '2025-11-27', '2025-11-27'),
+(89, 5, NULL, 3, '2025-11-27', 'Piutang Pinjaman Lama Anggota 00042', '0', '2500000', 1, '2025-11-27', '2025-11-27'),
+(90, 1, NULL, NULL, '2025-11-27', 'Kas', '200000', '0', 1, '2025-11-27', '2025-11-27'),
+(91, 13, NULL, NULL, '2025-11-27', 'Simpanan pokok Anggota 00042', '0', '200000', 1, '2025-11-27', '2025-11-27'),
+(92, 1, NULL, 13, '2025-11-27', 'Kas', '100000', '0', 1, '2025-11-27', '2025-11-27'),
+(93, 27, NULL, 13, '2025-11-27', 'Admin pinjaman Anggota 00042', '0', '100000', 1, '2025-11-27', '2025-11-27'),
+(106, 1, NULL, 13, '2025-11-27', 'Pelunasan pinjaman 00042', '5800000', '0', 1, '2025-11-27', NULL),
+(107, 5, NULL, 13, '2025-11-27', 'Piutang pinjaman 00042', '0', '6000000', 1, '2025-11-27', NULL),
+(108, 14, NULL, NULL, '2025-11-27', 'Penarikan simpanan wajib 00042', '0', '0', 1, '2025-11-27', NULL),
+(109, 13, NULL, NULL, '2025-11-27', 'Penarikan simpanan pokok 00042', '200000', '0', 1, '2025-11-27', NULL),
+(110, 1, 45, NULL, '2025-11-28', 'kas', '500000', '0', 1, '2025-11-28', '2025-11-28'),
+(111, 15, 45, NULL, '2025-11-28', 'Tabungan sukarela anggota 00060', '0', '500000', 1, '2025-11-28', '2025-11-28'),
+(112, 1, 46, NULL, '2025-11-28', 'kas', '50000000', '0', 1, '2025-11-28', '2025-11-28'),
+(113, 16, 46, NULL, '2025-11-28', 'Deposito anggota 00060', '0', '50000000', 1, '2025-11-28', '2025-11-28'),
+(114, 1, NULL, 1, '2025-11-28', 'Pembayaran angsuran pinjaman 00043', '660000', '0', 1, '2025-11-28', NULL),
+(115, 5, NULL, 1, '2025-11-28', 'Piutang pinjaman 00043', '0', '500000', 1, '2025-11-28', NULL),
+(116, 26, NULL, 1, '2025-11-28', 'Pendapatan bunga pinjaman 00043', '0', '30000', 1, '2025-11-28', NULL),
+(117, 29, NULL, 1, '2025-11-28', 'Pendapatan bunga pinjaman 00043', '0', '117000', 1, '2025-11-28', NULL),
+(118, 14, NULL, NULL, '2025-11-28', 'Simpanan wajib 00043', '0', '13000', 1, '2025-11-28', NULL),
+(119, 5, NULL, 14, '2025-11-28', 'Piutang Pinjaman baru Anggota 00042', '1000000', '0', 1, '2025-11-28', '2025-11-28'),
+(120, 1, NULL, 14, '2025-11-28', 'Kas', '0', '1000000', 1, '2025-11-28', '2025-11-28'),
+(121, 1, NULL, NULL, '2025-11-28', 'Kas', '200000', '0', 1, '2025-11-28', '2025-11-28'),
+(122, 13, NULL, NULL, '2025-11-28', 'Simpanan pokok Anggota 00042', '0', '200000', 1, '2025-11-28', '2025-11-28'),
+(123, 1, NULL, 14, '2025-11-28', 'Kas', '0', '0', 1, '2025-11-28', '2025-11-28'),
+(124, 27, NULL, 14, '2025-11-28', 'Admin pinjaman Anggota 00042', '0', '0', 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -101,7 +129,9 @@ CREATE TABLE `tmpembayaran` (
 
 INSERT INTO `tmpembayaran` (`id_pembayaran`, `id_pinjaman`, `tanggal`, `total_bayar`, `bayar_bunga`, `bayar_pokok`, `bayar_denda`, `simpanan`, `metode`, `cicilan_ke`, `id_entry`, `created_at`, `updated_at`) VALUES
 (2, 3, '2025-11-19', '530000', '30000', '500000', '0', '0', 'ATM', 1, 1, '2025-11-17', '2025-11-17'),
-(5, 4, '2025-10-19', '1140000', '120000', '1000000', '6000', '14000', 'ATM', 1, 1, '2025-11-21', '2025-11-21');
+(5, 4, '2025-10-19', '1140000', '120000', '1000000', '6000', '14000', 'ATM', 1, 1, '2025-11-21', '2025-11-21'),
+(11, 13, '2025-11-27', '5800000', '0', '5800000', '0', '0', 'Cash', 0, 1, '2025-11-27', '2025-11-27'),
+(12, 1, '2025-11-28', '660000', '30000', '500000', '117000', '13000', 'Cash', 1, 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -135,9 +165,11 @@ CREATE TABLE `tmpengajuan` (
 --
 
 INSERT INTO `tmpengajuan` (`id_pengajuan`, `id_rekening`, `bunga`, `tenor`, `tanggal_pengajuan`, `tanggal_approval`, `tanggal_pencairan`, `jumlah_pengajuan`, `jumlah_pencairan`, `status`, `simpanan_pokok`, `admin`, `asuransi`, `kode_resort`, `jenis`, `id_entry`, `created_at`, `updated_at`) VALUES
-(3, 6, 0, 0, '2025-11-15', '2025-11-15', '2025-10-10', '3000000.00', '3000000.00', 'cair', '0', '0', '0', 1, 'baru', 1, '2025-11-15', '2025-11-15'),
+(3, 6, 1, 6, '2025-11-15', '2025-11-15', '2025-10-10', '3000000.00', '3000000.00', 'cair', '0', '0', '0', 1, 'baru', 1, '2025-11-15', '2025-11-15'),
 (4, 5, 0, 0, '2025-11-17', '2025-11-17', '2025-11-17', '3000000.00', '3000000.00', 'cair', '0', '0', '0', 1, 'baru', 1, '2025-11-17', '2025-11-17'),
-(13, 19, 2, 6, '2025-11-20', '2025-11-20', '2025-10-20', '6000000.00', '6000000.00', 'cair', '100000', '100000', '0', 1, 'baru', 1, '2025-11-20', '2025-11-20');
+(13, 19, 2, 6, '2025-11-20', '2025-11-20', '2025-10-20', '6000000.00', '6000000.00', 'cair', '100000', '100000', '0', 1, 'baru', 1, '2025-11-20', '2025-11-20'),
+(15, 5, 2, 6, '2025-11-27', '2025-11-27', '2025-11-27', '6000000.00', '6000000.00', 'cair', '200000', '100000', '0', 1, 'topup', 1, '2025-11-27', '2025-11-27'),
+(16, 5, 1, 6, '2025-11-28', '2025-11-28', '2025-11-28', '1000000.00', '1000000.00', 'cair', '200000', '0', '0', 4, 'baru', 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -164,7 +196,11 @@ INSERT INTO `tmpengajuandetail` (`id_pengajuandetail`, `id_pengajuan`, `jenis_ja
 (4, 12, 'PIN ATM', '1234567', 1, '2025-11-19', '2025-11-19'),
 (5, 12, 'JAMSOSTEK', '987456124', 1, '2025-11-19', '2025-11-19'),
 (6, 4, 'ATM', 'BCA 5621322485', 1, '2025-11-20', '2025-11-20'),
-(7, 4, 'PIN ATM', '1234567', 1, '2025-11-20', '2025-11-20');
+(7, 4, 'PIN ATM', '1234567', 1, '2025-11-20', '2025-11-20'),
+(8, 15, 'ATM', 'BCA 5621322485', 1, '2025-11-27', '2025-11-27'),
+(9, 15, 'PIN ATM', '1234567', 1, '2025-11-27', '2025-11-27'),
+(10, 15, 'Jamsostek', '5621322485', 1, '2025-11-27', '2025-11-27'),
+(11, 16, 'ATM', 'BCA 5621322485', 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -190,9 +226,11 @@ CREATE TABLE `tmpinjaman` (
 --
 
 INSERT INTO `tmpinjaman` (`id_pinjaman`, `id_pengajuan`, `id_nasabah`, `total_pinjaman`, `sisa_pokok`, `sisa_bunga`, `status`, `id_entry`, `created_at`, `updated_at`) VALUES
-(1, 3, 43, '3000000', '3000000', '180000', 'aktif', 1, '2025-09-10', NULL),
-(3, 4, 42, '3000000', '2500000', '150000', 'aktif', 1, '2025-11-17', '2025-11-17'),
-(4, 13, 50, '6000000', '5000000', '600000', 'aktif', 1, '2025-11-20', '2025-11-21');
+(1, 3, 43, '3000000', '2500000', '150000', 'aktif', 1, '2025-09-10', '2025-11-28'),
+(3, 4, 42, '3000000', '0', '0', 'lunas', 1, '2025-11-17', '2025-11-27'),
+(4, 13, 50, '6000000', '5000000', '600000', 'aktif', 1, '2025-11-20', '2025-11-21'),
+(13, 15, 42, '6000000', '0', '0', 'lunas', 1, '2025-11-27', '2025-11-27'),
+(14, 16, 42, '1000000', '1000000', '60000', 'aktif', 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -224,7 +262,10 @@ INSERT INTO `tmrekening` (`id_rekening`, `id_nasabah`, `no_rekening`, `jenis_rek
 (7, 45, '12500045', 'Tabungan', 'nonaktif', 1, '2025-11-16', '2025-11-16'),
 (17, 50, '12500050', 'Tabungan', 'aktif', 1, '2025-11-19', '2025-11-19'),
 (18, 50, '22500050', 'Deposito', 'nonaktif', 1, '2025-11-19', '2025-11-19'),
-(19, 50, '32500050', 'Pinjaman', 'aktif', 1, '2025-11-19', '2025-11-19');
+(19, 50, '32500050', 'Pinjaman', 'aktif', 1, '2025-11-19', '2025-11-19'),
+(20, 60, '12500060', 'Tabungan', 'aktif', 1, '2025-11-28', '2025-11-28'),
+(21, 60, '22500060', 'Deposito', 'nonaktif', 1, '2025-11-28', '2025-11-28'),
+(22, 60, '32500060', 'Pinjaman', 'aktif', 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -255,8 +296,15 @@ INSERT INTO `tmsimpanan` (`id_simpanan`, `id_rekening`, `id_akun`, `tanggal`, `j
 (14, 3, 16, '2025-11-15', 'wajib', '0.00', '25000000.00', 'deposit', 1, '2025-11-15', '2025-11-15'),
 (19, 4, 14, '2025-11-15', 'pokok', '0.00', '1000000.00', 'tabungan', 1, '2025-11-15', '2025-11-15'),
 (22, 17, 14, '2025-11-21', 'wajib', '0.00', '14000.00', 'Simpanan dari angsuran', 1, '2025-11-21', '2025-11-21'),
-(24, 2, 0, '2025-11-24', 'penarikan', '1000000.00', '0.00', 'Penarikan Tabungan 00042', 1, '2025-11-24', '2025-11-24'),
-(27, 4, 0, '2025-11-26', 'wajib', '0.00', '3000.00', 'Bunga simpanan November 2025', 1, '2025-11-26', '2025-11-26');
+(24, 2, 0, '2025-11-24', 'pokok', '1000000.00', '0.00', 'Penarikan Tabungan 00042', 1, '2025-11-24', '2025-11-24'),
+(27, 4, 0, '2025-11-26', 'wajib', '0.00', '3000.00', 'Bunga simpanan November 2025', 1, '2025-11-26', '2025-11-26'),
+(32, 2, 13, '2025-11-27', 'pokok', '0.00', '200000.00', 'Simpanan pokok Anggota 00042', 1, '2025-11-27', '2025-11-27'),
+(43, 2, 14, '2025-11-27', 'wajib', NULL, '0.00', 'Penarikan untuk pelunasan', 1, '2025-11-27', '2025-11-27'),
+(44, 2, 13, '2025-11-27', 'pokok', '200000.00', '0.00', 'Penarikan untuk pelunasan', 1, '2025-11-27', '2025-11-27'),
+(45, 20, 15, '2025-11-28', 'sukarela', '0.00', '500000.00', '-', 1, '2025-11-28', '2025-11-28'),
+(46, 21, 16, '2025-11-28', 'pokok', '0.00', '50000000.00', '-', 1, '2025-11-28', '2025-11-28'),
+(47, 4, 14, '2025-11-28', 'pokok', '0.00', '13000.00', 'Simpanan dari angsuran', 1, '2025-11-28', '2025-11-28'),
+(48, 2, 13, '2025-11-28', 'pokok', '0.00', '200000.00', 'Simpanan pokok Anggota 00042', 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -334,7 +382,8 @@ INSERT INTO `trakun` (`id_akun`, `kode_akun`, `nama_akun`, `tipe_akun`, `status`
 (35, '505', 'Beban Penyusutan', 'Beban', 'aktif', 0, '2025-11-21', NULL),
 (36, '506', 'Beban Transportasi', 'Beban', 'aktif', 0, '2025-11-21', NULL),
 (37, '507', 'Beban Gaji dan Honor', 'Beban', 'aktif', 0, '2025-11-21', NULL),
-(38, '508', 'Beban Operasional Lain', 'Beban', 'aktif', 0, '2025-11-21', NULL);
+(38, '508', 'Beban Operasional Lain', 'Beban', 'aktif', 0, '2025-11-21', NULL),
+(40, '125', 'test', 'Aset', 'aktif', 1, '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -396,7 +445,8 @@ INSERT INTO `trnasabah` (`id_nasabah`, `nik`, `nama`, `alamat`, `tgl_lahir`, `pe
 (43, '321708080808', 'as', 'asdasdasdads', '2025-11-03', 'karyawan', '-', '08123546789', 'Pertanian', '1', '2025-11-03', 'aktif', '2025-11-03', '2025-11-03'),
 (45, '1234', 'tanpa pinjaman', 'kkkk', '2025-11-16', 'karyawan', '-', '0987', 'Lainnya', '1', '2025-11-16', 'aktif', '2025-11-16', '2025-11-16'),
 (50, '3217081902940007', 'update', 'asd', '1994-02-19', 'karyawan', '-', '08123546789', 'PNS', '1', '2025-11-19', 'aktif', '2025-11-19', '2025-11-19'),
-(58, '12345', 'test2', 'asdasdasdads', '2025-11-24', '-', '-', '08123546789', '-', '1', '2025-11-24', 'aktif', '2025-11-24', '2025-11-24');
+(58, '12345', 'test2', 'asdasdasdads', '2025-11-24', '-', '-', '08123546789', '-', '1', '2025-11-24', 'aktif', '2025-11-24', '2025-11-24'),
+(60, '55555555', 'Akbar Hilman', 'sana', '2025-11-28', '-', '-', '00001111', '-', '1', '2025-11-28', 'aktif', '2025-11-28', '2025-11-28');
 
 -- --------------------------------------------------------
 
@@ -432,10 +482,10 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','bendahara','anggota') DEFAULT 'anggota',
+  `role` enum('superadmin','kepalaadmin','admin') DEFAULT 'admin',
   `nama` varchar(200) NOT NULL,
   `jabatan` varchar(50) NOT NULL,
-  `nik` int(16) DEFAULT NULL,
+  `nik` varchar(16) DEFAULT NULL,
   `alamat` varchar(200) DEFAULT NULL,
   `no_telp` varchar(20) DEFAULT NULL,
   `tgl_lahir` date DEFAULT NULL,
@@ -449,9 +499,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`, `nama`, `jabatan`, `nik`, `alamat`, `no_telp`, `tgl_lahir`, `id_nasabah`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$12$8T0Tgti.jsm72fNpx8lS2OyGVeEAze54JtRAHP2BEXZ3li/ZfxJ0O', 'admin', 'aku', '', NULL, NULL, NULL, NULL, NULL, '2025-11-17', NULL),
-(4, 'test', '$2y$12$Q0giK.OuJh5kvZAoJfoLduthlOSYU8KAe2jEtgz8zmNMcsmJ1ma2u', 'bendahara', 'test', '', NULL, NULL, NULL, NULL, NULL, '2025-11-17', '2025-11-17'),
-(5, 'test2', '$2y$12$8T0Tgti.jsm72fNpx8lS2OyGVeEAze54JtRAHP2BEXZ3li/ZfxJ0O', 'admin', 'test23', 'Pimpinan Cabang', 12345, 'asdasdasdads', '08123546789', '2025-11-24', NULL, '2025-11-24', '2025-11-25');
+(1, 'admin', '$2y$12$8T0Tgti.jsm72fNpx8lS2OyGVeEAze54JtRAHP2BEXZ3li/ZfxJ0O', 'superadmin', 'aku', '', NULL, NULL, NULL, NULL, NULL, '2025-11-17', NULL),
+(4, 'test', '$2y$12$Q0giK.OuJh5kvZAoJfoLduthlOSYU8KAe2jEtgz8zmNMcsmJ1ma2u', 'kepalaadmin', 'test', '', NULL, NULL, NULL, NULL, NULL, '2025-11-17', '2025-11-17'),
+(5, 'test2', '$2y$12$8T0Tgti.jsm72fNpx8lS2OyGVeEAze54JtRAHP2BEXZ3li/ZfxJ0O', 'admin', 'test232', 'Pimpinan Cabang1', '123456', 'asdasdasdadsf', '081235467890', '2025-11-23', NULL, '2025-11-24', '2025-11-28'),
+(6, 'ahilman', '$2y$12$isGnP0p8VfP3GE4ctJ4X5.7e5h8JkbpJ2bfe9h8R6FQLC5G7c/7hS', 'admin', 'Akbar Hilman', 'Pimpinan Cabang', '55555555', 'sana', '00001111', '2025-11-28', 60, '2025-11-28', '2025-11-28');
 
 --
 -- Indexes for dumped tables
@@ -547,43 +598,43 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `tmjurnal`
 --
 ALTER TABLE `tmjurnal`
-  MODIFY `id_jurnal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id_jurnal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- AUTO_INCREMENT for table `tmpembayaran`
 --
 ALTER TABLE `tmpembayaran`
-  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `tmpengajuan`
 --
 ALTER TABLE `tmpengajuan`
-  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `tmpengajuandetail`
 --
 ALTER TABLE `tmpengajuandetail`
-  MODIFY `id_pengajuandetail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_pengajuandetail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `tmpinjaman`
 --
 ALTER TABLE `tmpinjaman`
-  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_pinjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tmrekening`
 --
 ALTER TABLE `tmrekening`
-  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_rekening` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `tmtransaksi`
@@ -595,7 +646,7 @@ ALTER TABLE `tmtransaksi`
 -- AUTO_INCREMENT for table `trakun`
 --
 ALTER TABLE `trakun`
-  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `trbunga`
@@ -607,7 +658,7 @@ ALTER TABLE `trbunga`
 -- AUTO_INCREMENT for table `trnasabah`
 --
 ALTER TABLE `trnasabah`
-  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id_nasabah` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `trprogram`
@@ -619,7 +670,7 @@ ALTER TABLE `trprogram`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
