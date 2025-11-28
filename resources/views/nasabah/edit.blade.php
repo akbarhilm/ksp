@@ -35,7 +35,7 @@
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Nama</label>
-                                            <input type="text" class="form-control" name="nama"
+                                            <input type="text" class="form-control" name="nama" required
                                                 value="{{ $nasabah->nama }}" />
 
                                         </div>

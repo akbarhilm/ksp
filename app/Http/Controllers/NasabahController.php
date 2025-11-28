@@ -113,13 +113,16 @@ public function datatableindex(Request $request)
 
     public function update(Request $request, Nasabah $nasabah)
      {
-    //     $request->validate([
-    //         'nik' => 'required',
-    //         'no_telp'=>'required|numeric',
-    //         'tgl_lahir'=>'required|date',
-    //         'nama' => 'required',
-    //         'alamat' => 'required',
-    //     ]);
+        $request->validate([
+             'nik' => 'required',
+            'no_telp'=>'required|numeric',
+            'tgl_lahir'=>'required|date',
+            'nama' => 'required',
+            'alamat' => 'required',
+            'nama_suami_istri' => 'required',
+            'pekerjaan' => 'required',
+            'sektor_ekonomi' => 'required',
+        ]);
         //dd($request->all());
        
        
