@@ -91,41 +91,37 @@
     </div>
 </div>
             {{-- FILTER FORM --}}
-            <form method="GET" class="row g-3">
+            <form id="filter-form" class="row g-3">
 
-                <div class="col-md-4">
-                    <label class="form-label">Akun</label>
-                    <select name="id_akun" class="form-select">
-                        <option value="">-- Semua Akun --</option>
-                        @foreach ($akunList as $a)
-                            <option value="{{ $a->id_akun }}"
-                                {{ $filterAkun == $a->id_akun ? 'selected' : '' }}>
-                                {{ $a->nama_akun }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+    <div class="col-md-4">
+        <label class="form-label">Akun</label>
+        <select id="filterAkun" class="form-select">
+            <option value="">-- Semua Akun --</option>
+            @foreach ($akunList as $a)
+                <option value="{{ $a->id_akun }}">{{ $a->nama_akun }}</option>
+            @endforeach
+        </select>
+    </div>
 
-                <div class="col-md-3">
-                    <label class="form-label">Tanggal Awal</label>
-                    <input type="date" name="tanggal_awal" class="form-control"
-                           value="{{ $tanggalAwal }}">
-                </div>
+    <div class="col-md-3">
+        <label class="form-label">Tanggal Awal</label>
+        <input type="date" id="tanggal_awal" class="form-control">
+    </div>
 
-                <div class="col-md-3">
-                    <label class="form-label">Tanggal Akhir</label>
-                    <input type="date" name="tanggal_akhir" class="form-control"
-                           value="{{ $tanggalAkhir }}">
-                </div>
+    <div class="col-md-3">
+        <label class="form-label">Tanggal Akhir</label>
+        <input type="date" id="tanggal_akhir" class="form-control">
+    </div>
 
-                <div class="col-md-2 d-grid">
-                    <label class="form-label invisible">Filter</label>
-                    <button class="btn btn-primary">
-                        <i class="bi bi-filter"></i> Filter
-                    </button>
-                </div>
+    <div class="col-md-2 d-grid">
+        <label class="form-label invisible">Filter</label>
+        <button type="button" id="btn-filter" class="btn btn-primary">
+            <i class="bi bi-filter"></i> Filter
+        </button>
+    </div>
 
-            </form>
+</form>
+
         </div>
     </div>
 
@@ -133,35 +129,19 @@
     <div class="card shadow-sm">
         <div class="card-body p-0">
 
-            <table class="table table-bordered table-striped mb-4">
-                <thead class="table-dark">
-                    <tr>
-                        <th width="12%">Tanggal</th>
-                        <th width="15%">Akun</th>
-                        <th>Keterangan</th>
-                        <th width="15%" class="text-end">Debit</th>
-                        <th width="15%" class="text-end">Kredit</th>
-                    </tr>
-                </thead>
+            <table class="table table-bordered table-striped mb-4" id="table-jurnal">
+    <thead class="table-dark">
+        <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Akun</th>
+            <th>Keterangan</th>
+            <th class="text-end">Debit</th>
+            <th class="text-end">Kredit</th>
+        </tr>
+    </thead>
+</table>
 
-                <tbody>
-                    @forelse ($jurnal as $row)
-                        <tr>
-                            <td>{{ $row->tanggal_transaksi }}</td>
-                            <td>{{ $row->akun->nama_akun ?? 'Tidak Ada' }}</td>
-                            <td>{{ $row->keterangan }}</td>
-                            <td class="text-end">{{ $row->v_debet_display }}</td>
-                            <td class="text-end">{{ $row->v_kredit_display }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-3">
-                                <i>Tidak ada data jurnal untuk filter ini.</i>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
 
         </div>
     </div>
@@ -171,22 +151,54 @@
     {{-- <x-plugins></x-plugins> --}}
 @push('js')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+$(function(){
 
-    const debit = document.getElementById("jumlah_debet");
-    const kredit = document.getElementById("jumlah_kredit");
 
-    // Jika debit berubah, kredit ikut
-    debit.addEventListener("input", function() {
-        kredit.value = this.value;
-    });
+    let lastKey = null;
 
-    // Jika kredit berubah, debit ikut
-    kredit.addEventListener("input", function() {
-        debit.value = this.value;
+    let table = $('#table-jurnal').DataTable({
+        processing: true,
+        serverSide: true,
+        ordering: true,
+        pageLength: 25,
+        ajax: {
+            url: "{{ route('jurnal.index') }}",
+            data: function(d){
+                d.id_akun = $('#filterAkun').val();
+                d.tanggal_awal = $('#tanggal_awal').val();
+                d.tanggal_akhir = $('#tanggal_akhir').val();
+            }
+        },
+
+        // ✅ DI SINI TEMPAT DATA ADA
+        rowCallback: function(row, data){
+
+            let currentKey = data.group_key;   // ✅ INI BENAR
+
+            if(lastKey !== null && lastKey !== currentKey){
+                $(row).css('border-top','3px solid #000');
+            }
+
+            lastKey = currentKey;
+        },
+
+        drawCallback: function(){
+            lastKey = null; // reset tiap draw
+        },
+
+        columns: [
+            { data: 'DT_RowIndex', orderable:false },
+            { data: 'tanggal_transaksi' },
+            { data: 'akun' },
+            { data: 'keterangan' },
+            { data: 'debit', className:'text-end' },
+            { data: 'kredit', className:'text-end' }
+        ]
     });
 
 });
+
+
 </script>
 @endpush
 </x-layout>

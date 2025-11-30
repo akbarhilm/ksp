@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Jurnal;
 use App\Models\Akun;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class JurnalController extends Controller
 {
@@ -13,35 +15,60 @@ class JurnalController extends Controller
     //     return view('neraca.index');
     // }
 
-    public function index(Request $request){
-
+    public function index(Request $request)
+{
     $akunList = Akun::orderBy('nama_akun')->get();
 
-    $filterAkun   = $request->id_akun;
-    $tanggalAwal  = $request->tanggal_awal;
-    $tanggalAkhir = $request->tanggal_akhir;
+    // AJAX request dari DataTables
+    if ($request->ajax()) {
 
-    $query = Jurnal::orderBy('id_jurnal', 'asc');
+        $query = Jurnal::with('akun')
+            ->select('tmjurnal.*')
+            ->orderBy('id_jurnal', 'desc');
 
-    // Filter akun
-    if ($filterAkun) {
-        $query->where('id_akun', $filterAkun);
+        // FILTER AKUN
+        if ($request->id_akun) {
+            $query->where('id_akun', $request->id_akun);
+        }
+
+        // FILTER TANGGAL
+        if ($request->tanggal_awal && $request->tanggal_akhir) {
+            $query->whereBetween('tanggal_transaksi', [
+                $request->tanggal_awal,
+                $request->tanggal_akhir
+            ]);
+        }
+
+        return DataTables::of($query)
+
+            ->addIndexColumn()
+            ->addColumn('group_key', function($row){
+        return md5($row->tanggal_transaksi . $row->keterangan);
+    })
+    ->rawColumns(['group_key'])
+
+            ->addColumn('akun', function ($row) {
+                return optional($row->akun)->nama_akun;
+            })
+
+            ->addColumn('debit', function ($row) {
+                return number_format($row->v_debet, 0, ',', '.');
+            })
+
+            ->addColumn('kredit', function ($row) {
+                return number_format($row->v_kredit, 0, ',', '.');
+            })
+
+            ->editColumn('tanggal_transaksi', function ($row) {
+                return date('d-m-Y', strtotime($row->tanggal_transaksi));
+            })
+
+            ->rawColumns(['akun'])
+
+            ->make(true);
     }
+            return view('jurnal.index', compact('akunList'));
 
-    // Filter tanggal
-    if ($tanggalAwal && $tanggalAkhir) {
-        $query->whereBetween('tanggal_transaksi', [$tanggalAwal, $tanggalAkhir]);
-    }
-
-    $jurnal = $query->get();
-
-    return view('jurnal.index', compact(
-        'akunList',
-        'jurnal',
-        'filterAkun',
-        'tanggalAwal',
-        'tanggalAkhir'
-    ));
 }
 
 
