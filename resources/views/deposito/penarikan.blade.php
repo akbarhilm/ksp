@@ -16,7 +16,7 @@
 
                 <div class="card-body">
 
-                    <form action="{{ route('tabungan.penarikan.store') }}" method="POST">
+                    <form action="{{ route('deposito.penarikan.store') }}" method="POST">
                         @csrf
 
                         {{-- Data Nasabah --}}
@@ -43,26 +43,41 @@
 
                         {{-- Saldo Sekarang --}}
                         <div class='row'>
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-6">
                             <label class="form-label">Saldo</label>
                             <input type="text" class="form-control" name="saldopokok" readonly value="{{ number_format($saldo,0) }}">
                         </div>
-                        </div>
+                       
 
                         {{-- Jumlah Penarikan --}}
-                        <div class="mb-3 col-md-4">
+                        <div class="mb-3 col-md-6">
                             <label class="form-label">Jumlah Penarikan</label>
                             <input type="text" class="form-control input-jumlah" name="jumlah" readonly value="{{ number_format($saldo,0)}}"  required>
                             @error('jumlah')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
+                         </div>
 
+                         <div class="row">
+                            {{-- Metode Penarikan --}}
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label">Metode Penarikan</label>
+                                <select class="form-control" name="metode" required>
+                                    <option value="">--Pilih Metode Penarikan--</option>
+                                    <option value="tunai">Tunai</option>
+                                    <option value="non">Non Tunai</option>
+                                </select>
+                                @error('metode')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>  
                         {{-- Keterangan --}}
-                        <div class="mb-3">
+                        <div class="mb-3 col-md-6">
                             <label class="form-label">Keterangan</label>
                             <textarea class="form-control" name="keterangan" rows="2" placeholder="Opsional"></textarea>
                         </div>
+                         </div>
 
                         {{-- Button --}}
                         <div class="d-flex gap-2">

@@ -39,7 +39,6 @@ class DashboardController extends Controller
             $totalBeban += ($row->v_debet - $row->v_kredit);
         }
     }
-
     $laba = $totalPendapatan - $totalBeban;
 //===============================================
 //=================jumlah pinjaman===================
@@ -55,7 +54,7 @@ $totalsimpanan = Simpanan::whereMonth('tanggal', $tanggal->month)
     ->whereYear('tanggal', $tanggal->year)->sum('v_debit');
 //===============================================
 //================List Pinjaman======================
-$listpinjaman = Pinjaman::with('nasabah','pengajuan')->get();
+$listpinjaman = Pinjaman::with('nasabah','pengajuan')->where('status','aktif')->get();
 $lunas = Pinjaman::where('status','lunas')->whereMonth('updated_at', $tanggal->month)->whereYear('updated_at', $tanggal->year)->count();
 //===============================================
    return view('dashboard.index', [

@@ -48,6 +48,7 @@
                         </thead>
                         <tbody>
                             @forelse($pinjaman as $p)
+                            @dd($pinjaman);
                                 <tr>
 
                                     <td class="">

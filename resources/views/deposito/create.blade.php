@@ -85,7 +85,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Keterangan</label>
                                             <input type="text"  class="form-control" name="keterangan"
@@ -94,6 +94,20 @@
 
                                         </div>
                                         @error('keterangan')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Keterangan</label>
+                                            <select class="form-control" name="metode">
+                                                <option value="">--Pilih Metode--</option>
+                                                <option value="tunai">Tunai</option>
+                                                <option value="non">Non Tunai</option>
+                                               </select>
+
+                                        </div>
+                                        @error('metode')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>

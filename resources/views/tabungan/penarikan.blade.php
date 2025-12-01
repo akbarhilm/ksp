@@ -56,25 +56,41 @@
                             <input type="text" class="form-control" name='saldosukarela' readonly value="{{ number_format($saldo['sukarela'],0) }}">
                         </div>
                         </div>
-                        <div class="mb-3">
+                          <div class="row">
+                        <div class="mb-3 col-md-6">
                             <label class="form-label">Total Saldo</label>
                             <input type="text" class="form-control" readonly value="{{ number_format($saldo['total'],0) }}">
                         </div>
 
                         {{-- Jumlah Penarikan --}}
-                        <div class="mb-3">
+                      
+                        <div class="mb-3 col-md-6">
                             <label class="form-label">Jumlah Penarikan</label>
                             <input type="text" class="form-control input-jumlah" name="jumlah" readonly value="{{ number_format($saldo['total'],0)}}"  required>
                             @error('jumlah')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
-
+                          </div>
+                          <div class="row">
+                        {{-- Metode Penarikan --}}
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Metode Penarikan</label>
+                            <select class="form-control" name="metode" required>
+                                <option value="">--Pilih Metode--</option>
+                                <option value="tunai">Tunai</option>
+                                <option value="non">Non Tunai</option>
+                            </select>
+                            @error('metode')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
                         {{-- Keterangan --}}
-                        <div class="mb-3">
+                        <div class="mb-3 col-md-6">
                             <label class="form-label">Keterangan</label>
                             <textarea class="form-control" name="keterangan" rows="2" placeholder="Opsional"></textarea>
                         </div>
+                          </div>
 
                         {{-- Button --}}
                         <div class="d-flex">

@@ -35,7 +35,7 @@ class TabunganController extends Controller
     return DataTables::of($query)
         ->addIndexColumn()
         ->editColumn('id_nasabah', function ($row) {
-            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->nama;
         })
         ->addColumn('aksi', function ($row) {
             $create = route('tabungan.create', ['id_nasabah'=>$row->id_nasabah]);
@@ -81,15 +81,21 @@ class TabunganController extends Controller
             'v_kredit' => 'required|numeric',
             'keterangan' => 'nullable|string',
             'tanggal' => 'required|date',
+            'metode' => 'required',
         ]);
             if($request->jenis == 'pokok'){
-            $id_akun = '13';
+            $id_akun = '35';
             }
             if($request->jenis == 'wajib'){
-            $id_akun = '14';
+            $id_akun = '36';
             }
              if($request->jenis == 'sukarela'){
-            $id_akun = '15';
+            $id_akun = '37';
+            }
+            if($request->metode == 'tunai'){
+                $idakunjurnal = '1';
+            }else{
+                $idakunjurnal = '5';
             }
             $request->request->add(['id_akun' => $id_akun]);
 
@@ -99,7 +105,7 @@ class TabunganController extends Controller
         $simpanan= Simpanan::create($request->all());
 
         $datajurnalkredit = ['id_akun'=>$id_akun,'id_simpanan'=>$simpanan->id,'keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>'1','id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
         Jurnal::create($datajurnaldebet);
         Jurnal::create($datajurnalkredit);
 
@@ -194,6 +200,11 @@ class TabunganController extends Controller
         'id_rekening' => 'required',
         'jumlah' => 'required|numeric',
     ]);
+    if($request->metode == 'tunai'){
+        $idakunjurnal = '1';
+    }else{
+        $idakunjurnal = '5';
+    }
 
     // $rekening = Rekening::findOrFail($request->id_rekening);
 
@@ -210,7 +221,7 @@ class TabunganController extends Controller
         'id_rekening' => $request->id_rekening,
         'tanggal' => now()->format('Y-m-d'),
         'id_akun' => 0, // Kas
-        'jenis' => 'penarikan',
+        'jenis' => 'pokok',
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
         'v_debit' => $request->jumlah, // debit = keluar
         'v_kredit' => 0,
@@ -220,7 +231,7 @@ class TabunganController extends Controller
     
     if($request->saldopokok > 0){
     Jurnal::create([
-        'id_akun' => 13,
+        'id_akun' => 35,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
@@ -232,7 +243,7 @@ class TabunganController extends Controller
 
  if($request->saldowajib > 0){
     Jurnal::create([
-        'id_akun' => 14,
+        'id_akun' => 36,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
@@ -243,7 +254,7 @@ class TabunganController extends Controller
 }
  if($request->saldosukarela > 0){
     Jurnal::create([
-        'id_akun' => 15,
+        'id_akun' => 37,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
@@ -254,7 +265,7 @@ class TabunganController extends Controller
 }
 
 Jurnal::create([
-        'id_akun' => 1,
+        'id_akun' => $idakunjurnal,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,

@@ -85,11 +85,14 @@
                                                 </td>
 
                                                 <td class="text-center text-sm">
-
-                                                    <button id="btnCair" class="btn btn-sm btn-info"
+  <a href="{{ route('pengajuan.detail.pencairan', $n->id_pengajuan) }}"
+                                                        class="btn btn-sm btn-info" title="lihat detail">
+                                                        <i class="material-icons">visibility</i>
+                                                    </a>
+                                                    {{-- <button id="btnCair" class="btn btn-sm btn-info"
                                                         data-id="{{ $n->id_pengajuan }}" title="Print">
                                                         <i class="material-icons">print</i>
-                                                    </button>
+                                                    </button> --}}
 
                                                     <a href="{{ route('pengajuan.decline', $n->id_pengajuan) }}"
                                                         class="btn btn-sm btn-warning" title="Tolak">

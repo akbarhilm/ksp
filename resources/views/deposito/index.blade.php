@@ -14,9 +14,8 @@
       <table id="nasabahTable"  class="table table-striped table-hover align-middle text-sm" width="100%">
     <thead class="table-dark">
         <tr>
-            <th>Nomor</th>
+            <th>Nasabah</th>
             <th>No KTP</th>
-            <th>Nama</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
             <th>No Telp</th>
@@ -42,8 +41,7 @@ $(document).ready(function () {
         columns: [
             { data: 'id_nasabah', name: 'id_nasabah' },
             { data: 'nik', name: 'nik' },
-            { data: 'nama', name: 'nama' },
-            { data: 'alamat', name: 'alamat' },
+            { data: 'alamat', name: 'alamat',className: 'text-wrap'  },
             { data: 'tgl_lahir', name: 'tgl_lahir' },
             { data: 'no_telp', name: 'no_telp' },
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false },

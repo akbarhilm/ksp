@@ -53,6 +53,7 @@ Route::get('/pdf/sphutang/{id}', function($id){
 
 Route::get('/pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.index');
 Route::get('/pengajuan/cair/{id}', [PengajuanController::class, 'cair'])->name('pengajuan.cair');
+Route::get('/pengajuan/detail/pencairan/{id}', [PengajuanController::class, 'detailPencairan'])->name('pengajuan.detail.pencairan');
 
 Route::get('/deposito/lihat', [DepositoController::class, 'lihat'])->middleware('auth')->name('deposito.lihat');
 Route::get('/deposito/cari', [DepositoController::class, 'cari'])->middleware('auth')->name('deposito.cari');

@@ -14,9 +14,8 @@
       <table id="rekeningTable"  class="table table-striped table-hover align-middle text-sm" width="100%">
     <thead class="table-dark">
         <tr>
-            <th>Nomor</th>
+            <th class='w-10'>Nasabah</th>
             <th>No KTP</th>
-            <th>Nama</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
             <th>No Telp</th>
@@ -44,13 +43,12 @@
             }
         },
         columns: [
-            { data: 'id_nasabah', name: 'id_nasabah' },
-            { data: 'nik', name: 'nik' },
-            { data: 'nama', name: 'nama' },
-            { data: 'alamat', name: 'alamat' },
-            { data: 'tgl_lahir', name: 'tgl_lahir' },
-            { data: 'no_telp', name: 'no_telp' },
-            { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
+            { data: 'id_nasabah', name: 'id_nasabah', className: 'w-10' },
+            { data: 'nik', name: 'nik',className: 'w-15' },
+            { data: 'alamat', name: 'alamat',className: 'text-wrap w-30'  },
+            { data: 'tgl_lahir', name: 'tgl_lahir',className: 'w-5'  },
+            { data: 'no_telp', name: 'no_telp',className: 'w-10'  },
+            { data: 'aksi', name: 'aksi', orderable: false, searchable: false,className: 'w-15'  },
         ],
          language: {
             search: "Cari:",

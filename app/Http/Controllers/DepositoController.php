@@ -24,14 +24,18 @@ class DepositoController extends Controller
 
     public function datatablesdeposito(Request $request)
 {
-    $query = $nasabah = Nasabah::withWhereHas('rekening',function($query){
-            $query->where('jenis_rekening','Deposito');
-         })->orderBy('id_nasabah','desc');
-
+    $query = $query = Nasabah::select([
+        'id_nasabah',
+        'nik',
+        'nama',
+        'alamat',
+        'tgl_lahir',
+        'no_telp',
+    ])->orderBy('id_nasabah','desc');
     return DataTables::of($query)
         ->addIndexColumn()
         ->editColumn('id_nasabah', function ($row) {
-            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->nama;
         })
         ->addColumn('aksi', function ($row) {
             $create = route('deposito.create',  ['id_nasabah'=>$row->id_nasabah]);
@@ -81,8 +85,14 @@ class DepositoController extends Controller
             'v_kredit' => 'required|numeric',
             'keterangan' => 'nullable|string',
         ]); 
+
+         if($request->metode == 'tunai'){
+                $idakunjurnal = '1';
+            }else{
+                $idakunjurnal = '5';
+            }
         
-            $id_akun = '16';
+            $id_akun = '31';
         
             $request->request->add(['id_akun' => $id_akun]);
 
@@ -92,7 +102,7 @@ class DepositoController extends Controller
         $simpanan = Simpanan::create($request->all());
 
          $datajurnalkredit = ['id_akun'=>$id_akun,'id_simpanan'=>$simpanan->id,'keterangan'=>'Deposito anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>'1','id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
         Jurnal::create($datajurnaldebet);
         Jurnal::create($datajurnalkredit);
 
@@ -207,5 +217,70 @@ $nasabah = $query->paginate(10);
        
         return view('deposito.penarikan',compact('nasabah','rekening','saldo'));
     }
+
+     public function penarikanStore(Request $request)
+{
+     $request->merge([
+        'jumlah' => str_replace(',', '', $request->jumlah),
+       
+    ]);
+
+    $request->validate([
+        'id_rekening' => 'required',
+        'jumlah' => 'required|numeric',
+    ]);
+    if($request->metode == 'tunai'){
+        $idakunjurnal = '1';
+    }else{
+        $idakunjurnal = '5';
+    }
+
+    // $rekening = Rekening::findOrFail($request->id_rekening);
+
+    // Cek Saldo
+    // $saldo = Simpanan::where('id_rekening', $rekening->id_rekening)
+    //             ->sum('v_kredit') - Simpanan::where('id_rekening', $rekening->id_rekening)->sum('v_debit');
+
+    // if ($request->jumlah > $saldo) {
+    //     return back()->with('error', 'Saldo tidak cukup!');
+    // }
+
+    // Input transaksi penarikan
+    $simpanan = Simpanan::create([
+        'id_rekening' => $request->id_rekening,
+        'tanggal' => now()->format('Y-m-d'),
+        'id_akun' => 0, // Kas
+        'jenis' => 'pokok',
+        'keterangan' => $request->keterangan ?? 'Penarikan Deposito '.$request->id_nasabah,
+        'v_debit' => $request->jumlah, // debit = keluar
+        'v_kredit' => 0,
+        'id_entry' => auth()->id()
+    ]);
+
+    
+    
+    Jurnal::create([
+        'id_akun' => 31,
+        'id_simpanan' =>$simpanan->id_simpanan,
+        'tanggal_transaksi' => now()->format('Y-m-d'),
+        'keterangan' => $request->keterangan ?? 'Penarikan Deposito '.$request->id_nasabah,
+        'v_debet' => $request->saldosukarela,
+        'v_kredit' => 0,
+        'id_entry' => auth()->id()
+    ]);
+
+
+Jurnal::create([
+        'id_akun' => $idakunjurnal,
+        'id_simpanan' =>$simpanan->id_simpanan,
+        'tanggal_transaksi' => now()->format('Y-m-d'),
+        'keterangan' => $request->keterangan ?? 'Penarikan Deposito '.$request->id_nasabah,
+        'v_debet' => 0, // debet = keluar
+        'v_kredit' => $request->jumlah,
+        'id_entry' => auth()->id()
+    ]);
+
+    return redirect()->route('tabungan.index')->with('success', 'Penarikan berhasil diproses!');
+}
 
 }

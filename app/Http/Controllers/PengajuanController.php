@@ -190,6 +190,14 @@ class PengajuanController extends Controller
        
         return view('pengajuan.pencairan', compact('pinjaman'));
     }
+
+        public function detailPencairan($id){
+        
+        $pengajuan = Pengajuan::where('id_pengajuan',$id)->with('rekening.nasabah','jaminan')->first();
+        $pinjaman = Pinjaman::where('id_nasabah',$pengajuan->rekening[0]->id_nasabah)->where('status','aktif')->first();
+        $jaminan = PengajuanJaminan::where('id_pengajuan',$pengajuan->id_pengajuan)->get();
+        return view('pengajuan.cair', compact('pengajuan','pinjaman','jaminan'));
+    }
     
         
     
@@ -206,17 +214,26 @@ class PengajuanController extends Controller
         return redirect()->route('pengajuan.index')->with('success', 'Simpanan berhasil diperbarui.');
     }
 
-    public function cair($id){
+    public function cair(Request $request,$id){
+
         DB::beginTransaction();
+           
+        $request->validate([
+            'metode' => 'required']);
          try {
         $data = Pengajuan::where('id_pengajuan',$id)->where('status','=','approv')->with('rekening.nasabah','jaminan')->first();
        $pengajuan = Pengajuan::where('id_pengajuan',$id)->first();
        $pengajuan->update(['status'=>'cair', 'tanggal_pencairan'=>date('Y-m-d')]);
        $pinjamanLama = null;
        $sisa_pokok_lama = 0;
+       if($request->metode=='non'){
+        $idakunjurnal = '5';
+         }else{
+        $idakunjurnal = '1';
+         }
         if($data->jenis=='topup'){
         $pinjamanLama = Pinjaman::where('id_nasabah',$data->rekening[0]->id_nasabah)->where('status','aktif')->first(); 
-        $datajurnaldebet = ['id_akun'=>'1','id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Kas','v_debet'=>$pinjamanLama->sisa_pokok,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
+        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Kas','v_debet'=>$pinjamanLama->sisa_pokok,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
 $sisa_pokok_lama = $pinjamanLama->sisa_pokok;
       $datajurnalkredit = ['id_akun'=>'5','id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Piutang Pinjaman Lama Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$pinjamanLama->sisa_pokok,'id_entry'=>auth()->user()->id];
     $pinjamanLama->update(['status'=>'lunas', 'sisa_pokok'=>0,'sisa_bunga'=>0]);   
