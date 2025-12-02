@@ -18,7 +18,7 @@ class NeracaController extends Controller
     {
         $tanggal = $request->tanggal ?? date('Y-m-d');
 
-        $akunList = Akun::orderBy('kode_akun')->get();
+        $akunList = Akun::where('status','aktif')->orderBy('kode_akun')->get();
 
         $neraca = [
             'Aset' => [],

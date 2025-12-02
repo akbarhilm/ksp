@@ -17,7 +17,7 @@ class JurnalController extends Controller
 
     public function index(Request $request)
 {
-    $akunList = Akun::orderBy('kode_akun')->get();
+    $akunList = Akun::where('status','aktif')->orderBy('kode_akun')->get();
 
     // AJAX request dari DataTables
     if ($request->ajax()) {
@@ -76,7 +76,7 @@ class JurnalController extends Controller
 
 public function bukuBesar(Request $request)
 {
-    $akunList = Akun::orderBy('kode_akun')->get();
+    $akunList = Akun::where('status','aktif')->orderBy('kode_akun')->get();
 
     if ($request->ajax()) {
 

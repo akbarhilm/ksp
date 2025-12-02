@@ -48,7 +48,7 @@ $(document).ready(function () {
             { data: 'id_nasabah', name: 'id_nasabah' },
             { data: 'nik', name: 'nik' },
             { data: 'nama', name: 'nama' },
-            { data: 'alamat', name: 'alamat' },
+            { data: 'alamat', name: 'alamat', className:'text-wrap' },
             { data: 'tgl_lahir', name: 'tgl_lahir' },
             { data: 'no_telp', name: 'no_telp' },
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false },

@@ -70,6 +70,7 @@ public function index(Request $request)
         <span class="badge bg-'.$denda['kolekBadge'].'">
             '.$denda['kolek'].'
         </span>
+       
     ';
 })
 

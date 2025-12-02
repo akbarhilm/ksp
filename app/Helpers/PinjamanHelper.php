@@ -11,6 +11,12 @@ class PinjamanHelper
 {
    public static function statusJatuhTempo($id_pinjaman)
 {
+    
+    $jatuhTempoTanggal = 20;
+     $today = Carbon::today();
+$bulanIni = Carbon::today()->format('Y-m');
+    // Jatuh tempo bulan ini (tanggal 20)
+    $jatuhTempo = Carbon::today()->setDay($jatuhTempoTanggal);
     // Ambil pinjaman & tenor
     $pinjaman = Pinjaman::with('pengajuan')->findOrFail($id_pinjaman);
 
@@ -26,20 +32,23 @@ class PinjamanHelper
         ->orderBy('cicilan_ke','DESC')
         ->first();
 
+        $bulanbayar = Carbon::parse($lastAngsuran->tanggal)->format('Y-m');
+
+        
     // Tentukan cicilan berjalan
     $cicilanSekarang = $lastAngsuran ? $lastAngsuran->cicilan_ke : 1;
 
     // Total bayar cicilan ini
     $totalBayar = Angsuran::where('id_pinjaman', $id_pinjaman)
         ->where('cicilan_ke', $cicilanSekarang)
-        ->sum('bayar_pokok');
+        ->get();
 
     // ============================
     // STATUS
     // ============================
-
+$bayarpokok = $totalBayar->sum('bayar_pokok');
     // ✅ SUDAH BAYAR FULL
-    if ($totalBayar >= $cicilanBulanan && $totalBayar > 0) {
+    if ($bayarpokok >= $cicilanBulanan && $bayarpokok > 0 && $bulanbayar == $bulanIni ) {
         return [
             'status' => 'Sudah Bayar',
             'badge'  => 'success',
@@ -48,9 +57,9 @@ class PinjamanHelper
     }
 
     // ✅ BAYAR SEBAGIAN
-    if ($totalBayar > 0 && $totalBayar < $cicilanBulanan) {
+    if ($bayarpokok > 0 && $bayarpokok < $cicilanBulanan ) {
 
-        $kurang = $cicilanBulanan - $totalBayar;
+        $kurang = $cicilanBulanan - $bayarpokok;
 
         return [
             'status'  => 'Bayar Sebagian',
@@ -88,7 +97,7 @@ class PinjamanHelper
     }
 
     // ambil pinjaman
-    $pinjaman = Pinjaman::where('id_pinjaman', $id_pinjaman)->first();
+    $pinjaman = Pinjaman::with('pengajuan')->where('id_pinjaman', $id_pinjaman)->first();
    
 
     // ambil tanggal acuan: pembayaran terakhir jika ada, kalau tidak pakai created_at (pencairan)
@@ -99,7 +108,7 @@ class PinjamanHelper
     if ($lastPay) {
         $acuan = Carbon::parse($lastPay->tanggal);
     } else {
-        $acuan = Carbon::parse($pinjaman->created_at);
+        $acuan = Carbon::parse($pinjaman->pengajuan->tanggal_pencarian);
     }
 
     // jatuh tempo setiap tanggal (misal 20)
