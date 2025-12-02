@@ -13,11 +13,11 @@
                 <div class="card-body">
                     <form action="{{ route('pelunasan.index') }}" method="GET" class="row g-3">
                         <div class="col-md-3">
-                            <input type="text" name="id_nasabah" class="form-control" placeholder="ID Nasabah"
+                            <input type="text" name="id_nasabah" id="filter-id" class="form-control" placeholder="ID Nasabah"
                                 value="{{ request('id_nasabah') }}">
                         </div>
                         <div class="col-md-3">
-                            <input type="text" name="nama" class="form-control" placeholder="Nama Nasabah"
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
                                 value="{{ request('nama') }}">
                         </div>
                         
@@ -32,98 +32,54 @@
             <!-- Tabel Pinjaman -->
             <div class="card">
                 <div class="card-body overflow-auto">
-                    <table class="table table-striped table-bordered align-middle text-sm">
-                        <thead class="table-dark">
-                            <tr>
-
-                                <th>Nasabah</th>
-                                <th>Resort</th>
-                                <th>Pinjaman</th>
-                                <th>Sisa Pokok</th>
-                                <th>Sisa Bunga</th>
-                                {{-- <th>Status</th>
-                                <th>Denda</th> --}}
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($pinjaman as $p)
-                                <tr>
-
-                                    <td class="">
-                                        {{ str_pad($p->id_nasabah, 5, '0', STR_PAD_LEFT) . ' / ' . $p->nasabah->nama ?? '-' }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $p->pengajuan->kode_resort }}
-                                    </td>
-                                    <td class="text-end font-weight-bolder">{{ number_format($p->total_pinjaman, 0) }}
-                                    </td>
-                                    <td class="text-end font-weight-bolder">{{ number_format($p->sisa_pokok, 0) }}</td>
-                                    <td class="text-end font-weight-bolder">{{ number_format($p->sisa_bunga, 0) }}</td>
-                                    {{-- @php
-                                        $info = \App\Helpers\PinjamanHelper::statusJatuhTempo($p->id_pinjaman);
-                                        $denda = \App\Helpers\PinjamanHelper::hitungDenda($p->id_pinjaman);
-                                    @endphp --}}
-
-                                    {{-- <td>
-                                        <span class="badge bg-{{ $info['badge'] }}">
-                                            {{ $info['status'] }}
-                                        </span>
-                                   
-                                        <span class="badge bg-{{ $denda['kolekBadge'] }}">
-                                            {{ $denda['kolek'] }}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        Rp {{ number_format($denda['denda'], 0, ',', '.') }}
-                                    </td> --}}
-
-                                    
-                                    <td class="text-center pt-1">
-                                       
-                                        <a href="{{ route('angsuran.pelunasan', $p->id_pinjaman) }}"
-                                            class="btn btn-sm btn-info btn-sm">
-                                            Lunasi
-                                        </a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="text-center">Belum ada data pinjaman</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                    <table class="table table-sm table-striped table-bordered" id="table-pinjaman">
+    <thead class="table-dark text-sm">
+        <tr>
+            <th>Nasabah</th>
+            <th>Resort</th>
+            <th>Pinjaman</th>
+            <th>Sisa Pokok</th>
+            <th>Sisa Bunga</th>
+           
+            <th>Aksi</th>
+        </tr>
+    </thead>
+</table>
                 </div>
             </div>
         </div>
     </main>
     @push('js')
         <script>
-            //fetchUsers(); // Load all users initially
+            $(function(){
 
-            // Fetch users (AJAX GET)
-            function fetchUsers(query = '') {
-                $.ajax({
-                    url: "{{ route('rekening.index') }}",
-                    method: 'GET',
-                    data: {
-                        param: query
-                    },
-                    success: function(data) {
-                        console,
-                        log(data)
-                    }
-                });
-
+    $('#table-pinjaman').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "{{ route('pelunasan.index') }}",
+            data: function(d){
+                d.id_nasabah = $('#filter-id').val();
+                d.nama = $('#filter-nama').val();
             }
+        },
+        columns: [
+            { data: 'nasabah', name: 'nasabah',className:'text-sm' },
+            { data: 'resort', name: 'pengajuan.kode_resort',className:'text-sm' },
+            { data: 'pinjaman', name: 'total_pinjaman', className:'text-end text-sm' },
+            { data: 'sisa_pokok', name: 'sisa_pokok', className:'text-end text-sm' },
+            { data: 'sisa_bunga', name: 'sisa_bunga', className:'text-end text-sm' },
+          
+            { data: 'aksi', orderable:false, searchable:false, className:'text-center text-sm' }
+        ],
+          
+    });
 
-            // Search as user types
-            function cari() {
-                let query = $("#param").val()
-                fetchUsers(query);
-            }
+    // reload saat filter diganti
+    $('#filter-id,#filter-nama').on('change keyup', function(){
+        $('#table-pinjaman').DataTable().ajax.reload();
+    });
+            });
         </script>
     @endpush
 </x-layout>

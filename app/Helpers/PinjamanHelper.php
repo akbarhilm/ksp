@@ -11,37 +11,63 @@ class PinjamanHelper
 {
    public static function statusJatuhTempo($id_pinjaman)
 {
-    $jatuhTempoTanggal = 20;
-    $today = Carbon::today();
-    $bulanIni = Carbon::today()->format('Y-m');
+    // Ambil pinjaman & tenor
+    $pinjaman = Pinjaman::with('pengajuan')->findOrFail($id_pinjaman);
 
-    // Jatuh tempo bulan ini (tanggal 20)
-    $jatuhTempo = Carbon::today()->setDay($jatuhTempoTanggal);
+    $tenor = $pinjaman->pengajuan->tenor;
+    $cicilanBulanan = round($pinjaman->total_pinjaman / $tenor);
 
-    // Ambil pembayaran BULAN INI
-    $lastPay = Angsuran::where('id_pinjaman', $id_pinjaman)
-        ->whereRaw("DATE_FORMAT(tanggal, '%Y-%m') = ?", [$bulanIni])
-        ->orderBy('id_pembayaran', 'DESC')
+    // ============================
+    // CICILAN KE SEKARANG
+    // ============================
+
+    // Ambil cicilan terakhir
+    $lastAngsuran = Angsuran::where('id_pinjaman', $id_pinjaman)
+        ->orderBy('cicilan_ke','DESC')
         ->first();
 
-    // ✔ 1. Sudah bayar bulan ini
-    if ($lastPay) {
-        return ['status' => 'Sudah Bayar', 'badge' => 'success'];
+    // Tentukan cicilan berjalan
+    $cicilanSekarang = $lastAngsuran ? $lastAngsuran->cicilan_ke : 1;
+
+    // Total bayar cicilan ini
+    $totalBayar = Angsuran::where('id_pinjaman', $id_pinjaman)
+        ->where('cicilan_ke', $cicilanSekarang)
+        ->sum('bayar_pokok');
+
+    // ============================
+    // STATUS
+    // ============================
+
+    // ✅ SUDAH BAYAR FULL
+    if ($totalBayar >= $cicilanBulanan && $totalBayar > 0) {
+        return [
+            'status' => 'Sudah Bayar',
+            'badge'  => 'success',
+            'tooltip'=> null
+        ];
     }
 
-    // ✔ 2. Belum bayar dan hari ini sebelum jatuh tempo
-    if ($today->lt($jatuhTempo)) {
-        return ['status' => 'Belum Jatuh Tempo', 'badge' => 'secondary'];
+    // ✅ BAYAR SEBAGIAN
+    if ($totalBayar > 0 && $totalBayar < $cicilanBulanan) {
+
+        $kurang = $cicilanBulanan - $totalBayar;
+
+        return [
+            'status'  => 'Bayar Sebagian',
+            'badge'   => 'primary',
+            'tooltip' => 'Kurang bayar Rp '.number_format($kurang,0,',','.')
+        ];
     }
 
-    // ✔ 3. Belum bayar dan hari ini lewat jatuh tempo
-    if ($today->gt($jatuhTempo)) {
-        return ['status' => 'Menunggak', 'badge' => 'danger'];
-    }
-
-    // ✔ 4. Hari ini tepat jatuh tempo & belum bayar
-    return ['status' => 'Jatuh Tempo Hari Ini', 'badge' => 'warning'];
+    // ✅ BELUM BAYAR SAMA SEKALI
+    return [
+        'status' => 'Belum Bayar',
+        'badge'  => 'secondary',
+        'tooltip'=> null
+    ];
 }
+
+
 
 
 
@@ -67,7 +93,7 @@ class PinjamanHelper
 
     // ambil tanggal acuan: pembayaran terakhir jika ada, kalau tidak pakai created_at (pencairan)
     $lastPay = Angsuran::where('id_pinjaman', $id_pinjaman)
-        ->orderBy('id_pembayaran', 'DESC')
+        ->orderBy('tanggal', 'DESC')
         ->first();
 
     if ($lastPay) {
@@ -96,7 +122,7 @@ class PinjamanHelper
     $hariTelat = $firstMissedDue->diffInDays($today);
     // dasar perhitungan denda:
     // gunakan sisa pokok (lebih akurat) kalau ada field saldo_pokok, jika tidak fallback ke total_pinjaman
-    $dasar = $pinjaman->sisa_pokok;
+    $dasar = $pinjaman->total_pinjaman;
     $kolek = "C1";
      $kolekBadge = "success";
     if ($hariTelat >= 1  && $hariTelat <= 30) {

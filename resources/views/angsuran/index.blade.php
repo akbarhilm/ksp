@@ -32,38 +32,43 @@
 
         <form action="{{ route('angsuran.store', $pinjaman->id_pinjaman) }}" method="POST">
             @csrf
-
-            <div class="mb-3">
+            <div class='row'>
+            <div class="mb-3 col-md-6">
                 <label>Total Bayar</label>
                 <input type="text" id="total_bayar" name="total_bayar" class="form-control input-jumlah" required readonly>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 col-md-6">
                 <label>Pokok Dibayar</label>
-                <input type="text" name="pokok" id="pokok" class="form-control input-jumlah" readonly required>
+                <input type="text" name="pokok" id="pokok" class="form-control input-jumlah" onchange="adddenda()"  required>
             </div>
-
-            <div class="mb-3">
+            </div>
+            <div class='row'>
+            <div class="mb-3 col-md-6">
                 <label>Bunga Dibayar</label>
-                <input type="text" name="bunga" id="bunga" class="form-control input-jumlah" readonly>
+                <input type="text" name="bunga" id="bunga" class="form-control input-jumlah" onchange="adddenda()" required>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 col-md-6">
                 <label>Denda</label>
                  @php
                                         $denda = \App\Helpers\PinjamanHelper::hitungDenda($pinjaman->id_pinjaman);
                                     @endphp
                 <input type="text" name="denda" id="denda" value={{number_format($denda['denda'],0,',','.')}} class="form-control input-jumlah" onchange="adddenda()" >
             </div>
-             <div class="mb-3">
+            </div>
+            <div class='row'>
+             <div class="mb-3 col-md-6">
                 <label>Simpanan Wajib</label>
                 <input type="text" name="simpanan" id="simpanan" class="form-control input-jumlah" onchange="adddenda()" required >
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 col-md-6">
                 <label>Tanggal Bayar</label>
                 <input type="date" name="tanggal" class="form-control" value="{{ date('Y-m-d') }}" required>
             </div>
-            <div class="mb-3">
+            </div>
+            <div class='row'>
+            <div class="mb-3 col-md-6">
         <label>Metode Pembayaran</label>
         <select name="metode" class="form-control" required>
             <option value="">-- Pilih Metode --</option>
@@ -71,6 +76,11 @@
             <option value="Auto Debit">Auto Debit</option>
             <option value="Cash">Cash</option>
         </select>
+            </div>
+        <div class="mb-3 col-md-6">
+                <label>Cicilan Ke</label>
+                <input type="number" name="cicilan_ke" class="form-control" required >
+            </div>
     </div>
             
             @php
@@ -105,21 +115,79 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($history as $h)
-                    <tr>
-                        <td>{{ $h->tanggal }}</td>
-                        <td class="text-end">{{ number_format($h->total_bayar,0) }}</td>
-                        <td class="text-end">{{ number_format($h->bayar_pokok,0) }}</td>
-                        <td class="text-end">{{ number_format($h->bayar_bunga,0) }}</td>
-                        <td class="text-end">{{ number_format($h->bayar_denda,0) }}</td>
-                        <td class="text-end">{{ number_format($h->simpanan,0) }}</td>
-                        <td>{{ 'Pembayaran Angsuran ke '.$h->cicilan_ke }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center">Belum ada pembayaran</td>
-                    </tr>
-                    @endforelse
+                   @php
+    $total = 0;
+    $pokok = 0;
+    $bunga = 0;
+    $denda = 0;
+    $simpanan = 0;
+    $last = null;
+@endphp
+
+@forelse($history as $h)
+
+    {{-- JIKA CICILAN BERUBAH, CETAK TOTAL CICILAN SEBELUMNYA --}}
+    @if($last !== null && $h->cicilan_ke != $last)
+        <tr class="table-warning fw-bold">
+            <td class="text-end">TOTAL CICILAN KE {{ $last }}</td>
+            <td class="text-end">{{ number_format($total,0) }}</td>
+            <td class="text-end">{{ number_format($pokok,0) }}</td>
+            <td class="text-end">{{ number_format($bunga,0) }}</td>
+            <td class="text-end">{{ number_format($denda,0) }}</td>
+            <td class="text-end">{{ number_format($simpanan,0) }}</td>
+            <td></td>
+        </tr>
+
+        {{-- RESET HITUNGAN --}}
+        @php
+            $total = 0;
+            $pokok = 0;
+            $bunga = 0;
+            $denda = 0;
+            $simpanan = 0;
+        @endphp
+    @endif
+
+    {{-- TAMPIL DATA --}}
+    <tr>
+        <td>{{ $h->tanggal }}</td>
+        <td class="text-end">{{ number_format($h->total_bayar,0) }}</td>
+        <td class="text-end">{{ number_format($h->bayar_pokok,0) }}</td>
+        <td class="text-end">{{ number_format($h->bayar_bunga,0) }}</td>
+        <td class="text-end">{{ number_format($h->bayar_denda,0) }}</td>
+        <td class="text-end">{{ number_format($h->simpanan,0) }}</td>
+        <td>Pembayaran Angsuran ke {{ $h->cicilan_ke }}</td>
+    </tr>
+
+    {{-- AKUMULASI --}}
+    @php
+        $total += $h->total_bayar;
+        $pokok += $h->bayar_pokok;
+        $bunga += $h->bayar_bunga;
+        $denda += $h->bayar_denda;
+        $simpanan += $h->simpanan;
+        $last = $h->cicilan_ke;
+    @endphp
+
+@empty
+<tr>
+    <td colspan="7" class="text-center">Belum ada pembayaran</td>
+</tr>
+@endforelse
+
+{{-- TOTAL CICILAN TERAKHIR --}}
+@if($last !== null)
+<tr class="table-warning fw-bold">
+    <td class="text-end">TOTAL CICILAN KE {{ $last }}</td>
+    <td class="text-end">{{ number_format($total,0) }}</td>
+    <td class="text-end">{{ number_format($pokok,0) }}</td>
+    <td class="text-end">{{ number_format($bunga,0) }}</td>
+    <td class="text-end">{{ number_format($denda,0) }}</td>
+    <td class="text-end">{{ number_format($simpanan,0) }}</td>
+    <td></td>
+</tr>
+@endif
+
                 </tbody>
             </table>
         </div>
@@ -146,6 +214,8 @@
     // Ambil denda baru dari input user
     let dendaBaru = toNumber($("#denda").val());
     let simpanan =  toNumber($("#simpanan").val());
+    let pokokBaru = toNumber($("#pokok").val());
+    let bungaBaru = toNumber($("#bunga").val());
 
     // Jika kosong → pakai denda default dari server
    if (!dendaBaru) {
@@ -154,9 +224,15 @@
      if (!simpanan) {
         simpanan = 0;
      }
+     if(!pokokBaru){
+        pokokBaru =0;
+     }
+     if(!bungaBaru){
+        bungaBaru =0;
+     }
 
     // Hitung total baru (TANPA memakai total lama)
-    let totalBaru = pokokPerBulan + bungaPerBulan + dendaBaru + simpanan;
+    let totalBaru = pokokBaru + bungaBaru + dendaBaru + simpanan;
 
     // Set ulang total
     document.getElementById('total_bayar').value = angka(totalBaru);
@@ -165,20 +241,19 @@
      const jumlahPinjaman = {{ $jumlahPinjaman }};  
     const sukuBunga = {{ $sukuBunga }};  
     const tenor = {{ $tenor }}; 
-    const dendaDefault = {{$denda['denda']}};          
+    const dendaDefault = {{$denda}};          
     // Hitung bunga bulanan
     const bungaPerBulan = jumlahPinjaman * (sukuBunga / 100);
 
     // Hitung pokok per bulan
     const pokokPerBulan = jumlahPinjaman / tenor;
-
     // Total bayar bulanan
     const totalBulanan = pokokPerBulan + bungaPerBulan + dendaDefault ;
 
     // Set otomatis ke form
-    document.getElementById('total_bayar').value = angka(totalBulanan);
-    document.getElementById('pokok').value = angka(pokokPerBulan);
-    document.getElementById('bunga').value = angka(bungaPerBulan);
+    document.getElementById('total_bayar').value = angka(Math.ceil(totalBulanan));
+    document.getElementById('pokok').value = angka(Math.ceil(pokokPerBulan));
+    document.getElementById('bunga').value = angka(Math.ceil(bungaPerBulan));
 </script>
 @endpush
 </x-layout>

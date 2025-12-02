@@ -17,7 +17,7 @@ class JurnalController extends Controller
 
     public function index(Request $request)
 {
-    $akunList = Akun::orderBy('nama_akun')->get();
+    $akunList = Akun::orderBy('kode_akun')->get();
 
     // AJAX request dari DataTables
     if ($request->ajax()) {
@@ -76,85 +76,98 @@ class JurnalController extends Controller
 
 public function bukuBesar(Request $request)
 {
-    $akunList = Akun::orderBy('nama_akun')->get();
+    $akunList = Akun::orderBy('kode_akun')->get();
 
-    $filterAkun   = $request->id_akun;
-    $tanggalAwal  = $request->tanggal_awal;
-    $tanggalAkhir = $request->tanggal_akhir;
+    if ($request->ajax()) {
 
-    // Query jurnal dasar
-    $jurnalQuery = Jurnal::with('akun')->orderBy('tanggal_transaksi', 'asc');
+        $akunId = $request->id_akun;
+        $tglAwal = $request->tanggal_awal;
+        $tglAkhir = $request->tanggal_akhir;
 
-    if ($filterAkun) {
-        $jurnalQuery->where('id_akun', $filterAkun);
-    }
+        $query = Jurnal::with('akun')
+            ->when($akunId, fn($q)=>$q->where('id_akun',$akunId))
+            ->when($tglAwal && $tglAkhir, fn($q)=>$q->whereBetween('tanggal_transaksi',[$tglAwal,$tglAkhir]))
+            ->orderBy('tanggal_transaksi','asc');
 
-    if ($tanggalAwal && $tanggalAkhir) {
-        $jurnalQuery->whereBetween('tanggal_transaksi', [$tanggalAwal, $tanggalAkhir]);
-    }
+        $rows = $query->get();
 
-    $jurnalData = $jurnalQuery->get()->groupBy('id_akun');
+        // Jika tidak pilih akun → hentikan
+        if (!$akunId) {
+            return DataTables::of(collect())->make(true);
+        }
 
-    $bukuBesar = [];
-
-    foreach ($jurnalData as $akunId => $items) {
-
-        $akun = $akunList->firstWhere('id_akun', $akunId);
-        if (!$akun) continue; // jika akun tidak ditemukan, skip
-
-        // Hitung saldo awal
+        $akun = Akun::find($akunId);
         $saldoAwal = 0;
 
-        if ($tanggalAwal) {
-
-            $saldoAwalRows = Jurnal::where('id_akun', $akunId)
-                ->whereDate('tanggal_transaksi', '<', $tanggalAwal)
+        // ✅ SALDO AWAL
+        if ($tglAwal) {
+            $saldoAwalRows = Jurnal::where('id_akun',$akunId)
+                ->whereDate('tanggal_transaksi','<',$tglAwal)
                 ->get();
 
-            foreach ($saldoAwalRows as $row) {
-                // saldo tergantung tipe akun
-                if (in_array($akun->tipe_akun, ['Kewajiban', 'Modal', 'Pendapatan'])) {
-                    $saldoAwal += ($row->v_kredit - $row->v_debet);
+            foreach ($saldoAwalRows as $r) {
+                if (in_array($akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])) {
+                    $saldoAwal += ($r->v_kredit - $r->v_debet);
                 } else {
-                    $saldoAwal += ($row->v_debet - $row->v_kredit);
+                    $saldoAwal += ($r->v_debet - $r->v_kredit);
                 }
             }
         }
 
-        // hitung saldo berjalan
+        // ✅ SALDO BERJALAN
         $saldo = $saldoAwal;
+        $data = [];
 
-        foreach ($items as $row) {
-            if (in_array($akun->tipe_akun, ['Kewajiban','Modal','Pendapatan'])) {
-                $saldo += ($row->v_kredit - $row->v_debet);
-            } else {
-                $saldo += ($row->v_debet - $row->v_kredit);
-            }
-
-            $row->saldo = $saldo;
+        // TAMBAH BARIS SALDO AWAL
+        if ($tglAwal) {
+            $data[] = [
+                'tanggal' => $tglAwal,
+                'keterangan' => 'Saldo Awal',
+                'debet' => 0,
+                'kredit' => 0,
+                'saldo' => $saldoAwal
+            ];
         }
 
-        $bukuBesar[$akunId] = [
-            'saldo_awal' => $tanggalAwal
-                ? (object)[
-                    'tanggal_transaksi' => $tanggalAwal,
-                    'keterangan' => 'Saldo Awal',
-                    'v_debet' => 0,
-                    'v_kredit' => 0,
-                    'saldo' => $saldoAwal
-                ]
-                : null,
-            'data' => $items
-        ];
+        // BARIS TRANSAKSI
+         $totalDebet =0;
+                $totalKredit =0;
+                $saldo =0;
+        foreach ($rows as $r) {
+
+            if (in_array($akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])) {
+                $saldo += ($r->v_kredit - $r->v_debet);
+                $totalDebet += $r->v_debet;
+                $totalKredit += $r->v_kredit;
+            } else {
+                $saldo += ($r->v_debet - $r->v_kredit);
+                 $totalDebet += $r->v_debet;
+                $totalKredit += $r->v_kredit;
+            }
+
+            $data[] = [
+                'tanggal' => $r->tanggal_transaksi,
+                'keterangan' => $r->keterangan,
+                'debet' => $r->v_debet,
+                'kredit' => $r->v_kredit,
+                'saldo' => $saldo,
+                 'totalDebet' => $totalDebet,
+            'totalKredit' => $totalKredit,
+            ];
+        }
+        $saldoAkhir = $saldo; 
+      
+        
+
+        return DataTables::of(collect($data))->with([
+            'saldoAkhir'=>$saldoAkhir,
+            'totalDebet'=>$totalDebet,
+            'totalKredit'=>$totalKredit,
+        ])
+            ->make(true);
     }
 
-    return view('bukubesar.index', compact(
-        'akunList',
-        'bukuBesar',
-        'filterAkun',
-        'tanggalAwal',
-        'tanggalAkhir'
-    ));
+    return view('bukubesar.index', compact('akunList'));
 }
 
 public function storeDouble(Request $request)

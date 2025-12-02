@@ -48,14 +48,15 @@
 
                         <h6 class="text-primary fw-bold">Baris Debit</h6>
                         <div class="col-md-8">
-                            <label class="form-label">Akun Debit</label>
-                            <select name="akun_debet" class="form-select" required>
-                                <option value="">-- Pilih Akun --</option>
-                                @foreach ($akunList as $a)
-                                    <option value="{{ $a->id_akun }}">{{ $a->nama_akun }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+    <label class="form-label">Akun Debit</label>
+    <select name="akun_debet" id="akun_debet" class="form-select" required>
+        <option value="">-- Pilih Akun --</option>
+        @foreach ($akunList as $a)
+            <option value="{{ $a->id_akun }}">{{ $a->kode_akun.' / '. $a->nama_akun }}</option>
+        @endforeach
+    </select>
+</div>
+
                         <div class="col-md-4">
                             <label class="form-label">Jumlah Debit</label>
                             <input type="number" id="jumlah_debet" name="jumlah_debet" class="form-control" required min="0">
@@ -64,10 +65,10 @@
                         <h6 class="text-danger fw-bold mt-3">Baris Kredit</h6>
                         <div class="col-md-8">
                             <label class="form-label">Akun Kredit</label>
-                            <select name="akun_kredit" class="form-select" required>
+                            <select name="akun_kredit" id="akun_kredit" class="form-select" required>
                                 <option value="">-- Pilih Akun --</option>
                                 @foreach ($akunList as $a)
-                                    <option value="{{ $a->id_akun }}">{{ $a->nama_akun }}</option>
+                                    <option value="{{ $a->id_akun }}">{{$a->kode_akun.' / '.$a->nama_akun }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -98,7 +99,7 @@
         <select id="filterAkun" class="form-select">
             <option value="">-- Semua Akun --</option>
             @foreach ($akunList as $a)
-                <option value="{{ $a->id_akun }}">{{ $a->nama_akun }}</option>
+                <option value="{{ $a->id_akun }}">{{ $a->kode_akun .' / '.$a->nama_akun }}</option>
             @endforeach
         </select>
     </div>
@@ -119,6 +120,7 @@
             <i class="bi bi-filter"></i> Filter
         </button>
     </div>
+    
 
 </form>
 
@@ -151,6 +153,25 @@
     {{-- <x-plugins></x-plugins> --}}
 @push('js')
 <script>
+
+$(document).ready(function() {
+    $('#akun_debet').select2({
+        placeholder: "-- Pilih Akun --",
+        allowClear: true,
+        width: '100%'
+    });
+     $('#akun_kredit').select2({
+        placeholder: "-- Pilih Akun --",
+        allowClear: true,
+        width: '100%'
+    });
+      $('#filterAkun').select2({
+        placeholder: "-- Pilih Akun --",
+        allowClear: true,
+        width: '100%'
+    });
+});
+
 $(function(){
 
 

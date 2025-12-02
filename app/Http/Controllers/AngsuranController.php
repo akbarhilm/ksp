@@ -17,7 +17,7 @@ class AngsuranController extends Controller
 {
     $pinjaman = Pinjaman::with('pengajuan')->where('id_pinjaman',$id_pinjaman)->firstOrFail();
     $history = Angsuran::where('id_pinjaman', $id_pinjaman)
-        ->orderBy('tanggal', 'desc')
+        ->orderBy('cicilan_ke', 'desc')
         ->get();
 
     return view('angsuran.index', compact('pinjaman', 'history'));
@@ -74,7 +74,7 @@ class AngsuranController extends Controller
     if($request->metode == 'Cash'){
         $idakunaset = 1;
     }else{
-        $idakunaset = 3;
+        $idakunaset = 5;
     }
    
     // 1. Debet Kas total (id_akun = 1)
@@ -89,7 +89,7 @@ class AngsuranController extends Controller
     ]);
     // angsuran pokok 
      DB::table('tmjurnal')->insert([
-        'id_akun' => 5, // Kas
+        'id_akun' => 9, // Kas
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -100,7 +100,7 @@ class AngsuranController extends Controller
 
     // 3. Kredit Pendapatan Bunga (id_akun = 26)
     DB::table('tmjurnal')->insert([
-        'id_akun' => 26, // Pendapatan Bunga Pinjaman
+        'id_akun' => 47, // Pendapatan Bunga Pinjaman
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -113,7 +113,7 @@ class AngsuranController extends Controller
 
     if($request->denda){
      DB::table('tmjurnal')->insert([
-        'id_akun' => 29, // Pendapatan Denda
+        'id_akun' => 80, // Pendapatan Denda
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -125,7 +125,7 @@ class AngsuranController extends Controller
 
      // simpanan jurnal
     DB::table('tmjurnal')->insert([
-        'id_akun' => 14, // Simpanan wajib Anggota
+        'id_akun' => 36, // Simpanan wajib Anggota
         'id_simpanan' => $simpanan->id_simpanan,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -167,7 +167,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     if($request->metode=="Cash"){
         $idakunaset=1;
     }else{
-        $idakunaset=3;
+        $idakunaset=5;
     }
     $userId = auth()->id();
 
@@ -200,7 +200,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     ]);
     // angsuran pokok 
      DB::table('tmjurnal')->insert([
-        'id_akun' => 5, // Kas
+        'id_akun' => 9, // Kas
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -213,7 +213,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     Simpanan::create([
         'id_rekening'=>Rekening::where('id_nasabah', $datapinjaman->id_nasabah)
         ->where('jenis_rekening', 'Tabungan')->value('id_rekening'),
-        'id_akun' => 14,
+        'id_akun' => 36, // Simpanan wajib Anggota
         'tanggal' => $request->tanggal,
         'jenis'=>'wajib',
         'v_debit'=>$request->simpananwajib,
@@ -223,7 +223,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
    Simpanan::create([
         'id_rekening'=>Rekening::where('id_nasabah', $datapinjaman->id_nasabah)
         ->where('jenis_rekening', 'Tabungan')->value('id_rekening'),
-        'id_akun' => 13,
+        'id_akun' => 35, // Simpanan Pokok Anggota
         'tanggal' => $request->tanggal,
         'jenis'=>'pokok',
         'v_debit'=>$request->simpananpokok,
@@ -232,7 +232,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'id_entry'=>$userId]);
         
         DB::table('tmjurnal')->insert([
-        'id_akun' => 14, // Simpanan wajib Anggota
+        'id_akun' => 36, // Simpanan wajib Anggota
         'tanggal_transaksi' => now(),
         'keterangan' => 'Penarikan simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $request->simpananwajib??0,
@@ -240,7 +240,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'id_entry' => $userId,
     ]);
         DB::table('tmjurnal')->insert([
-        'id_akun' => 13, // Simpanan Pokok Anggota
+        'id_akun' => 35, // Simpanan Pokok Anggota
         'tanggal_transaksi' => now(),
         'keterangan' => 'Penarikan simpanan pokok '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $request->simpananpokok??0,
