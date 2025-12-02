@@ -32,7 +32,7 @@ $bulanIni = Carbon::today()->format('Y-m');
         ->orderBy('cicilan_ke','DESC')
         ->first();
 
-        $bulanbayar = Carbon::parse($lastAngsuran->tanggal)->format('Y-m');
+        $bulanbayar =  $lastAngsuran ? Carbon::parse($lastAngsuran->tanggal)->format('Y-m') : null;
 
         
     // Tentukan cicilan berjalan

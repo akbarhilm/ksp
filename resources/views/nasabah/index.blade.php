@@ -36,7 +36,7 @@
         </div>
         
     </main>
-    <!-- <x-plugins></x-plugins> -->
+
   @push('js')
 <script>
 $(document).ready(function () {
