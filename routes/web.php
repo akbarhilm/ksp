@@ -35,8 +35,10 @@ use App\Http\Controllers\TutupBukuController;
 */
 
 Route::get('/', function () {
-    return view('dashboard.index');
+    return view('welcome');
 });
+
+
 
 Route::get('/pdf/sphutang/{id}', function($id){
     $data = session('pdf_data_'.$id);
@@ -127,7 +129,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('sign-up', [RegisterController::class, 'store'])->middleware('guest');
