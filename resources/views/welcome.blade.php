@@ -15,15 +15,41 @@
         body { font-family: 'Inter', sans-serif; background-color: #f6f9fc; }
 
         .navbar-brand { font-weight: 700; letter-spacing: .5px; }
+@media (max-width: 768px) {
+    .hero {
+        height: 260px;              /* penting */
+        padding: 40px 15px;         /* kecilkan padding */
+        background-size: cover;
+          background-position: 50% 75%;
+    }
+}
+  .hero {
+    position: relative;
+    background: url("{{ asset('images/hero6.jpg') }}") center 30% / cover no-repeat;
+    padding: 100px 20px;
+    color: white;
+    border-radius: 0 0 40px 40px;
+    overflow: hidden;
+}
 
-        .hero {
-            background: linear-gradient(120deg, #0d6efd, #0a58ca);
-            color: white;
-            padding: 80px 20px;
-            border-radius: 0 0 40px 40px;
-        }
 
-        .hero h1 { font-weight: 700; }
+/* Overlay Transparan */
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+/* Supaya konten tampil di atas overlay */
+.hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+
+
+        .hero h1 { font-weight: 700; color:black  }
         .hero p { opacity: .9; }
 
         .section { padding: 60px 20px; }
@@ -86,6 +112,8 @@
 }
 
 
+
+
     </style>
 </head>
 <body>
@@ -128,16 +156,15 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1>Koperasi Modern & Terpercaya</h1>
-                <p>
-                    Menyediakan layanan simpan pinjam yang cepat, aman,
-                    transparan dan berbasis teknologi.
-                </p>
-                <a href="#visi" class="btn btn-light mt-3">Pelajari Lebih Lanjut</a>
+                <br>
+                <br>
+                <br> 
+                <br>
+                <br>
+                <br>
+                <br>
             </div>
-            <div class="col-md-6 text-center">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135673.png" width="250">
-            </div>
+           
         </div>
     </div>
 </div>
