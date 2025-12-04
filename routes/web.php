@@ -22,6 +22,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\TransaksiHarianController;
 use App\Http\Controllers\TutupBukuController;
+use App\Http\Controllers\BackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,6 +126,16 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('akun', AkunController::class);
 	  Route::resource('tutupbuku', TutupBukuController::class);
 
+
+});
+
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
+    Route::post('/backup/run', [BackupController::class, 'run'])->name('backup.run');
+    Route::get('/backup/download/{file}', [BackupController::class, 'download'])->name('backup.download');
+    Route::delete('/backup/delete/{file}', [BackupController::class, 'delete'])->name('backup.delete');
 
 });
 

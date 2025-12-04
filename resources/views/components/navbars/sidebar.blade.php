@@ -210,7 +210,11 @@
             </li>
             </div>
             
-           
+           <li class="nav-item mt-3">
+               <a class="nav-link text-white {{ $activePage == 'backup' ? ' active bg-gradient-info' : '' }}  "
+                    href="{{ route('backup.index') }}">
+                Back Up</a>
+            </li>
         </ul>
     </div>
     
