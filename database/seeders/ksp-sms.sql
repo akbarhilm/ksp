@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2025 at 09:36 AM
+-- Generation Time: Dec 04, 2025 at 08:11 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -17641,7 +17641,55 @@ INSERT INTO `tmsimpanan` (`id_simpanan`, `id_rekening`, `id_akun`, `tanggal`, `j
 (3718, 131, 36, '2025-11-28', 'wajib', '0.00', '13000.00', 'Migrasi Wajib: Simpanan wajib dari anggsuran / JNL 251128180240', 1, '2025-11-29', '2025-11-29'),
 (3719, 91, 36, '2025-11-28', 'wajib', '0.00', '10000.00', 'Migrasi Wajib: Simpanan wajib dari anggsuran / JNL 251128180622', 1, '2025-11-29', '2025-11-29'),
 (3720, 68, 36, '2025-11-28', 'wajib', '0.00', '16500.00', 'Migrasi Wajib: Simpanan wajib dari anggsuran / JNL 251128180909', 1, '2025-11-29', '2025-11-29'),
-(3721, 127, 36, '2025-11-28', 'wajib', '0.00', '16500.00', 'Migrasi Wajib: Simpanan wajib dari anggsuran / JNL 251128181154', 1, '2025-11-29', '2025-11-29');
+(3721, 127, 36, '2025-11-28', 'wajib', '0.00', '16500.00', 'Migrasi Wajib: Simpanan wajib dari anggsuran / JNL 251128181154', 1, '2025-11-29', '2025-11-29'),
+(3734, 23, 0, '2025-12-04', 'wajib', '0.00', '3560627.06', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3735, 36, 0, '2025-12-04', 'wajib', '0.00', '1645.50', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3736, 53, 0, '2025-12-04', 'wajib', '0.00', '4103.55', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3737, 77, 0, '2025-12-04', 'wajib', '0.00', '2160.00', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3738, 78, 0, '2025-12-04', 'wajib', '0.00', '6512.15', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3739, 103, 0, '2025-12-04', 'wajib', '0.00', '3082.50', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3740, 104, 0, '2025-12-04', 'wajib', '0.00', '2466.00', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3741, 105, 0, '2025-12-04', 'wajib', '0.00', '3082.50', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3742, 118, 0, '2025-12-04', 'wajib', '0.00', '2466.00', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3743, 135, 0, '2025-12-04', 'wajib', '0.00', '1632.00', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3744, 154, 0, '2025-12-04', 'wajib', '0.00', '1662.00', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3745, 214, 0, '2025-12-04', 'wajib', '0.00', '1800.00', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3758, 23, 0, '2025-12-04', 'wajib', '0.00', '3571308.94', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3759, 36, 0, '2025-12-04', 'wajib', '0.00', '1650.44', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3760, 53, 0, '2025-12-04', 'wajib', '0.00', '4115.86', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3761, 77, 0, '2025-12-04', 'wajib', '0.00', '2166.48', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3762, 78, 0, '2025-12-04', 'wajib', '0.00', '6531.68', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3763, 103, 0, '2025-12-04', 'wajib', '0.00', '3091.75', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3764, 104, 0, '2025-12-04', 'wajib', '0.00', '2473.40', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3765, 105, 0, '2025-12-04', 'wajib', '0.00', '3091.75', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3766, 118, 0, '2025-12-04', 'wajib', '0.00', '2473.40', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3767, 135, 0, '2025-12-04', 'wajib', '0.00', '1636.90', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3768, 154, 0, '2025-12-04', 'wajib', '0.00', '1666.99', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3769, 214, 0, '2025-12-04', 'wajib', '0.00', '1805.40', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3770, 23, 0, '2025-12-04', 'wajib', '0.00', '3582022.87', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3771, 36, 0, '2025-12-04', 'wajib', '0.00', '1655.39', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3772, 53, 0, '2025-12-04', 'wajib', '0.00', '4128.21', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3773, 77, 0, '2025-12-04', 'wajib', '0.00', '2172.98', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3774, 78, 0, '2025-12-04', 'wajib', '0.00', '6551.28', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3775, 103, 0, '2025-12-04', 'wajib', '0.00', '3101.02', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3776, 104, 0, '2025-12-04', 'wajib', '0.00', '2480.82', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3777, 105, 0, '2025-12-04', 'wajib', '0.00', '3101.02', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3778, 118, 0, '2025-12-04', 'wajib', '0.00', '2480.82', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3779, 135, 0, '2025-12-04', 'wajib', '0.00', '1641.81', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3780, 154, 0, '2025-12-04', 'wajib', '0.00', '1671.99', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3781, 214, 0, '2025-12-04', 'wajib', '0.00', '1810.82', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3782, 23, 0, '2025-12-04', 'wajib', '0.00', '3592768.93', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3783, 36, 0, '2025-12-04', 'wajib', '0.00', '1660.35', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3784, 53, 0, '2025-12-04', 'wajib', '0.00', '4140.59', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3785, 77, 0, '2025-12-04', 'wajib', '0.00', '2179.50', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3786, 78, 0, '2025-12-04', 'wajib', '0.00', '6570.93', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3787, 103, 0, '2025-12-04', 'wajib', '0.00', '3110.33', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3788, 104, 0, '2025-12-04', 'wajib', '0.00', '2488.26', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3789, 105, 0, '2025-12-04', 'wajib', '0.00', '3110.33', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3790, 118, 0, '2025-12-04', 'wajib', '0.00', '2488.26', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3791, 135, 0, '2025-12-04', 'wajib', '0.00', '1646.73', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3792, 154, 0, '2025-12-04', 'wajib', '0.00', '1677.00', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04'),
+(3793, 214, 0, '2025-12-04', 'wajib', '0.00', '1816.25', 'Bunga simpanan 2025-11', 1, '2025-12-04', '2025-12-04');
 
 -- --------------------------------------------------------
 
@@ -17658,6 +17706,20 @@ CREATE TABLE `tmtransaksi` (
   `debit` decimal(15,2) DEFAULT 0.00,
   `kredit` decimal(15,2) DEFAULT 0.00,
   `keterangan` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tmtutupbuku`
+--
+
+CREATE TABLE `tmtutupbuku` (
+  `id_tutupbuku` int(11) NOT NULL,
+  `tanggal` date NOT NULL DEFAULT current_timestamp(),
+  `id_entry` int(11) NOT NULL,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `updated_at` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -17706,7 +17768,7 @@ INSERT INTO `trakun` (`id_akun`, `kode_akun`, `nama_akun`, `tipe_akun`, `status`
 (22, '124', 'Inventaris Kantor', 'Aset', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (23, '125', 'Akumulasi Penyusutan Bangunan', 'Aset', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
 (24, '126', 'Akumulasi Penyusutan Kendaraan', 'Aset', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
-(25, '127', 'Akumulasi penyusutan Inventaris Kantor', 'Aset', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
+(25, '127', 'Akumulasi penyusutan Inventaris Kantor', 'Aset', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (26, '131', 'Sewa dibayar di Muka', 'Aset', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (27, '201', 'Simpanan Anggota', 'Kewajiban', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
 (28, '202', 'Simpanan Non-Anggota', 'Kewajiban', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
@@ -17730,7 +17792,7 @@ INSERT INTO `trakun` (`id_akun`, `kode_akun`, `nama_akun`, `tipe_akun`, `status`
 (46, '403', 'Partisipasi BPJS Kesehatan', 'Pendapatan', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (47, '411', 'Pendapatan Bunga Pinjaman', 'Pendapatan', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (48, '412', 'Pemasukan Provisi', 'Pendapatan', 'aktif', 1, '2025-11-29', '2025-11-29'),
-(49, '413', 'Pemasukan Administrasi', 'Pendapatan', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
+(49, '413', 'Pemasukan Administrasi', 'Pendapatan', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (50, '421', 'Pemasukan  Asuransi Jiwa', 'Pendapatan', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (51, '422', 'Pemasukan Survey', 'Pendapatan', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (52, '501', 'Beban Keamanan dan Kebersihan', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
@@ -17738,7 +17800,7 @@ INSERT INTO `trakun` (`id_akun`, `kode_akun`, `nama_akun`, `tipe_akun`, `status`
 (54, '511', 'Beban Lainnya', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (55, '512', 'Beban Marketing', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (56, '524', 'Beban Gaji Pokok', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
-(57, '525', 'Biaya Asuransi', 'Beban', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
+(57, '525', 'Biaya Asuransi', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (58, '526', 'Biaya Transportasi', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (59, '527', 'Biaya Air, Listrik, Gas dan Telepon', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (60, '528', 'Biaya Belum Tahu', 'Beban', 'nonaktif', 1, '2025-11-29', '2025-11-29'),
@@ -17762,7 +17824,8 @@ INSERT INTO `trakun` (`id_akun`, `kode_akun`, `nama_akun`, `tipe_akun`, `status`
 (78, '533', 'Beban Administrasi & Bunga Bank', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (79, '534', 'Beban Penyusutan Sewa Dimuka', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
 (80, '423', 'Pendapatan Denda', 'Pendapatan', 'aktif', 1, '2025-11-29', '2025-11-29'),
-(81, '503', 'Beban Photocopy', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29');
+(81, '503', 'Beban Photocopy', 'Beban', 'aktif', 1, '2025-11-29', '2025-11-29'),
+(82, '212', 'Cadangan Klaim Asuransi', 'Kewajiban', 'aktif', 1, '2025-12-04', NULL);
 
 -- --------------------------------------------------------
 
@@ -18135,6 +18198,12 @@ ALTER TABLE `tmtransaksi`
   ADD PRIMARY KEY (`id_transaksi`);
 
 --
+-- Indexes for table `tmtutupbuku`
+--
+ALTER TABLE `tmtutupbuku`
+  ADD PRIMARY KEY (`id_tutupbuku`);
+
+--
 -- Indexes for table `trakun`
 --
 ALTER TABLE `trakun`
@@ -18181,7 +18250,7 @@ ALTER TABLE `coa`
 -- AUTO_INCREMENT for table `tmjurnal`
 --
 ALTER TABLE `tmjurnal`
-  MODIFY `id_jurnal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10993;
+  MODIFY `id_jurnal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11395;
 
 --
 -- AUTO_INCREMENT for table `tmpembayaran`
@@ -18217,7 +18286,7 @@ ALTER TABLE `tmrekening`
 -- AUTO_INCREMENT for table `tmsimpanan`
 --
 ALTER TABLE `tmsimpanan`
-  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3722;
+  MODIFY `id_simpanan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3794;
 
 --
 -- AUTO_INCREMENT for table `tmtransaksi`
@@ -18226,10 +18295,16 @@ ALTER TABLE `tmtransaksi`
   MODIFY `id_transaksi` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tmtutupbuku`
+--
+ALTER TABLE `tmtutupbuku`
+  MODIFY `id_tutupbuku` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `trakun`
 --
 ALTER TABLE `trakun`
-  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT for table `trbunga`
