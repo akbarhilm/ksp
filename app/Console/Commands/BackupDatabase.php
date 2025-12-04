@@ -21,11 +21,9 @@ class BackupDatabase extends Command
         if (!file_exists($path)) {
             mkdir($path, 0755, true);
         }
-$mysqldump = '"C:\xampp\mysql\bin\mysqldump.exe"';
         // Build command
         $command = sprintf(
-            '%s --user=%s --password=%s --host=%s %s > %s',
-            $mysqldump,
+            'mysqldump --user=%s --password=%s --host=%s %s > %s',
             escapeshellarg($db['username']),
             escapeshellarg($db['password']),
             escapeshellarg($db['host']),
