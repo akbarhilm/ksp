@@ -125,7 +125,7 @@ let table = $('#table-buku').DataTable({
     },
     columns:[
         { data:'tanggal' },
-        { data:'keterangan' },
+        { data:'keterangan',className:'text-wrap w-45' },
         { data:'debet', className:'text-end',
             render: function (data) {
                 return parseFloat(data).toLocaleString('id-ID');

@@ -9,6 +9,7 @@ use App\Models\Angsuran;
 use App\Models\Transaksi;
 use App\Models\Jurnal;
 use App\Models\Nasabah;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -17,9 +18,7 @@ class DashboardController extends Controller
      //============laba rugi bulanan ===================
     $tanggal  = now();
     // Query jurnal join akun
-    $query = Jurnal::with('akun')
-       ->whereMonth('tanggal_transaksi', $tanggal->month)
-    ->whereYear('tanggal_transaksi', $tanggal->year);
+    $query = Jurnal::with('akun')->whereYear('tanggal_transaksi', $tanggal->year);
 
     $jurnal = $query->get();
 
@@ -42,21 +41,25 @@ class DashboardController extends Controller
     $laba = $totalPendapatan - $totalBeban;
 //===============================================
 //=================jumlah pinjaman===================
- $totalPinjaman = Pinjaman::whereMonth('created_at', $tanggal->month)
-    ->whereYear('created_at', $tanggal->year)->sum('total_pinjaman');
+ $totalPinjaman = Pinjaman::whereYear('created_at', $tanggal->year)->sum('total_pinjaman');
 //===============================================
 //================jumlah nasabah======================
 $totalnasabah = Nasabah::where('status','Aktif ')->count();
 //===============================================
 //================jumlah simpanan======================
-$totalsimpanan = Simpanan::whereMonth('tanggal', $tanggal->month)
-    ->whereYear('tanggal', $tanggal->year)->sum('v_kredit') - Simpanan::whereMonth('tanggal', $tanggal->month)
-    ->whereYear('tanggal', $tanggal->year)->sum('v_debit');
+$totalsimpanan = Simpanan::whereYear('tanggal', $tanggal->year)->sum('v_kredit') - Simpanan::whereYear('tanggal', $tanggal->year)->sum('v_debit');
 //===============================================
 //================List Pinjaman======================
 $listpinjaman = Pinjaman::with('nasabah','pengajuan')->where('status','aktif')->get();
-$lunas = Pinjaman::where('status','lunas')->whereMonth('updated_at', $tanggal->month)->whereYear('updated_at', $tanggal->year)->count();
+$lunas = Pinjaman::where('status','lunas')->whereMonth('updated_at',$tanggal->month)->whereYear('updated_at', $tanggal->year)->count();
+
 //===============================================
+//===========tutup buku bulanan====================
+  $todayliteraly = Carbon::today();
+ $lastDay = $todayliteraly->copy()->endOfMonth();
+ if ($todayliteraly->isSameDay($lastDay)) {
+        $tutup = 'Lakukan Proses Tutup Buku Hari Ini';
+    }
    return view('dashboard.index', [
         'laba'             => $laba,
         'totalPinjaman'    => $totalPinjaman,
@@ -64,6 +67,7 @@ $lunas = Pinjaman::where('status','lunas')->whereMonth('updated_at', $tanggal->m
         'totalsimpanan'    => $totalsimpanan,
         'listpinjaman'     => $listpinjaman,
         'lunas'            => $lunas,
+        'tutup'            => $tutup ?? '',
         
     ]);
 }

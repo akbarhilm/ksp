@@ -11,7 +11,7 @@
                         <div class="card-header p-3 pt-2">
 
                             <div class="text-center pt-1">
-                                <p class="text-sm mb-0 text-capitalize">Laba Bulan ini</p>
+                                <p class="text-sm mb-0 text-capitalize">Laba Tahun Berjalan</p>
                                 <h4 class="mb-0">Rp. {{ number_format($laba, 0, ',', '.') }}</h4>
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                         <div class="card-header p-3 pt-2">
 
                             <div class="text-center pt-1">
-                                <p class="text-sm mb-0 text-capitalize">Pinjaman Bulan Ini</p>
+                                <p class="text-sm mb-0 text-capitalize">Pinjaman Tahun Berjalan</p>
                                 <h4 class="mb-0">Rp. {{ number_format($totalPinjaman, 0, ',', '.') }}</h4>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                         <div class="card-header p-3 pt-2">
 
                             <div class="text-center pt-1">
-                                <p class="text-sm mb-0 text-capitalize">Simpanan Bulan Ini</p>
+                                <p class="text-sm mb-0 text-capitalize">Simpanan Tahun Berjalan</p>
                                 <h4 class="mb-0">Rp. {{ number_format($totalsimpanan, 0, ',', '.') }}</h4>
                             </div>
                         </div>
@@ -244,13 +244,16 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card h-100">
                         <div class="card-header pb-0">
-                            <h6>Orders overview</h6>
+                            <h6>Overview</h6>
                             {{-- <p class="text-sm">
                                 <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
                                 <span class="font-weight-bold">24%</span> this month
                             </p> --}}
                         </div>
                         <div class="card-body p-3">
+                            @if($tutup)
+                            <span class="badge bg-primary">{{ $tutup }}</span>
+                            @endif
                             {{-- <div class="timeline timeline-one-side">
                                 <div class="timeline-block mb-3">
                                     <span class="timeline-step">

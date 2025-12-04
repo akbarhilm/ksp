@@ -23,184 +23,183 @@ use PDF;
 
 class PengajuanController extends Controller
 {
-  public function index(){
-         $nasabah = Nasabah::paginate(10);
-        
-        return view('pengajuan.index', compact('nasabah'));
+    public function index()
+    {
+        $nasabah = Nasabah::paginate(10);
 
+        return view('pengajuan.index', compact('nasabah'));
     }
 
-   
+
 
     public function create(Request $request)
     {
-     
+
         $idnasabah = $request->query('id_nasabah');
         $karyawan = User::all();
         $nasabah = Nasabah::find($idnasabah);
         $program = Program::with('bunga')->get();
-       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->where('status','aktif')->get();
-        if(!$rekening->count()){
-            return redirect()->route('rekening.edit',$idnasabah)->with('error', 'Rekening pinjaman Belum Aktif.');
-        }else{
-        return view('pengajuan.create', compact('nasabah', 'rekening','program','karyawan') );
+        $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening', '=', 'Pinjaman')->where('status', 'aktif')->get();
+        if (!$rekening->count()) {
+            return redirect()->route('rekening.edit', $idnasabah)->with('error', 'Rekening pinjaman Belum Aktif.');
+        } else {
+            return view('pengajuan.create', compact('nasabah', 'rekening', 'program', 'karyawan'));
         }
-        
-       
     }
 
-        public function topup(Request $request)
+    public function topup(Request $request)
     {
-     
-    $idnasabah = $request->query('id_nasabah');
+
+        $idnasabah = $request->query('id_nasabah');
         $karyawan = User::all();
         $nasabah = Nasabah::find($idnasabah);
-        $pinjaman = Pinjaman::where('id_nasabah',$idnasabah)->where('status','aktif')->first();
-        $jaminan = PengajuanJaminan::whereHas('pengajuan', function($q) use ($idnasabah){
-            $q->where('status','cair');
+        $pinjaman = Pinjaman::where('id_nasabah', $idnasabah)->where('status', 'aktif')->first();
+        $jaminan = PengajuanJaminan::whereHas('pengajuan', function ($q) use ($idnasabah) {
+            $q->where('status', 'cair');
         })->get();
-       $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening','=','Pinjaman')->where('status','aktif')->get();
-        if(!$rekening->count()){
-            return redirect()->route('rekening.edit',$idnasabah)->with('warning', 'Rekening pinjaman Belum Aktif.');
-        }else{
-        return view('pengajuan.topup', compact('nasabah', 'rekening','pinjaman','karyawan','jaminan') );
+        $rekening = Rekening::where('id_nasabah', $idnasabah)->where('jenis_rekening', '=', 'Pinjaman')->where('status', 'aktif')->get();
+        if (!$rekening->count()) {
+            return redirect()->route('rekening.edit', $idnasabah)->with('warning', 'Rekening pinjaman Belum Aktif.');
+        } else {
+            return view('pengajuan.topup', compact('nasabah', 'rekening', 'pinjaman', 'karyawan', 'jaminan'));
         }
-        
-       
     }
 
     public function storeTopup(Request $request)
     {
 
-         $request->merge([
-        'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
-        'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
-        'admin' => str_replace('.', '', $request->admin),
-        'asuransi' => str_replace('.', '', $request->asuransi)
-    ]);
+        $request->merge([
+            'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
+            'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
+            'admin' => str_replace('.', '', $request->admin),
+            'asuransi' => str_replace('.', '', $request->asuransi)
+        ]);
         $request->validate([
             'id_rekening' => 'required',
-            
+
             'jumlah_pengajuan' => 'required|numeric',
-           'tenor'            => 'required|numeric|min:1',
-        'bunga'            => 'required|numeric|min:0',
-        'simpanan_pokok'            => 'required|numeric',
-        'kode_resort'            => 'required',
-        'admin'            => 'required|numeric',
-        'asuransi'            => 'required|numeric',
-        'jenis_jaminan.*'  => 'required|string|max:100',
-        'keterangan.*'     => 'required|string|max:255'
+            'tenor'            => 'required|numeric|min:1',
+            'bunga'            => 'required|numeric|min:0',
+            'simpanan_pokok'            => 'required|numeric',
+            'kode_resort'            => 'required',
+            'admin'            => 'required|numeric',
+            'asuransi'            => 'required|numeric',
+            'jenis_jaminan.*'  => 'required|string|max:100',
+            'keterangan.*'     => 'required|string|max:255'
         ]);
-       
-        $request->request->add(['id_entry' => auth()->user()->id,'jenis'=>'topup']);
+
+        $request->request->add(['id_entry' => auth()->user()->id, 'jenis' => 'topup']);
         $pengajuan = Pengajuan::create($request->all());
         if ($request->jenis_jaminan) {
-        foreach ($request->jenis_jaminan as $i => $j) {
-            PengajuanJaminan::create([
-                'id_pengajuan'  => $pengajuan->id_pengajuan,
-                'jenis_jaminan' => $j,
-                'keterangan'    => $request->keterangan[$i] ?? null,
-                'id_entry'      => auth()->user()->id
-            ]);
+            foreach ($request->jenis_jaminan as $i => $j) {
+                PengajuanJaminan::create([
+                    'id_pengajuan'  => $pengajuan->id_pengajuan,
+                    'jenis_jaminan' => $j,
+                    'keterangan'    => $request->keterangan[$i] ?? null,
+                    'id_entry'      => auth()->user()->id
+                ]);
+            }
         }
-    }
         return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan.');
     }
 
     public function store(Request $request)
     {
-         $request->merge([
-        'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
-        'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
-        'admin' => str_replace('.', '', $request->admin),
-        'asuransi' => str_replace('.', '', $request->asuransi)
-    ]);
+        $request->merge([
+            'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
+            'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
+            'admin' => str_replace('.', '', $request->admin),
+            'asuransi' => str_replace('.', '', $request->asuransi)
+        ]);
 
         $request->validate([
             'id_rekening' => 'required',
-            
+
             'jumlah_pengajuan' => 'required|numeric',
-           'tenor'            => 'required|numeric|min:1',
-        'bunga'            => 'required|numeric|min:0',
-        'simpanan_pokok'            => 'required|numeric',
-        'admin'            => 'required|numeric',
-        'asuransi'            => 'required|numeric',
-        'jenis_jaminan.*'  => 'required|string|max:100',
-        'keterangan.*'     => 'required|string|max:255',
-        'kode_resort'            => 'required',
+            'tenor'            => 'required|numeric|min:1',
+            'bunga'            => 'required|numeric|min:0',
+            'simpanan_pokok'            => 'required|numeric',
+            'admin'            => 'required|numeric',
+            'asuransi'            => 'required|numeric',
+            'jenis_jaminan.*'  => 'required|string|max:100',
+            'keterangan.*'     => 'required|string|max:255',
+            'kode_resort'            => 'required',
         ]);
-       
+
         $request->request->add(['id_entry' => auth()->user()->id]);
-        $request->request->add(['jenis'=>'baru']);
-         
+        $request->request->add(['jenis' => 'baru']);
+
         $pengajuan = Pengajuan::create($request->all());
         if ($request->jenis_jaminan) {
-        foreach ($request->jenis_jaminan as $i => $j) {
-            PengajuanJaminan::create([
-                'id_pengajuan'  => $pengajuan->id_pengajuan,
-                'jenis_jaminan' => $j,
-                'keterangan'    => $request->keterangan[$i] ?? null,
-                'id_entry'      => auth()->user()->id
-            ]);
+            foreach ($request->jenis_jaminan as $i => $j) {
+                PengajuanJaminan::create([
+                    'id_pengajuan'  => $pengajuan->id_pengajuan,
+                    'jenis_jaminan' => $j,
+                    'keterangan'    => $request->keterangan[$i] ?? null,
+                    'id_entry'      => auth()->user()->id
+                ]);
+            }
         }
-    }
         return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditambahkan.');
     }
 
-    public function lihat(Request $request){
-        
+    public function lihat(Request $request)
+    {
+
         $idrekening = $request->get('idrekening');
-        $result = Simpanan::where('id_rekening','=',$idrekening)->get();
+        $result = Simpanan::where('id_rekening', '=', $idrekening)->get();
         return response()->json($result);
     }
 
-     public function approval(){
-        
-        $pinjaman = Pengajuan::where('status','=','pengajuan')->with('rekening.nasabah')->orderBy('id_pengajuan','desc')->get();
+    public function approval()
+    {
+
+        $pinjaman = Pengajuan::where('status', '=', 'pengajuan')->with('rekening.nasabah')->orderBy('id_pengajuan', 'desc')->get();
         return view('pengajuan.approval', compact('pinjaman'));
     }
 
-    public function approv(Request $request){
-         $request->merge([
-        'jumlah_pencairan' => str_replace('.', '', $request->jumlah_pencairan)
-        
-    ]);
-        Pengajuan::where('id_pengajuan',$request->get('id_pengajuan'))->update(['status'=>'approv', 'tanggal_approval'=>date('Y-m-d'),'jumlah_pencairan'=>$request->get('jumlah_pencairan'),'updated_at'=>date('Y-m-d')]);
+    public function approv(Request $request)
+    {
+        $request->merge([
+            'jumlah_pencairan' => str_replace('.', '', $request->jumlah_pencairan)
+
+        ]);
+        Pengajuan::where('id_pengajuan', $request->get('id_pengajuan'))->update(['status' => 'approv', 'tanggal_approval' => date('Y-m-d'), 'jumlah_pencairan' => $request->get('jumlah_pencairan'), 'updated_at' => date('Y-m-d')]);
         return redirect()->route('pengajuan.approval')->with('success', 'Pengajuan berhasil disetujui.');
-       
     }
 
-    public function decline($id){
-        
-         Pengajuan::where('id_pinjaman',$id)->update(['status'=>'tolak']);
+    public function decline($id)
+    {
+
+        Pengajuan::where('id_pinjaman', $id)->update(['status' => 'tolak']);
         return redirect()->route('pengajuan.approval')->with('success', 'Pengajuan telah ditolak.');
-       
     }
 
     public function show($id)
     {
         $pengajuan = Pengajuan::find($id);
         return response()->json($pengajuan);
-        
     }
 
-      public function pencairan(){
-        $pinjaman = Pengajuan::where('status','=','approv')->with('rekening.nasabah')->orderBy('updated_at','desc')->get();
+    public function pencairan()
+    {
+        $pinjaman = Pengajuan::where('status', '=', 'approv')->with('rekening.nasabah')->orderBy('updated_at', 'desc')->get();
 
-       
+
         return view('pengajuan.pencairan', compact('pinjaman'));
     }
 
-        public function detailPencairan($id){
-        
-        $pengajuan = Pengajuan::where('id_pengajuan',$id)->with('rekening.nasabah','jaminan')->first();
-        $pinjaman = Pinjaman::where('id_nasabah',$pengajuan->rekening[0]->id_nasabah)->where('status','aktif')->first();
-        $jaminan = PengajuanJaminan::where('id_pengajuan',$pengajuan->id_pengajuan)->get();
-        return view('pengajuan.cair', compact('pengajuan','pinjaman','jaminan'));
+    public function detailPencairan($id)
+    {
+
+        $pengajuan = Pengajuan::where('id_pengajuan', $id)->with('rekening.nasabah', 'jaminan')->first();
+        $pinjaman = Pinjaman::where('id_nasabah', $pengajuan->rekening[0]->id_nasabah)->where('status', 'aktif')->first();
+        $jaminan = PengajuanJaminan::where('id_pengajuan', $pengajuan->id_pengajuan)->get();
+        return view('pengajuan.cair', compact('pengajuan', 'pinjaman', 'jaminan'));
     }
-    
-        
-    
+
+
+
     public function update(Request $request, Simpanan $simpanan)
     {
         $request->validate([
@@ -214,94 +213,111 @@ class PengajuanController extends Controller
         return redirect()->route('pengajuan.index')->with('success', 'Simpanan berhasil diperbarui.');
     }
 
-    public function cair(Request $request,$id){
+    public function cair(Request $request, $id)
+    {
 
         DB::beginTransaction();
-           
+
         $request->validate([
-            'metode' => 'required']);
-         try {
-        $data = Pengajuan::where('id_pengajuan',$id)->where('status','=','approv')->with('rekening.nasabah','jaminan')->first();
-       $pengajuan = Pengajuan::where('id_pengajuan',$id)->first();
-       $pengajuan->update(['status'=>'cair', 'tanggal_pencairan'=>date('Y-m-d')]);
-       $pinjamanLama = null;
-       $sisa_pokok_lama = 0;
-       if($request->metode=='non'){
-        $idakunjurnal = '5';
-         }else{
-        $idakunjurnal = '1';
-         }
-        if($data->jenis=='topup'){
-        $pinjamanLama = Pinjaman::where('id_nasabah',$data->rekening[0]->id_nasabah)->where('status','aktif')->first(); 
-        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Kas','v_debet'=>$pinjamanLama->sisa_pokok,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
-$sisa_pokok_lama = $pinjamanLama->sisa_pokok;
-      $datajurnalkredit = ['id_akun'=>'5','id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Piutang Pinjaman Lama Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$pinjamanLama->sisa_pokok,'id_entry'=>auth()->user()->id];
-    $pinjamanLama->update(['status'=>'lunas', 'sisa_pokok'=>0,'sisa_bunga'=>0]);   
-         Jurnal::create($datajurnaldebet);
-    Jurnal::create($datajurnalkredit);
-    }
-       
-
-        $pinjaman = Pinjaman::create([
-        'id_pengajuan'     => $data->id_pengajuan,
-        'id_nasabah'       => $data->rekening[0]->id_nasabah,
-        'total_pinjaman'  => $data->jumlah_pencairan,
-        'sisa_pokok'            => $data->jumlah_pencairan,
-        'sisa_bunga'            => $data->jumlah_pencairan*($data->bunga*$data->tenor/100),
-        'status'           => 'aktif',
-        'id_entry' => auth()->user()->id
-    ]);
-        $rekening = Rekening::where('id_nasabah',$data->rekening[0]->id_nasabah)->where('jenis_rekening','Tabungan')->first();
-        $simpanan = Simpanan::create([
-            'id_rekening'=>$rekening->id_rekening,
-            'id_akun'=>13,
-            'jenis'=>'pokok',
-            'keterangan'=>'Simpanan pokok Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),
-            'v_debit'=>0,
-            'v_kredit'=>$pengajuan->simpanan_pokok,
-            'id_entry'=>auth()->user()->id,
+            'metode' => 'required'
         ]);
-       
-      
-       
-       
-       $datajurnaldebet = ['id_akun'=>'5','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Piutang Pinjaman '.$data->jenis.' Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>$data->jumlah_pencairan,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
+        try {
+            $data = Pengajuan::where('id_pengajuan', $id)->where('status', '=', 'approv')->with('rekening.nasabah', 'jaminan')->first();
+            $pengajuan = Pengajuan::where('id_pengajuan', $id)->first();
+            $pengajuan->update(['status' => 'cair', 'tanggal_pencairan' => date('Y-m-d')]);
+            $pinjamanLama = null;
+            $sisa_pokok_lama = 0;
+            if ($request->metode == 'non') {
+                $idakunjurnal = '5';
+                $ket = 'Bank'
+            } else {
+                $idakunjurnal = '1';
+                $ket = 'Kas'
+            }
+            if ($data->jenis == 'topup') {
+                $pinjamanLama = Pinjaman::where('id_nasabah', $data->rekening[0]->id_nasabah)->where('status', 'aktif')->first();
+                $datajurnaldebet = ['id_akun' => $idakunjurnal, 'id_pinjaman' => $pinjamanLama->id_pinjaman, 'keterangan' => $ket, 'v_debet' => $pinjamanLama->sisa_pokok, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+                $sisa_pokok_lama = $pinjamanLama->sisa_pokok;
+                $datajurnalkredit = ['id_akun' => '9', 'id_pinjaman' => $pinjamanLama->id_pinjaman, 'keterangan' => 'Piutang Pinjaman Lama Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pinjamanLama->sisa_pokok, 'id_entry' => auth()->user()->id];
+                $pinjamanLama->update(['status' => 'lunas', 'sisa_pokok' => 0, 'sisa_bunga' => 0]);
+                Jurnal::create($datajurnaldebet);
+                Jurnal::create($datajurnalkredit);
+            }
 
-       Jurnal::create($datajurnaldebet);
-     if($data->jenis=='topup'){
-       $datajurnalkredit = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan-$sisa_pokok_lama,'id_entry'=>auth()->user()->id];
 
-        $datakreditoldpinjaman = ['id_akun'=>'5','id_pinjaman'=>$pinjamanLama->id_pinjaman,'keterangan'=>'Piutang Pinjaman Lama Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$sisa_pokok_lama,'id_entry'=>auth()->user()->id];
-       Jurnal::create($datajurnalkredit);
-      
-        Jurnal::create($datakreditoldpinjaman);
-    }else{
-       $datajurnalkredit = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>0,'v_kredit'=>$data->jumlah_pencairan,'id_entry'=>auth()->user()->id];
+            $pinjaman = Pinjaman::create([
+                'id_pengajuan'     => $data->id_pengajuan,
+                'id_nasabah'       => $data->rekening[0]->id_nasabah,
+                'total_pinjaman'  => $data->jumlah_pencairan,
+                'sisa_pokok'            => $data->jumlah_pencairan,
+                'sisa_bunga'            => $data->jumlah_pencairan * ($data->bunga * $data->tenor / 100),
+                'status'           => 'aktif',
+                'id_entry' => auth()->user()->id
+            ]);
+            $rekening = Rekening::where('id_nasabah', $data->rekening[0]->id_nasabah)->where('jenis_rekening', 'Tabungan')->first();
+            $simpanan = Simpanan::create([
+                'id_rekening' => $rekening->id_rekening,
+                'id_akun' => 13,
+                'jenis' => 'pokok',
+                'keterangan' => 'Simpanan pokok Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),
+                'v_debit' => 0,
+                'v_kredit' => $pengajuan->simpanan_pokok,
+                'id_entry' => auth()->user()->id,
+            ]);
 
-         Jurnal::create($datajurnalkredit);
-    }
-     $datajurnalsimpanandebet = ['id_akun'=>'1','id_simpanan'=>$simpanan->id_simpanan,'keterangan'=>'Kas','v_debet'=>$pengajuan->simpanan_pokok,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
-       $datajurnalsimpanankredit = ['id_akun'=>'13','id_simpanan'=>$simpanan->id_simpanan,'keterangan'=>'Simpanan pokok Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$pengajuan->simpanan_pokok,'id_entry'=>auth()->user()->id];
-    Jurnal::create($datajurnalsimpanandebet);
-    Jurnal::create($datajurnalsimpanankredit);
-     $dataadmindebet = ['id_akun'=>'1','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Kas','v_debet'=>$data->admin,'v_kredit'=>0,'id_entry'=>auth()->user()->id];
-       $dataadminkredit = ['id_akun'=>'27','id_pinjaman'=>$pinjaman->id_pinjaman,'keterangan'=>'Admin pinjaman Anggota '.str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$data->admin,'id_entry'=>auth()->user()->id];
-     Jurnal::create($dataadmindebet);
-    Jurnal::create($dataadminkredit);
-   
-     $pdfFileName = 'SP_Hutang_'.$id.'.pdf';
-    session(['pdf_data_'.$id => $data]);
-  DB::commit();
-    return response()->json([
-        'success' => true,
-        'pdf_url' => route('pdf.sphutang.download', $id)
-    ]);
-    } catch (\Exception $e) {
+
+
+
+            $datajurnaldebet = ['id_akun' => '9', 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => 'Piutang Pinjaman ' . $data->jenis . ' Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => $data->jumlah_pencairan, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+
+            Jurnal::create($datajurnaldebet);
+            if ($data->jenis == 'topup') {
+                $datajurnalkredit = ['id_akun' => $idakunjurnal, 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
+
+                $datakreditoldpinjaman = ['id_akun' => '9', 'id_pinjaman' => $pinjamanLama->id_pinjaman, 'keterangan' => 'Piutang Pinjaman Lama Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
+                Jurnal::create($datajurnalkredit);
+
+                Jurnal::create($datakreditoldpinjaman);
+            } else {
+                $datajurnalkredit = ['id_akun' => $idakunjurnal, 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan, 'id_entry' => auth()->user()->id];
+
+                Jurnal::create($datajurnalkredit);
+            }
+            // simpanan
+            $datajurnalsimpanandebet = ['id_akun' => $idakunjurnal, 'id_simpanan' => $simpanan->id_simpanan, 'keterangan' => $ket, 'v_debet' => $pengajuan->simpanan_pokok, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $datajurnalsimpanankredit = ['id_akun' => '35', 'id_simpanan' => $simpanan->id_simpanan, 'keterangan' => 'Simpanan pokok Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->simpanan_pokok, 'id_entry' => auth()->user()->id];
+            Jurnal::create($datajurnalsimpanandebet);
+            Jurnal::create($datajurnalsimpanankredit);
+            //pendapatan admin
+            $dataadmindebet = ['id_akun' => $idakunjurnal, 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => $ket, 'v_debet' => $data->admin, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $dataadminkredit = ['id_akun' => '49', 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => 'Admin pinjaman Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $data->admin, 'id_entry' => auth()->user()->id];
+            Jurnal::create($dataadmindebet);
+            Jurnal::create($dataadminkredit);
+            //asuransi jika kewajiban
+            $dataasuransidebet = ['id_akun' => $idakunjurnal, 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => $ket, 'v_debet' => $data->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $dataasuransikredit = ['id_akun' => '82', 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $data->asuransi, 'id_entry' => auth()->user()->id];
+            Jurnal::create($dataasuransidebet);
+            Jurnal::create($dataasuransikredit);
+
+            //asuransi jika pendapatan
+            // $dataasuransidebet = ['id_akun' => $idakunjurnal, 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => $ket, 'v_debet' => $data->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            // $dataasuransikredit = ['id_akun' => '50', 'id_pinjaman' => $pinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $data->asuransi, 'id_entry' => auth()->user()->id];
+            // Jurnal::create($dataasuransidebet);
+            // Jurnal::create($dataasuransikredit);
+
+            $pdfFileName = 'SP_Hutang_' . $id . '.pdf';
+            session(['pdf_data_' . $id => $data]);
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'pdf_url' => route('pdf.sphutang.download', $id)
+            ]);
+        } catch (\Exception $e) {
             dd($e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-          //return view('pdf.sphutang', compact('data'));
+        //return view('pdf.sphutang', compact('data'));
     }
 
     public function destroy(Simpanan $simpanan)
@@ -311,70 +327,70 @@ $sisa_pokok_lama = $pinjamanLama->sisa_pokok;
     }
 
     public function datatables(Request $request)
-{
+    {
 
-    $data = Pengajuan::with('rekening.nasabah')
-    ->where('status', '=', 'pengajuan')
-        ->orderBy('id_pengajuan','DESC');
+        $data = Pengajuan::with('rekening.nasabah')
+            ->where('status', '=', 'pengajuan')
+            ->orderBy('id_pengajuan', 'DESC');
 
-    return DataTables::of($data)
-        ->addIndexColumn()
+        return DataTables::of($data)
+            ->addIndexColumn()
 
-        ->addColumn('nasabah', function($row){
-            return str_pad($row->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->rekening[0]->nasabah[0]->nama;
-        })
+            ->addColumn('nasabah', function ($row) {
+                return str_pad($row->rekening[0]->nasabah[0]->id_nasabah, 5, '0', STR_PAD_LEFT) . ' / ' . $row->rekening[0]->nasabah[0]->nama;
+            })
 
-         ->addColumn('resort', function($row){
-            return $row->kode_resort;
-        })
+            ->addColumn('resort', function ($row) {
+                return $row->kode_resort;
+            })
 
-       
-        ->addColumn('tanggal', function($row){
-            return $row->tanggal_pengajuan;
-        })
 
-         ->addColumn('tenor', function($row){
-            return $row->tenor.' Bulan';
-        })
+            ->addColumn('tanggal', function ($row) {
+                return $row->tanggal_pengajuan;
+            })
 
-        ->addColumn('bunga', function($row){
-            return $row->bunga.'%';
-        })
+            ->addColumn('tenor', function ($row) {
+                return $row->tenor . ' Bulan';
+            })
 
-        ->addColumn('jumlah', function($row){
-            return number_format($row->jumlah_pengajuan, 0,',','.');
-        })
-        
-       
+            ->addColumn('bunga', function ($row) {
+                return $row->bunga . '%';
+            })
 
-        ->addColumn('status', function($row){
-            return $row->jenis;
-        })
+            ->addColumn('jumlah', function ($row) {
+                return number_format($row->jumlah_pengajuan, 0, ',', '.');
+            })
 
-        ->addColumn('aksi', function($row){
 
-            $btn = '
+
+            ->addColumn('status', function ($row) {
+                return $row->jenis;
+            })
+
+            ->addColumn('aksi', function ($row) {
+
+                $btn = '
             <button class="btn btn-sm btn-success me-1 appr-btn"
-                data-id="'.$row->id_pengajuan.'"
-                data-jumlah="'.number_format($row->jumlah_pengajuan, 0,',','.').'"
-                data-simpanan_pokok="'.number_format($row->simpanan_pokok, 0,',','.').'"
-                data-admin="'.number_format($row->admin, 0,',','.').'"
-                data-asuransi="'.number_format($row->asuransi, 0,',','.').'"
+                data-id="' . $row->id_pengajuan . '"
+                data-jumlah="' . number_format($row->jumlah_pengajuan, 0, ',', '.') . '"
+                data-simpanan_pokok="' . number_format($row->simpanan_pokok, 0, ',', '.') . '"
+                data-admin="' . number_format($row->admin, 0, ',', '.') . '"
+                data-asuransi="' . number_format($row->asuransi, 0, ',', '.') . '"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
                 title="Approve">
                 <i class="material-icons">check</i>
             </button>
 
-            <a href="'.route('pengajuan.decline',$row->id_pengajuan).'"
+            <a href="' . route('pengajuan.decline', $row->id_pengajuan) . '"
                 class="btn btn-sm btn-warning" title="Tolak">
                 <i class="material-icons">close</i>
             </a>';
 
-            return $btn;
-        })
+                return $btn;
+            })
 
-        ->rawColumns(['aksi'])
-        ->make(true);
-}
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
 }

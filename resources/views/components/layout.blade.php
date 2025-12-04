@@ -41,6 +41,34 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+<style>
+/* Sidebar mobile */
+@media (max-width: 1199px) {
+
+    #sidebar {
+        transform: translateX(-110%);
+        transition: all 0.3s ease;
+        position: fixed;
+        z-index: 1050;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        border-radius: 0 1rem 1rem 0;
+    }
+
+    #sidebar.active {
+        transform: translateX(0);
+    }
+
+    body.sidebar-open {
+        overflow: hidden;
+    }
+    #sidebar .collapse {
+    transition: all .25s ease;
+}
+
+}
+</style>
 
 
 </head>
@@ -98,6 +126,31 @@ document.addEventListener("DOMContentLoaded", function(){
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sidebar = document.getElementById('sidebar');
+    const toggle = document.getElementById('sidebarToggle');
+
+    if(toggle) {
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+            document.body.classList.toggle('sidebar-open');
+        });
+    }
+
+    // klik di luar sidebar = tutup
+    document.addEventListener('click', function(e) {
+        if (sidebar.classList.contains('active') && 
+            !sidebar.contains(e.target) && 
+            !toggle.contains(e.target)) {
+            sidebar.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
+        }
+    });
+});
+
 
 </script>
 <!-- Github buttons -->

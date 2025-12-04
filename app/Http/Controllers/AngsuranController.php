@@ -52,8 +52,15 @@ class AngsuranController extends Controller
     $datapinjaman = Pinjaman::find($pinjamanId);
     $datapinjaman->update(['sisa_pokok'=>$datapinjaman->sisa_pokok - $pokok,'sisa_bunga'=>$datapinjaman->sisa_bunga - $bunga]);
 
-    if($datapinjaman->sisa_pokok <=0 && $datapinjaman->sisa_bunga <=0){
+    if($datapinjaman->sisa_pokok <=0 ){
         $datapinjaman->update(['status'=>'Lunas']);
+        $pengajuan = Pengajuan::where('id_pengajuan',$datapinjaman->id_pengajuan)->get();
+    if($pengajuan->asuransi >0){
+      $dataasuransidebet = ['id_akun' => '82', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim', 'v_debet' => $pengajuan->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $dataasuransikredit = ['id_akun' => '50', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Pendapatan Asuransi ' . str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->asuransi, 'id_entry' => auth()->user()->id];
+            Jurnal::create($dataasuransidebet);
+            Jurnal::create($dataasuransikredit);
+    }
     }
 
     //add kesimpanan
@@ -188,6 +195,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     //update pinjaman
     $datapinjaman = Pinjaman::find($pinjamanId);
     $datapinjaman->update(['sisa_pokok'=>0,'sisa_bunga'=>0,'status'=>'Lunas']);
+    $pengajuan = Pengajuan::where('id_pengajuan',$datapinjaman->id_pengajuan)->get();
     // 1. Debet Kas total (id_akun = 1)
     DB::table('tmjurnal')->insert([
         'id_akun' => $idakunaset, // Kas
@@ -248,6 +256,12 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'id_entry' => $userId,
     ]);
 
+    if($pengajuan->asuransi >0){
+      $dataasuransidebet = ['id_akun' => '82', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim', 'v_debet' => $pengajuan->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $dataasuransikredit = ['id_akun' => '50', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Pendapatan Asuransi ' . str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->asuransi, 'id_entry' => auth()->user()->id];
+            Jurnal::create($dataasuransidebet);
+            Jurnal::create($dataasuransikredit);
+    }
 
    DB::commit();
    return redirect()->route('pelunasan.index')->with('success', 'Pelunasan berhasil dicatat!'); 
