@@ -10,6 +10,7 @@ class AssetHelper
 {
     public static function susutGlobalTahunan($persen = 20)
     {
+        $nojurnal = JurnalHelper::noJurnal();
         $tanggal = Carbon::now()->endOfMonth();
 
         // ambil total saldo ALL akun aset
@@ -39,6 +40,7 @@ class AssetHelper
         Jurnal::create([
             'tanggal_transaksi' => $tanggal,
             'id_akun' => $akunBeban,
+            'no_jurnal'=>$nojurnal,
             'v_debet' => $bebanBulanan,
             'v_kredit' => 0,
             'keterangan' => 'Penyusutan aset global '.$persen.'% / tahun',
@@ -48,6 +50,7 @@ class AssetHelper
         Jurnal::create([
             'tanggal_transaksi' => $tanggal,
             'id_akun' => $akunAkumulasi,
+            'no_jurnal'=>$nojurnal,
             'v_debet' => 0,
             'v_kredit' => $bebanBulanan,
             'keterangan' => 'Akumulasi penyusutan global',

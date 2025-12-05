@@ -96,7 +96,7 @@
                                 <input type="text"  name="simpanan_pokok"  value="{{ old('simpanan_pokok') }}" class="form-control format-angka  input-jumlah">
                             </div>
                              <div class="col-md-6 mb-4">
-                                <label class="form-label">Biaya Admin</label>
+                                <label class="form-label">Provisi</label>
                                 <input type="text"  name="admin"  value="{{ old('admin') }}" class="form-control format-angka  input-jumlah">
                             </div>
                         </div>

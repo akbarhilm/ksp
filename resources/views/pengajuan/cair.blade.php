@@ -119,7 +119,7 @@
                                         class="form-control format-angka  input-jumlah">
                                 </div>
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label">Biaya Admin</label>
+                                    <label class="form-label">Provisi</label>
                                     <input type="text" readonly name="admin"
                                         value="{{ number_format($pengajuan->admin, 0) }}"
                                         class="form-control format-angka  input-jumlah">

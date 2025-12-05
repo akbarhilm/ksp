@@ -57,14 +57,14 @@
                                         @endif
                                         <div class="input-group input-group-outline mt-3">
                                             <label class="form-label">Email</label>
-                                            <input type="username" class="form-control" name="username" value="{{ 'admin' }}">
+                                            <input type="username" class="form-control" name="username" >
                                         </div>
                                         @error('username')
                                         <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                         <div class="input-group input-group-outline mt-3">
                                             <label class="form-label">Password</label>
-                                            <input type="password" class="form-control" name="password" value='{{ 'secret'}}'>
+                                            <input type="password" class="form-control" name="password" >
                                         </div>
                                         @error('password')
                                         <p class='text-danger inputerror'>{{ $message }} </p>

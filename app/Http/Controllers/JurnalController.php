@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\JurnalHelper;
 use Illuminate\Http\Request;
 use App\Models\Jurnal;
 use App\Models\Akun;
@@ -24,12 +25,12 @@ class JurnalController extends Controller
 
         $query = Jurnal::with('akun')
             ->select('tmjurnal.*')
-            ->orderBy('id_jurnal', 'desc');
+            ->orderBy('tanggal_transaksi', 'desc')
+            ->orderBy('no_jurnal', 'desc');
+
 
         // FILTER AKUN
-        if ($request->id_akun) {
-            $query->where('id_akun', $request->id_akun);
-        }
+       
 
         // FILTER TANGGAL
         if ($request->tanggal_awal && $request->tanggal_akhir) {
@@ -42,10 +43,7 @@ class JurnalController extends Controller
         return DataTables::of($query)
 
             ->addIndexColumn()
-            ->addColumn('group_key', function($row){
-        return md5($row->tanggal_transaksi . $row->keterangan);
-    })
-    ->rawColumns(['group_key'])
+            
 
             ->addColumn('akun', function ($row) {
                 return optional($row->akun)->nama_akun;
@@ -62,6 +60,7 @@ class JurnalController extends Controller
             ->editColumn('tanggal_transaksi', function ($row) {
                 return date('d-m-Y', strtotime($row->tanggal_transaksi));
             })
+             ->addColumn('no_jurnal', fn($row) => $row->no_jurnal ?? '-')
 
             ->rawColumns(['akun'])
 
@@ -172,6 +171,7 @@ public function bukuBesar(Request $request)
 
 public function storeDouble(Request $request)
 {
+    $nojurnal = JurnalHelper::noJurnal();
     $request->validate([
         'tanggal_transaksi' => 'required|date',
         'keterangan' => 'required',
@@ -190,6 +190,7 @@ public function storeDouble(Request $request)
     Jurnal::create([
         'tanggal_transaksi' => $request->tanggal_transaksi,
         'id_akun' => $request->akun_debet,
+        'no_jurnal'=>$nojurnal,
         'keterangan' => $request->keterangan,
         'v_debet' => $request->jumlah_debet,
         'v_kredit' => 0,
@@ -200,6 +201,7 @@ public function storeDouble(Request $request)
     Jurnal::create([
         'tanggal_transaksi' => $request->tanggal_transaksi,
         'id_akun' => $request->akun_kredit,
+        'no_jurnal'=>$nojurnal,
         'keterangan' => $request->keterangan,
         'v_debet' => 0,
         'v_kredit' => $request->jumlah_kredit,

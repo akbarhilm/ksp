@@ -42,7 +42,7 @@
                                             <th class="text-center text-sm">Tanggal Pengajuan</th>
                                             <th class="text-center text-sm">Jumlah Approve</th>
                                             <th class="text-center text-sm">Simpanan Pokok</th>
-                                            <th class="text-center text-sm">Biaya Admin</th>
+                                            <th class="text-center text-sm">Provisi</th>
                                             <th class="text-center text-sm">Asuransi</th>
                                             <th class="text-center text-sm">Sisa Pokok Pinjaman</th>
                                             <th class="text-center text-sm">Aksi</th>

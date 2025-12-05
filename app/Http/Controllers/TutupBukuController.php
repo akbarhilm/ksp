@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\AssetHelper;
+use App\Helpers\JurnalHelper;
 use App\Models\Akun;
 use App\Models\Bunga;
 use App\Models\Simpanan;
@@ -33,7 +34,7 @@ class TutupBukuController extends Controller
 
         try {
 $nilai = AssetHelper::susutGlobalTahunan(20);
-          
+          $nojurnal = JurnalHelper::noJurnal();
             $today = Carbon::parse($request->tanggal ?? now());
 
             // ============================
@@ -94,6 +95,7 @@ $nilai = AssetHelper::susutGlobalTahunan(20);
                 Jurnal::create([
                     'tanggal_transaksi' => '2025-11-30',
                     'id_akun' => '31', // Beban bunga
+                    'no_jurnal'=>$nojurnal,
                     'v_debet' => $bungaTabungan,
                     'v_kredit' => 0,
                     'keterangan' => 'Beban bunga simpanan  ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT),
@@ -106,6 +108,7 @@ $nilai = AssetHelper::susutGlobalTahunan(20);
                 Jurnal::create([
                     'tanggal_transaksi' => '2025-11-30',
                     'id_akun' => '14',
+                    'no_jurnal'=>$nojurnal,
                     'id_simpanan' => $Simpanan->id_simpanan,
                     'v_debet' => 0,
                     'v_kredit' => $bungaTabungan,

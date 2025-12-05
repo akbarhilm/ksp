@@ -57,10 +57,19 @@
         @endphp --}}
 
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-info ">
-                <h5 class="mb-0  text-white">
-                    {{-- Akun: {{ $akun->nama_akun }} (ID: {{ $akunId }}) --}}
-                </h5>
+            <div class="card-header bg-info d-flex gap-3 ">
+                
+              <a href="#" id="btnDownloadRekap" class="btn btn-dark">
+    Download Rekap
+</a>
+
+<a href="#" id="btnDownloadDetail" class="btn btn-dark">
+    Download Per Akun
+</a>
+
+
+
+               
             </div>
 
             <div class="card-body p-0">
@@ -166,6 +175,29 @@ $('#filter-akun,#tanggal_awal,#tanggal_akhir').on('change',function(){
 });
 
 });
+
+$('#btnDownloadRekap').on('click', function(e){
+    e.preventDefault();
+
+    let akun   = $('#filter-akun').val();
+    let awal   = $('#tanggal_awal').val();
+    let akhir  = $('#tanggal_akhir').val();
+
+    let url = `{{ route('bukubesar.export.rekap') }}?id_akun=${akun}&tanggal_awal=${awal}&tanggal_akhir=${akhir}`;
+    window.open(url, '_blank');
+});
+
+$('#btnDownloadDetail').on('click', function(e){
+    e.preventDefault();
+
+    let akun   = $('#filter-akun').val();
+    let awal   = $('#tanggal_awal').val();
+    let akhir  = $('#tanggal_akhir').val();
+
+    let url = `{{ route('bukubesar.export.detail') }}?id_akun=${akun}&tanggal_awal=${awal}&tanggal_akhir=${akhir}`;
+    window.open(url, '_blank');
+});
+
 </script>
 @endpush
 

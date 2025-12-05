@@ -21,13 +21,22 @@
     
     <ul class="navbar-nav justify-content-end ms-auto"> 
         <li class="nav-item d-flex align-items-center">
-            <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none"
-                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">Sign
-                    Out</span>
-            </a>
-        </li>
+    <a href="#" 
+       onclick="event.preventDefault();document.getElementById('logout-form').submit()" 
+       class="nav-link text-body font-weight-bold px-0">
+
+        <!-- ICON LOGOUT -->
+        <i class="fa-solid fa-right-from-bracket me-1"></i>
+
+        <!-- TEXT HANYA MUNCUL DI DESKTOP -->
+        <span class="d-none d-sm-inline">
+            Sign Out
+        </span>
+
+    </a>
+</li>
+
+
     </ul>
 </div>
     </div>

@@ -23,6 +23,7 @@ use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\TransaksiHarianController;
 use App\Http\Controllers\TutupBukuController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\ReportFileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +131,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/backup/run', [BackupController::class, 'run'])->name('backup.run');
     Route::get('/backup/download/{file}', [BackupController::class, 'download'])->name('backup.download');
     Route::delete('/backup/delete/{file}', [BackupController::class, 'delete'])->name('backup.delete');
+Route::get('/buku-besar/export/rekap',   [ReportFileController::class,'exportRekap'])->name('bukubesar.export.rekap');
+Route::get('/buku-besar/export/detail',  [ReportFileController::class,'exportDetail'])->name('bukubesar.export.detail');
+Route::get('/export/jurnal',  [ReportFileController::class,'exportJurnal'])->name('export.jurnal');
 
 });
 

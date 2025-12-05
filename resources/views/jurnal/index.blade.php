@@ -94,15 +94,7 @@
             {{-- FILTER FORM --}}
             <form id="filter-form" class="row g-3">
 
-    <div class="col-md-4">
-        <label class="form-label">Akun</label>
-        <select id="filterAkun" class="form-select">
-            <option value="">-- Semua Akun --</option>
-            @foreach ($akunList as $a)
-                <option value="{{ $a->id_akun }}">{{ $a->kode_akun .' / '.$a->nama_akun }}</option>
-            @endforeach
-        </select>
-    </div>
+    
 
     <div class="col-md-3">
         <label class="form-label">Tanggal Awal</label>
@@ -114,12 +106,7 @@
         <input type="date" id="tanggal_akhir" class="form-control">
     </div>
 
-    <div class="col-md-2 d-grid">
-        <label class="form-label invisible">Filter</label>
-        <button type="button" id="btn-filter" class="btn btn-primary">
-            <i class="bi bi-filter"></i> Filter
-        </button>
-    </div>
+    
     
 
 </form>
@@ -129,13 +116,19 @@
 
     {{-- TABEL JURNAL --}}
     <div class="card shadow-sm">
-        <div class="card-body p-0">
+        <div class="card-header bg-info text-white">
+           <a href="#" id="btnDownloadRekap" class="btn btn-dark">
+    Download Jurnal
+</a>
+        </div>
+        <div class="card-body p-0 overflow-auto">
 
-            <table class="table table-bordered table-striped mb-4" id="table-jurnal">
+            <table class="table   mb-4" id="table-jurnal">
     <thead class="table-dark">
         <tr>
             <th>No</th>
             <th>Tanggal</th>
+            <th>No Jurnal</th>
             <th>Akun</th>
             <th>Keterangan</th>
             <th class="text-end">Debit</th>
@@ -175,8 +168,7 @@ $(document).ready(function() {
 $(function(){
 
 
-    let lastKey = null;
-
+let lastJurnal = null;
     let table = $('#table-jurnal').DataTable({
         processing: true,
         serverSide: true,
@@ -185,38 +177,51 @@ $(function(){
         ajax: {
             url: "{{ route('jurnal.index') }}",
             data: function(d){
-                d.id_akun = $('#filterAkun').val();
                 d.tanggal_awal = $('#tanggal_awal').val();
                 d.tanggal_akhir = $('#tanggal_akhir').val();
             }
         },
-
-        // ✅ DI SINI TEMPAT DATA ADA
         rowCallback: function(row, data){
 
-            let currentKey = data.group_key;   // ✅ INI BENAR
-
-            if(lastKey !== null && lastKey !== currentKey){
-                $(row).css('border-top','3px solid #000');
+            let current = data.no_jurnal;
+            
+            if(lastJurnal !== null && lastJurnal !== current){
+                $(row).find('td').css('border-top', '4px solid #000');
+        // opsi padding atas agar jarak terlihat
+        $(row).find('td').css('padding-top', '8px');
             }
 
-            lastKey = currentKey;
+            lastJurnal = current;
         },
 
         drawCallback: function(){
-            lastKey = null; // reset tiap draw
+            lastJurnal = null;
         },
 
         columns: [
             { data: 'DT_RowIndex', orderable:false },
             { data: 'tanggal_transaksi' },
+            { data: 'no_jurnal' }, 
             { data: 'akun' },
             { data: 'keterangan' },
             { data: 'debit', className:'text-end' },
             { data: 'kredit', className:'text-end' }
         ]
     });
+$('#tanggal_awal,#tanggal_akhir').on('change',function(){
+    table.ajax.reload();
+});
+});
 
+$('#btnDownloadRekap').on('click', function(e){
+    e.preventDefault();
+
+    let akun   = $('#filter-akun').val();
+    let awal   = $('#tanggal_awal').val();
+    let akhir  = $('#tanggal_akhir').val();
+
+    let url = `{{ route('export.jurnal') }}?tanggal_awal=${awal}&tanggal_akhir=${akhir}`;
+    window.open(url, '_blank');
 });
 
 

@@ -10,6 +10,7 @@ use App\Models\Pengajuan;
 use App\Models\Rekening;
 use App\Models\Simpanan;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\JurnalHelper;
 
 class AngsuranController extends Controller
 {
@@ -25,7 +26,7 @@ class AngsuranController extends Controller
 
     public function store(Request $request, $id_pinjaman)
 {
-
+    $nojurnal = JurnalHelper::noJurnal();
     $pinjamanId = $id_pinjaman;
     $pokok = str_replace('.', '',$request->pokok);
     $bunga = str_replace('.', '',$request->bunga);
@@ -56,8 +57,8 @@ class AngsuranController extends Controller
         $datapinjaman->update(['status'=>'Lunas']);
         $pengajuan = Pengajuan::where('id_pengajuan',$datapinjaman->id_pengajuan)->get();
     if($pengajuan->asuransi >0){
-      $dataasuransidebet = ['id_akun' => '82', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim', 'v_debet' => $pengajuan->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
-            $dataasuransikredit = ['id_akun' => '50', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Pendapatan Asuransi ' . str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->asuransi, 'id_entry' => auth()->user()->id];
+      $dataasuransidebet = ['id_akun' => '82','no_jurnal'=>$nojurnal, 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim', 'v_debet' => $pengajuan->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $dataasuransikredit = ['id_akun' => '50','no_jurnal'=>$nojurnal, 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Pendapatan Asuransi ' . str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->asuransi, 'id_entry' => auth()->user()->id];
             Jurnal::create($dataasuransidebet);
             Jurnal::create($dataasuransikredit);
     }
@@ -88,6 +89,7 @@ class AngsuranController extends Controller
     DB::table('tmjurnal')->insert([
         'id_akun' => $idakunaset, // Kas
         'id_pinjaman' => $pinjamanId,
+        'no_jurnal'=>$nojurnal,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pembayaran angsuran pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $total,
@@ -97,6 +99,7 @@ class AngsuranController extends Controller
     // angsuran pokok 
      DB::table('tmjurnal')->insert([
         'id_akun' => 9, // Kas
+        'no_jurnal'=>$nojurnal,
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -108,6 +111,7 @@ class AngsuranController extends Controller
     // 3. Kredit Pendapatan Bunga (id_akun = 26)
     DB::table('tmjurnal')->insert([
         'id_akun' => 47, // Pendapatan Bunga Pinjaman
+        'no_jurnal'=>$nojurnal,
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -121,6 +125,7 @@ class AngsuranController extends Controller
     if($request->denda){
      DB::table('tmjurnal')->insert([
         'id_akun' => 80, // Pendapatan Denda
+        'no_jurnal'=>$nojurnal,
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -133,6 +138,7 @@ class AngsuranController extends Controller
      // simpanan jurnal
     DB::table('tmjurnal')->insert([
         'id_akun' => 36, // Simpanan wajib Anggota
+        'no_jurnal'=>$nojurnal,
         'id_simpanan' => $simpanan->id_simpanan,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -169,6 +175,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
 {
  DB::beginTransaction();
          try {
+             $nojurnal = JurnalHelper::noJurnal();
     $pinjamanId = $id_pinjaman;
     $total =str_replace(',', '', $request->total_bayar);
     if($request->metode=="Cash"){
@@ -199,6 +206,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     // 1. Debet Kas total (id_akun = 1)
     DB::table('tmjurnal')->insert([
         'id_akun' => $idakunaset, // Kas
+        'no_jurnal'=>$nojurnal,
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pelunasan pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -209,6 +217,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     // angsuran pokok 
      DB::table('tmjurnal')->insert([
         'id_akun' => 9, // Kas
+        'no_jurnal'=>$nojurnal,
         'id_pinjaman' => $pinjamanId,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -241,6 +250,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         
         DB::table('tmjurnal')->insert([
         'id_akun' => 36, // Simpanan wajib Anggota
+        'no_jurnal'=>$nojurnal,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Penarikan simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $request->simpananwajib??0,
@@ -249,6 +259,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     ]);
         DB::table('tmjurnal')->insert([
         'id_akun' => 35, // Simpanan Pokok Anggota
+        'no_jurnal'=>$nojurnal,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Penarikan simpanan pokok '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $request->simpananpokok??0,
@@ -257,8 +268,8 @@ public function storePelunasan(Request $request, $id_pinjaman)
     ]);
 
     if($pengajuan->asuransi >0){
-      $dataasuransidebet = ['id_akun' => '82', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim', 'v_debet' => $pengajuan->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
-            $dataasuransikredit = ['id_akun' => '50', 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Pendapatan Asuransi ' . str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->asuransi, 'id_entry' => auth()->user()->id];
+      $dataasuransidebet = ['id_akun' => '82','no_jurnal'=>$nojurnal, 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim', 'v_debet' => $pengajuan->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $dataasuransikredit = ['id_akun' => '50','no_jurnal'=>$nojurnal, 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Pendapatan Asuransi ' . str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->asuransi, 'id_entry' => auth()->user()->id];
             Jurnal::create($dataasuransidebet);
             Jurnal::create($dataasuransikredit);
     }

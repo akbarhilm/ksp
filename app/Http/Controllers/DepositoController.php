@@ -8,7 +8,7 @@ use App\Models\Nasabah;
 use App\Models\Rekening;
 use App\Models\Jurnal;
 use Yajra\DataTables\Facades\DataTables;
-
+use App\Helpers\JurnalHelper;
 use Illuminate\Http\Request;
 
 class DepositoController extends Controller
@@ -77,6 +77,7 @@ class DepositoController extends Controller
 
     public function store(Request $request)
     {
+        $nojurnal = JurnalHelper::noJurnal();
         $request->merge([
             'v_kredit' => str_replace('.', '', $request->v_kredit),
         ]); 
@@ -101,8 +102,8 @@ class DepositoController extends Controller
         $nasabah = Rekening::find($request->id_rekening);
         $simpanan = Simpanan::create($request->all());
 
-         $datajurnalkredit = ['id_akun'=>$id_akun,'id_simpanan'=>$simpanan->id,'keterangan'=>'Deposito anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+         $datajurnalkredit = ['id_akun'=>$id_akun,'no_jurnal'=>$nojurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'Deposito anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'no_jurnal'=>$nojurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
         Jurnal::create($datajurnaldebet);
         Jurnal::create($datajurnalkredit);
 
@@ -220,6 +221,7 @@ $nasabah = $query->paginate(10);
 
      public function penarikanStore(Request $request)
 {
+    $nojurnal = JurnalHelper::noJurnal();
      $request->merge([
         'jumlah' => str_replace(',', '', $request->jumlah),
        
@@ -261,6 +263,7 @@ $nasabah = $query->paginate(10);
     
     Jurnal::create([
         'id_akun' => 31,
+        'no_jurnal'=>$nojurnal,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Deposito '.$request->id_nasabah,
@@ -272,6 +275,7 @@ $nasabah = $query->paginate(10);
 
 Jurnal::create([
         'id_akun' => $idakunjurnal,
+        'no_jurnal'=>$nojurnal,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Deposito '.$request->id_nasabah,

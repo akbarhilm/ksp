@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Helpers\JurnalHelper;
 use App\Models\Simpanan;
 use App\Models\Nasabah;
 use App\Models\Rekening;
@@ -72,6 +72,7 @@ class TabunganController extends Controller
 
     public function store(Request $request)
     {
+        $nojurnal = JurnalHelper::noJurnal();
         $request->merge([
             'v_kredit' => str_replace('.', '', $request->v_kredit),
         ]);
@@ -104,8 +105,8 @@ class TabunganController extends Controller
         $nasabah = Rekening::find($request->id_rekening);
         $simpanan= Simpanan::create($request->all());
 
-        $datajurnalkredit = ['id_akun'=>$id_akun,'id_simpanan'=>$simpanan->id,'keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+        $datajurnalkredit = ['id_akun'=>$id_akun,'no_jurnal'=>$nojurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'no_jurnal'=>$nojurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
         Jurnal::create($datajurnaldebet);
         Jurnal::create($datajurnalkredit);
 
@@ -189,6 +190,7 @@ class TabunganController extends Controller
 
     public function penarikanStore(Request $request)
 {
+    $nojurnal = JurnalHelper::noJurnal();
      $request->merge([
         'jumlah' => str_replace(',', '', $request->jumlah),
         'saldopokok' => str_replace(',', '', $request->saldopokok),
@@ -232,6 +234,7 @@ class TabunganController extends Controller
     if($request->saldopokok > 0){
     Jurnal::create([
         'id_akun' => 35,
+        'no_jurnal'=>$nojurnal,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
@@ -244,6 +247,7 @@ class TabunganController extends Controller
  if($request->saldowajib > 0){
     Jurnal::create([
         'id_akun' => 36,
+        'no_jurnal'=>$nojurnal,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
@@ -255,6 +259,7 @@ class TabunganController extends Controller
  if($request->saldosukarela > 0){
     Jurnal::create([
         'id_akun' => 37,
+        'no_jurnal'=>$nojurnal,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
@@ -266,6 +271,7 @@ class TabunganController extends Controller
 
 Jurnal::create([
         'id_akun' => $idakunjurnal,
+        'no_jurnal'=>$nojurnal,
         'id_simpanan' =>$simpanan->id_simpanan,
         'tanggal_transaksi' => now()->format('Y-m-d'),
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
