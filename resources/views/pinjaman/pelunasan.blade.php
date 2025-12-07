@@ -21,10 +21,7 @@
                                 value="{{ request('nama') }}">
                         </div>
                         
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-info">Filter</button>
-                            <a href="{{ route('pelunasan.index') }}" class="btn btn-secondary">Reset</a>
-                        </div>
+                       
                     </form>
                 </div>
             </div>

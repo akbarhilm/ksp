@@ -17,43 +17,74 @@ class LabarugiController extends Controller
       public function index(Request $request)
 {
     $tanggalAwal  = $request->tanggal_awal;
-    $tanggalAkhir = $request->tanggal_akhir;
+$tanggalAkhir = $request->tanggal_akhir;
 
-    // Query jurnal join akun
-    $query = Jurnal::with('akun');
+$query = Jurnal::with('akun');
 
-    if ($tanggalAwal && $tanggalAkhir) {
-        $query->whereBetween('tanggal_transaksi', [$tanggalAwal, $tanggalAkhir]);
-    }
+if ($tanggalAwal && $tanggalAkhir) {
+    $query->whereBetween('tanggal_transaksi', [$tanggalAwal, $tanggalAkhir]);
+}
 
-    $jurnal = $query->get();
+$jurnal = $query->get();
 
-    // Hitung total pendapatan & beban
-    $totalPendapatan = 0;
-    $totalBeban      = 0;
+$totalPendapatan = 0;
+$totalBeban      = 0;
 
-    foreach ($jurnal as $row) {
+$pendapatanPerAkun = [];
+$bebanPerAkun = [];
 
-        // Pendapatan → saldo normal kredit
-        if ($row->akun->tipe_akun === 'Pendapatan') {
-            $totalPendapatan += ($row->v_kredit - $row->v_debet);
+foreach ($jurnal as $row) {
+
+    $akun = $row->akun;
+    if (!$akun) continue;
+
+    // ✅ PENDAPATAN
+    if ($akun->tipe_akun === 'Pendapatan') {
+
+        $saldo = $row->v_kredit - $row->v_debet;
+        $totalPendapatan += $saldo;
+
+        if (!isset($pendapatanPerAkun[$akun->id_akun])) {
+            $pendapatanPerAkun[$akun->id_akun] = [
+                'kode' => $akun->kode_akun,
+                'nama' => $akun->nama_akun,
+                'total' => 0
+            ];
         }
 
-        // Beban → saldo normal debit
-        if (in_array($row->akun->tipe_akun, ['Beban', 'Biaya'])) {
-            $totalBeban += ($row->v_debet - $row->v_kredit);
-        }
+        $pendapatanPerAkun[$akun->id_akun]['total'] += $saldo;
     }
 
-    $laba = $totalPendapatan - $totalBeban;
+    // ✅ BEBAN / BIAYA
+    if (in_array($akun->tipe_akun, ['Beban','Biaya'])) {
 
-    return view('labarugi.index', [
-        'tanggalAwal'      => $tanggalAwal,
-        'tanggalAkhir'     => $tanggalAkhir,
-        'totalPendapatan'  => $totalPendapatan,
-        'totalBeban'       => $totalBeban,
-        'laba'             => $laba,
-    ]);
+        $saldo = $row->v_debet - $row->v_kredit;
+        $totalBeban += $saldo;
+
+        if (!isset($bebanPerAkun[$akun->id_akun])) {
+            $bebanPerAkun[$akun->id_akun] = [
+                'kode' => $akun->kode_akun,
+                'nama' => $akun->nama_akun,
+                'total' => 0
+            ];
+        }
+
+        $bebanPerAkun[$akun->id_akun]['total'] += $saldo;
+    }
+}
+
+$laba = $totalPendapatan - $totalBeban;
+
+return view('labarugi.index', [
+    'tanggalAwal' => $tanggalAwal,
+    'tanggalAkhir'=> $tanggalAkhir,
+    'pendapatanPerAkun' => $pendapatanPerAkun,
+    'bebanPerAkun'      => $bebanPerAkun,
+    'totalPendapatan'  => $totalPendapatan,
+    'totalBeban'       => $totalBeban,
+    'laba'             => $laba,
+]);
+
 }
 
 }

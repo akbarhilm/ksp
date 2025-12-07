@@ -29,6 +29,7 @@ public function index(Request $request)
                 $q->where('nama','like','%'.$request->nama.'%');
             });
         }
+        $query->orderBy('id_pinjaman','asc');
 
         return DataTables::of($query)
 

@@ -134,6 +134,7 @@ $akunBeban = Akun::where('tipe_akun','Beban')->get();
         Jurnal::create([
             'tanggal_transaksi' => '2025-11-30',
             'id_akun' => $p->id_akun,
+            'no_jurnal'=>$nojurnal,
             'v_debet' => $saldoPendapatan,
             'v_kredit' => 0,
             'keterangan' => 'Tutup Buku Pendapatan',
@@ -143,6 +144,7 @@ $akunBeban = Akun::where('tipe_akun','Beban')->get();
         Jurnal::create([
             'tanggal_transaksi' => '2025-11-30',
             'id_akun' => $akunSHU->id_akun,
+            'no_jurnal'=>$nojurnal,
             'v_debet' => 0,
             'v_kredit' => $saldoPendapatan,
             'keterangan' => 'SHU dari Pendapatan',
@@ -157,6 +159,7 @@ $akunBeban = Akun::where('tipe_akun','Beban')->get();
         Jurnal::create([
             'tanggal_transaksi' => '2025-11-30',
             'id_akun' => $akunSHU->id_akun,
+            'no_jurnal'=>$nojurnal,
             'v_debet' => $saldoBeban,
             'v_kredit' => 0,
             'keterangan' => 'SHU untuk Beban',
@@ -166,6 +169,7 @@ $akunBeban = Akun::where('tipe_akun','Beban')->get();
         Jurnal::create([
             'tanggal_transaksi' => '2025-11-30',
             'id_akun' => $b->id_akun,
+            'no_jurnal'=>$nojurnal,
             'v_debet' => 0,
             'v_kredit' => $saldoBeban,
             'keterangan' => 'Tutup Buku Beban',

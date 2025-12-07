@@ -39,6 +39,11 @@ class DashboardController extends Controller
         }
     }
     $laba = $totalPendapatan - $totalBeban;
+    $tanggalTerakhir = $jurnal
+    ->sortByDesc('tanggal_transaksi')
+    ->first()
+    ->tanggal_transaksi ?? null;
+
 //===============================================
 //=================jumlah pinjaman===================
  $totalPinjaman = Pinjaman::whereYear('created_at', $tanggal->year)->sum('total_pinjaman');
@@ -68,6 +73,7 @@ $lunas = Pinjaman::where('status','lunas')->whereMonth('updated_at',$tanggal->mo
         'listpinjaman'     => $listpinjaman,
         'lunas'            => $lunas,
         'tutup'            => $tutup ?? '',
+        'lasttrans'        => $tanggalTerakhir,
         
     ]);
 }

@@ -39,10 +39,7 @@
                            >
                 </div>
 
-                <div class="col-md-2 d-grid">
-                    <label class="form-label invisible">Filter</label>
-                    <button class="btn btn-info">Filter</button>
-                </div>
+               
 
             </form>
         </div>

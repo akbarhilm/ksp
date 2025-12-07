@@ -21,6 +21,7 @@ class RekeningController extends Controller
 
     public function datatableindexrekening(Request $request)
 {
+    if($request->ajax()){
     $query = Nasabah::select([
         'id_nasabah',
         'nik',
@@ -28,7 +29,17 @@ class RekeningController extends Controller
         'alamat',
         'tgl_lahir',
         'no_telp',
-    ])->orderBy('id_nasabah','desc');
+    ]);
+     if ($request->filled('id_nasabah')) {
+            $query->where('id_nasabah', $request->id_nasabah);
+        }
+
+        // filter nama
+        if ($request->filled('nama')) {
+            $query->where('nama','like','%'.$request->nama.'%');
+            }
+    
+    $query->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()
@@ -48,6 +59,8 @@ class RekeningController extends Controller
         })
         ->rawColumns(['aksi'])
         ->make(true);
+    }
+    return view('rekening.index');
 }
 
     public function cari(Request $request)

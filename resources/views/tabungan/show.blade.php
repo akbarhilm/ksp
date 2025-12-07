@@ -41,11 +41,7 @@
                                    value="{{ $rekening[0]->id_rekening }}">
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Bulan</label>
-                            <input type="month" class="form-control" id="tanggal" name="tanggal"
-                                   value="{{ date('Y-m') }}">
-                        </div>
+                       
                     </div>
 
                     <!-- BUTTONS -->

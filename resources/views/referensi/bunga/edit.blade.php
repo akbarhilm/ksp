@@ -55,26 +55,7 @@
                            value="{{$bunga->threshold}}">
                 </div>
 </div>
-<div class="row">
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Persentase-2 (%)</label>
-                    <input type="number" 
-                           name="persentase2" 
-                           step="0.01" 
-                           class="form-control" required
-                           value="{{$bunga->persentase2}}">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Threshold-2</label>
-                   <input type="number" 
-                           name="threshold2" 
-                           step="0.01" 
-                           class="form-control" required
-                           value="{{$bunga->threshold2}}">
-                </div>
-</div>
 
                 <button class="btn btn-warning text-white">Update</button>
                 <a href="{{ route('bunga.index') }}" class="btn btn-secondary">Kembali</a>

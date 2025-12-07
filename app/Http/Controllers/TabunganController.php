@@ -23,6 +23,7 @@ class TabunganController extends Controller
 
     public function datatablestabungan(Request $request)
 {
+    if($request->ajax()){
     $query = Nasabah::select([
         'id_nasabah',
         'nik',
@@ -30,13 +31,23 @@ class TabunganController extends Controller
         'alamat',
         'tgl_lahir',
         'no_telp',
-    ])->orderBy('id_nasabah','desc');
+    ]);
+    if ($request->filled('id_nasabah')) {
+            $query->where('id_nasabah', $request->id_nasabah);
+        }
+
+        // filter nama
+        if ($request->filled('nama')) {
+            $query->where('nama','like','%'.$request->nama.'%');
+            }
+    $query->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()
         ->editColumn('id_nasabah', function ($row) {
             return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->nama;
         })
+     
         ->addColumn('aksi', function ($row) {
             $create = route('tabungan.create', ['id_nasabah'=>$row->id_nasabah]);
             $edit = route('tabungan.show', $row->id_nasabah);
@@ -56,6 +67,8 @@ class TabunganController extends Controller
         })
         ->rawColumns(['aksi'])
         ->make(true);
+    }
+    return view('tabungan.index');
 }
 
     public function create(Request $request)
@@ -115,7 +128,7 @@ class TabunganController extends Controller
 
     public function lihat(Request $request){
         $idrekening = $request->get('idrekening');
-        $result = Simpanan::where('id_rekening','=',$idrekening)->whereRaw("substr(tanggal,1,7)='".$request->get('tanggal')."'")->get();
+        $result = Simpanan::where('id_rekening','=',$idrekening)->get();
         return response()->json($result);
     }
 

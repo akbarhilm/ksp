@@ -40,10 +40,10 @@ class UserController extends Controller
             'nama' => 'required|string|max:200',
             'username' => 'required|string|max:50|unique:users,username',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,bendahara,anggota',
+            'role' => 'required',
             'alamat'=>'required',
             'no_telp'=>'required',
-                        'nik'=>'required|numeric|max:16',
+                        'nik'=>'required|digits:16',
 
             'jabatan'=>'required',
             'tgl_lahir'=>'required'
@@ -61,14 +61,8 @@ class UserController extends Controller
            'sektor_ekonomi'=>'-',
            'id_entry'=>auth()->user()->id
         ]);
-        }catch(QueryException $e){
-            if ($e->getCode() == 23000) {
-                // Duplicate entry error
-                return redirect()->back()->withInput()->with('error','NIK KTP sudah terdaftar');
-            }
-           throw $e;
-        }
-          $tabungan =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'1'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Tabungan','status'=>'aktif','id_entry'=>auth()->user()->id]);
+
+         $tabungan =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'1'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Tabungan','status'=>'aktif','id_entry'=>auth()->user()->id]);
        $deposito =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'2'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Deposito','id_entry'=>auth()->user()->id]);
        $pinjaman =  Rekening::create(['id_nasabah'=>$nasabah->id_nasabah,'no_rekening'=>'3'.date('y').str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT),'jenis_rekening'=>'Pinjaman','id_entry'=>auth()->user()->id]);
         User::create([
@@ -87,6 +81,14 @@ class UserController extends Controller
 
         return redirect()->route('users.index')
                          ->with('success', 'User berhasil ditambahkan.');
+        }catch(QueryException $e){
+            if ($e->getCode() == 23000) {
+                // Duplicate entry error
+                return redirect()->back()->withInput()->with('error','NIK KTP sudah terdaftar');
+            }
+           throw $e;
+        }
+         
     }
 
     /**
@@ -114,10 +116,10 @@ class UserController extends Controller
             'nama' => 'required|string|max:200',
             'username' => ['required','string','max:50',Rule::unique('users','username')->ignore($user->id)],    
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,bendahara,anggota',
+            'role' => 'required',
             'alamat'=>'required',
             'no_telp'=>'required',
-            'nik'=>'required|numeric|max:16',
+            'nik'=>'required|digits:16',
             'jabatan'=>'required',
             'tgl_lahir'=>'required'
 
@@ -141,11 +143,18 @@ class UserController extends Controller
             $data['password'] = $request->password;
         }
     
-
+        try{
         $user->update($data);
 
         return redirect()->route('users.index')
                          ->with('success', 'User berhasil diperbarui.');
+        }catch(QueryException $e){
+            if ($e->getCode() == 23000) {
+                // Duplicate entry error
+                return redirect()->back()->withInput()->with('error','NIK KTP sudah terdaftar');
+            }
+           throw $e;
+        }
     }
 
     /**
@@ -161,14 +170,26 @@ class UserController extends Controller
 
     
 public function datatableindex(Request $request)
+
+
 {
+    if($request->ajax()){
     $query = User::select([
         'id',
         'nama',
         'username',
         'role',
         'id_nasabah',
-    ])->orderBy('id','desc');
+    ]);
+     if ($request->filled('kode_resort')) {
+            $query->where('id', $request->kode_resort);
+        }
+
+        // filter nama
+        if ($request->filled('nama')) {
+            $query->where('nama','like','%'.$request->nama.'%');
+            }
+    $query->orderBy('id','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()
@@ -193,5 +214,7 @@ public function datatableindex(Request $request)
         })
         ->rawColumns(['aksi'])
         ->make(true);
+}
+return view('karyawan.index');
 }
 }

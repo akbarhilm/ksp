@@ -6,6 +6,22 @@
         <x-navbars.navs.auth titlePage="Managemen Karyawan"></x-navbars.navs.auth>
         <!-- End Navbar -->
        <div class="container-fluid py-4">
+        <div class="card mb-4">
+                <div class="card-body">
+                    <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" name="kode_resort" class="form-control" id="filter-id" placeholder="kode resort"
+                                value="{{ request('id_nasabah') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama karyawan"
+                                value="{{ request('nama') }}">
+                        </div>
+                        
+                       
+                    </form>
+                </div>
+            </div>
     <div class="row">
         <div class="col-12">
 
@@ -35,16 +51,19 @@
     </main>
  @push('js')
 <script>
-$(document).ready(function () {
+$(function () {
     $('#nasabahTable').DataTable({
         processing: true,
         serverSide: true,
-        ajax: {
-        url: "{{ route('users.datatableindex') }}",
-        error: function(xhr, error, thrown) {
-            console.log("Terjadi error saat mengambil data:", error);
-        }
-    },
+        searching:false,
+     
+    ajax: {
+            url: "{{ route('users.datatableindex') }}",
+            data: function(d){
+                d.kode_resort = $('#filter-id').val();
+                d.nama = $('#filter-nama').val();
+            }
+        },
         columns: [
             { data: 'id', name: 'id' },
             { data: 'nama', name: 'nama' },
@@ -61,6 +80,9 @@ $(document).ready(function () {
                 next: ">>"
             }
         }
+    });
+     $('#filter-id,#filter-nama').on('change keyup', function(){
+        $('#nasabahTable').DataTable().ajax.reload();
     });
 });
 

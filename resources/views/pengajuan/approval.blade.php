@@ -6,6 +6,22 @@
         <x-navbars.navs.auth titlePage="Approval Pengajuan Pinjaman"></x-navbars.navs.auth>
         <!-- End Navbar -->
          <div class="container-fluid py-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Nasabah"
+                                value="{{ request('id_nasabah') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
+                                value="{{ request('nama') }}">
+                        </div>
+                        
+                       
+                    </form>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12">
 
@@ -110,12 +126,19 @@
 <script>
     // Handle klik tombol approv
 
-    $(document).ready(function() {
+    $(function() {
 
     let table = $('#pengajuanTable').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('pengajuan.datatables') }}",
+        searching:false,
+         ajax: {
+            url:"{{ route('pengajuan.datatables') }}",
+            data: function(d){
+                d.id_nasabah = $('#filter-id').val();
+                d.nama = $('#filter-nama').val();
+            }
+        },
 
         columns: [
             { data: 'nasabah', name: 'nasabah' },
@@ -150,6 +173,9 @@
         $('#asuransi').val($(this).data('asuransi'));
          $('#simpanan_pokok').val($(this).data('simpanan_pokok'));
        
+    });
+     $('#filter-id,#filter-nama').on('change keyup', function(){
+        $('#pengajuanTable').DataTable().ajax.reload();
     });
 
 });

@@ -6,11 +6,27 @@
         <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Nasabah"
+                                value="{{ request('id_nasabah') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
+                                value="{{ request('nama') }}">
+                        </div>
+                        
+                       
+                    </form>
+                </div>
+            </div>
     <div class="row">
         <div class="col-12">
 
             <div class="card shadow-sm mb-4">
-                <div class="card-body">
+                <div class="card-body overflow-auto">
                     <div class="d-flex justify-content-end mb-3">
                         <a href="{{ route('nasabah.create') }}" class="btn btn-info">
                             <i class="fas fa-plus me-1"></i> Tambah Nasabah
@@ -39,11 +55,17 @@
 
   @push('js')
 <script>
-$(document).ready(function () {
+ $(function(){
     $('#nasabahTable').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('nasabah.datatablesindex') }}",
+        ajax: {
+            url: "{{ route('nasabah.datatablesindex') }}",
+            data: function(d){
+                d.id_nasabah = $('#filter-id').val();
+                d.nama = $('#filter-nama').val();
+            }
+        },
         columns: [
             { data: 'id_nasabah', name: 'id_nasabah' },
             { data: 'nik', name: 'nik' },
@@ -62,6 +84,11 @@ $(document).ready(function () {
                 next: ">>"
             }
         }
+    });
+
+     // reload saat filter diganti
+    $('#filter-id,#filter-nama').on('change keyup', function(){
+        $('#nasabahTable').DataTable().ajax.reload();
     });
 });
 

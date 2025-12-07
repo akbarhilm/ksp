@@ -128,7 +128,6 @@
         <tr>
             <th>No</th>
             <th>Tanggal</th>
-            <th>No Jurnal</th>
             <th>Akun</th>
             <th>Keterangan</th>
             <th class="text-end">Debit</th>
@@ -168,7 +167,6 @@ $(document).ready(function() {
 $(function(){
 
 
-let lastJurnal = null;
     let table = $('#table-jurnal').DataTable({
         processing: true,
         serverSide: true,
@@ -181,27 +179,11 @@ let lastJurnal = null;
                 d.tanggal_akhir = $('#tanggal_akhir').val();
             }
         },
-        rowCallback: function(row, data){
-
-            let current = data.no_jurnal;
-            
-            if(lastJurnal !== null && lastJurnal !== current){
-                $(row).find('td').css('border-top', '4px solid #000');
-        // opsi padding atas agar jarak terlihat
-        $(row).find('td').css('padding-top', '8px');
-            }
-
-            lastJurnal = current;
-        },
-
-        drawCallback: function(){
-            lastJurnal = null;
-        },
+        
 
         columns: [
             { data: 'DT_RowIndex', orderable:false },
             { data: 'tanggal_transaksi' },
-            { data: 'no_jurnal' }, 
             { data: 'akun' },
             { data: 'keterangan' },
             { data: 'debit', className:'text-end' },

@@ -25,8 +25,7 @@ class JurnalController extends Controller
 
         $query = Jurnal::with('akun')
             ->select('tmjurnal.*')
-            ->orderBy('tanggal_transaksi', 'desc')
-            ->orderBy('no_jurnal', 'desc');
+            ->orderBy('tanggal_transaksi', 'desc');
 
 
         // FILTER AKUN
@@ -60,7 +59,6 @@ class JurnalController extends Controller
             ->editColumn('tanggal_transaksi', function ($row) {
                 return date('d-m-Y', strtotime($row->tanggal_transaksi));
             })
-             ->addColumn('no_jurnal', fn($row) => $row->no_jurnal ?? '-')
 
             ->rawColumns(['akun'])
 

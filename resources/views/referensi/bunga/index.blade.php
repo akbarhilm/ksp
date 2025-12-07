@@ -27,8 +27,7 @@
                         <th>Nama Bunga</th>
                         <th>Persentase (%)</th>
                         <th>Threshold</th>
-                        <th>Persentase-2 (%)</th>
-                        <th>Threshold-2</th>
+                        
                         <th width="160">Aksi</th>
                     </tr>
                 </thead>
@@ -39,15 +38,13 @@
                             <td>{{ $row->nama_bunga }}</td>
                             <td>{{ $row->persentase }}%</td>
                             <td>@if($row->jenis_bunga == 'Simpanan'){{ number_format($row->threshold,'0',',','.') }}@else{{$row->threshold.' hari'}}@endif</td>
-                             <td>{{ $row->persentase2 == 0? '-' : $row->persentase2.'%'  }}</td>
-                            <td>@if($row->persentase2 != 0)@if($row->jenis_bunga == 'Simpanan'){{ number_format($row->threshold2,'0',',','.') }}@else{{$row->threshold2.' hari'}}@endif @else{{'-'}} @endif</td>
                             <td>
                                 <a href="{{ route('bunga.edit', $row->id_bunga) }}" 
                                     class="btn btn-warning btn-sm">
                                     Edit
                                 </a>
 
-                                <form action="{{ route('bunga.destroy', $row->id_bunga) }}" 
+                                <!-- <form action="{{ route('bunga.destroy', $row->id_bunga) }}" 
                                       method="POST" 
                                       class="d-inline">
                                     @csrf @method('DELETE')
@@ -55,7 +52,7 @@
                                         class="btn btn-danger btn-sm">
                                         Hapus
                                     </button>
-                                </form>
+                                </form> -->
                             </td>
                         </tr>
                     @endforeach

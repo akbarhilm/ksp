@@ -42,37 +42,63 @@
     <div class="card shadow-sm">
         <div class="card-body">
 
-            <h4 class="mb-4 text-center fw-bold">Laporan Laba Rugi</h4>
-            <p class="text-center">
-                Periode:
-                <strong>{{ $tanggalAwal ?? '-' }} s/d {{ $tanggalAkhir ?? '-' }}</strong>
-            </p>
+            <h5>PENDAPATAN</h5>
+<table class="table table-bordered">
+<thead>
+<tr>
+    <th>Kode</th>
+    <th>Akun</th>
+    <th class="text-end">Jumlah</th>
+</tr>
+</thead>
+<tbody>
+@foreach($pendapatanPerAkun as $row)
+<tr>
+    <td>{{ $row['kode'] }}</td>
+    <td>{{ $row['nama'] }}</td>
+    <td class="text-end">{{ number_format($row['total'],0,',','.') }}</td>
+</tr>
+@endforeach
+<tr class="fw-bold table-light">
+    <td colspan="2">TOTAL PENDAPATAN</td>
+    <td class="text-end">{{ number_format($totalPendapatan,0,',','.') }}</td>
+</tr>
+</tbody>
+</table>
 
-            <table class="table table-bordered">
-                <thead class="table-light">
-                    <tr>
-                        <th>Keterangan</th>
-                        <th width="25%" class="text-end">Jumlah</th>
-                    </tr>
-                </thead>
+<h5>BEBAN / BIAYA</h5>
+<table class="table table-bordered">
+<thead>
+<tr>
+    <th>Kode</th>
+    <th>Akun</th>
+    <th class="text-end">Jumlah</th>
+</tr>
+</thead>
+<tbody>
+@foreach($bebanPerAkun as $row)
+<tr>
+    <td>{{ $row['kode'] }}</td>
+    <td>{{ $row['nama'] }}</td>
+    <td class="text-end">{{ number_format($row['total'],0,',','.') }}</td>
+</tr>
+@endforeach
+<tr class="fw-bold table-light">
+    <td colspan="2">TOTAL BEBAN</td>
+    <td class="text-end">{{ number_format($totalBeban,0,',','.') }}</td>
+</tr>
+</tbody>
+</table>
 
-                <tbody>
-                    <tr class="table-success">
-                        <td><strong>Total Pendapatan</strong></td>
-                        <td class="text-end">{{ number_format($totalPendapatan, 0, ',', '.') }}</td>
-                    </tr>
+<table class="table table-bordered mt-3">
+<tr class="fw-bold">
+    <td>LABA / RUGI</td>
+    <td class="text-end">
+        {{ number_format($laba,0,',','.') }}
+    </td>
+</tr>
+</table>
 
-                    <tr class="table-danger">
-                        <td><strong>Total Beban</strong></td>
-                        <td class="text-end">{{ number_format($totalBeban, 0, ',', '.') }}</td>
-                    </tr>
-
-                    <tr class="table-primary fw-bold">
-                        <td><strong>Laba Bersih</strong></td>
-                        <td class="text-end">{{ number_format($laba, 0, ',', '.') }}</td>
-                    </tr>
-                </tbody>
-            </table>
 
         </div>
     </div>

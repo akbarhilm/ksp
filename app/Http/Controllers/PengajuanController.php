@@ -330,12 +330,21 @@ class PengajuanController extends Controller
 
     public function datatables(Request $request)
     {
+        if($request->ajax()){
 
-        $data = Pengajuan::with('rekening.nasabah')
-            ->where('status', '=', 'pengajuan')
-            ->orderBy('id_pengajuan', 'DESC');
+        $query = Pengajuan::with('rekening.nasabah')
+            ->where('status', '=', 'pengajuan');
+            if ($request->filled('id_nasabah')) {
+            $query->where('id_nasabah', $request->id_nasabah);
+        }
 
-        return DataTables::of($data)
+        // filter nama
+        if ($request->filled('nama')) {
+            $query->where('nama','like','%'.$request->nama.'%');
+            }
+            $query->orderBy('id_pengajuan', 'DESC');
+
+        return DataTables::of($query)
             ->addIndexColumn()
 
             ->addColumn('nasabah', function ($row) {
@@ -395,4 +404,6 @@ class PengajuanController extends Controller
             ->rawColumns(['aksi'])
             ->make(true);
     }
+    return view('pengajuan.approval');
+}
 }

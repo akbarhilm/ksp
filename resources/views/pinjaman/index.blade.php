@@ -21,10 +21,7 @@
                                 value="{{ request('nama') }}">
                         </div>
                         
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-info">Filter</button>
-                            <a href="{{ route('pinjaman.index') }}" class="btn btn-secondary">Reset</a>
-                        </div>
+                       
                     </form>
                 </div>
             </div>
@@ -36,6 +33,7 @@
     <thead class="table-dark text-sm">
         <tr>
             <th>Nasabah</th>
+            <th class='d-none'>nama</th>
             <th>Resort</th>
             <th>Pinjaman</th>
             <th>Sisa Pokok</th>
@@ -58,6 +56,7 @@
     $('#table-pinjaman').DataTable({
         processing: true,
         serverSide: true,
+        searching:false,
         ajax: {
             url: "{{ route('pinjaman.index') }}",
             data: function(d){
@@ -67,6 +66,8 @@
         },
         columns: [
             { data: 'nasabah', name: 'nasabah',className:'text-sm' },
+            { data: 'nasabah', name: 'nasabah',visible:false },
+
             { data: 'resort', name: 'pengajuan.kode_resort',className:'text-sm' },
             { data: 'pinjaman', name: 'total_pinjaman', className:'text-end text-sm' },
             { data: 'sisa_pokok', name: 'sisa_pokok', className:'text-end text-sm' },

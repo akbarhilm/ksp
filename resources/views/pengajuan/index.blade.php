@@ -6,6 +6,22 @@
         <x-navbars.navs.auth titlePage="Pengajuan"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
+             <div class="card mb-4">
+                <div class="card-body">
+                    <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Nasabah"
+                                value="{{ request('id_nasabah') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
+                                value="{{ request('nama') }}">
+                        </div>
+                        
+                       
+                    </form>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12">
 
@@ -18,6 +34,7 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th style="width: 5%">Nomor Nasabah</th>
+                                        <th class='d-none'>nama</th>
                                         <th>No KTP</th>
                                         <th style="width: 5%">Tgl Lahir</th>
                                         <th>No Telp</th>
@@ -44,11 +61,23 @@
                     processing: true,
                     serverSide: true,
                     responsive: true,
-                    ajax: "{{ route('nasabah.datatables') }}",
+                    searching:false,
+         ajax: {
+            url: "{{ route('nasabah.datatables') }}",
+            data: function(d){
+                d.id_nasabah = $('#filter-id').val();
+                d.nama = $('#filter-nama').val();
+            }
+        },
 
                     columns: [{
                             data: 'nomor_nasabah',
                             name: 'nomor_nasabah'
+                        },
+                        {
+                            data: 'nama',
+                            name: 'nama',
+                            visible:false,
                         },
                         {
                             data: 'nik',
@@ -86,6 +115,10 @@
                         }
                     }
                 });
+               
+         $('#filter-id,#filter-nama').on('change keyup', function(){
+        $('#tabelNasabah').DataTable().ajax.reload();
+    });
             });
 
 

@@ -68,7 +68,7 @@ class NeracaController extends Controller
         // Laba/Rugi bersih
         $labaRugi = $totalPendapatan - $totalBeban;
 
-        //$neraca['Modal'][] = ['nama' => 'Laba/Rugi Bersih', 'saldo' => $labaRugi];
+        $neraca['Modal'][] = ['nama' => 'Laba/Rugi Bersih', 'saldo' => $labaRugi];
 
         return view('neraca.index', compact('neraca', 'tanggal'));
     }

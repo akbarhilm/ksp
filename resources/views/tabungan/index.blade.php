@@ -6,6 +6,22 @@
         <x-navbars.navs.auth titlePage="Tabungan"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Nasabah"
+                                value="{{ request('id_nasabah') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
+                                value="{{ request('nama') }}">
+                        </div>
+                        
+                       
+                    </form>
+                </div>
+            </div>
     <div class="row">
         <div class="col-12">
 
@@ -15,6 +31,7 @@
     <thead class="table-dark">
         <tr>
             <th class='w-10'>Nasabah</th>
+            <th class='d-none'>Nama</th>
             <th>No KTP</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
@@ -32,19 +49,24 @@
         @push('js')
 <script>
 
-    $(document).ready(function () {
+    $(function () {
     $('#rekeningTable').DataTable({
         processing: true,
         serverSide: true,
+        searching:false,
         ajax: {
-            url : "{{ route('tabungan.datatablestabungan') }}",
-            error:function (xhr, error, thrown) {
-                console.log(xhr.responseText);
+            url: "{{ route('tabungan.datatablestabungan') }}",
+            data: function(d){
+                d.id_nasabah = $('#filter-id').val();
+                d.nama = $('#filter-nama').val();
             }
         },
         columns: [
             { data: 'id_nasabah', name: 'id_nasabah', className: 'w-10' },
+            { data: 'nama', name: 'nama',visible:false },
+
             { data: 'nik', name: 'nik',className: 'w-15' },
+            
             { data: 'alamat', name: 'alamat',className: 'text-wrap w-30'  },
             { data: 'tgl_lahir', name: 'tgl_lahir',className: 'w-5'  },
             { data: 'no_telp', name: 'no_telp',className: 'w-10'  },
@@ -59,6 +81,9 @@
                 next: ">>"
             }
         }
+    });
+      $('#filter-id,#filter-nama').on('change keyup', function(){
+        $('#rekeningTable').DataTable().ajax.reload();
     });
 });
 

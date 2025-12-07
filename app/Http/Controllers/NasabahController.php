@@ -23,6 +23,8 @@ class NasabahController extends Controller
 
 public function datatableindex(Request $request)
 {
+    if ($request->ajax()) {
+
     $query = Nasabah::select([
         'id_nasabah',
         'nik',
@@ -30,21 +32,40 @@ public function datatableindex(Request $request)
         'alamat',
         'tgl_lahir',
         'no_telp',
-    ])->orderBy('id_nasabah','desc');
+    ]);
+
+    if ($request->filled('id_nasabah')) {
+            $query->where('id_nasabah', $request->id_nasabah);
+        }
+
+        // filter nama
+        if ($request->filled('nama')) {
+            $query->where('nama','like','%'.$request->nama.'%');
+            }
+        
+    $query->orderBy('id_nasabah','desc');
 
     return DataTables::of($query)
         ->addIndexColumn()
         ->editColumn('id_nasabah', function ($row) {
             return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
         })
+        
         ->addColumn('aksi', function ($row) {
+            $user = auth()->user();
             $edit = route('nasabah.edit', $row->id_nasabah);
             $delete = route('nasabah.destroy', $row->id_nasabah);
+            $btnEdit = '';
+            if (!$user || $user->role !== 'superadmin') {
+        $btnEdit = '
+            <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
+                <i class="material-icons">edit</i>
+            </a>
+        ';
+    }
 
             return '
-                <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
-                    <i class="material-icons">edit</i>
-                </a>
+                '.$btnEdit.'
                 <a href="javascript:{}" onclick="hapusNasabah('.$row->id_nasabah.')" class="btn btn-sm btn-danger btn-link" title="hapus">
                     <i class="material-icons">close</i>
                 </a>
@@ -55,6 +76,8 @@ public function datatableindex(Request $request)
         })
         ->rawColumns(['aksi'])
         ->make(true);
+    }
+    return view('nasabah.index');
 }
 
 
@@ -69,7 +92,7 @@ public function datatableindex(Request $request)
         //return view('nasabah.create');
          $request->validate([
             
-            'nik' => 'required',
+            'nik' => 'required|digits:16',
             'no_telp'=>'required|numeric',
             'tgl_lahir'=>'required|date',
             'nama' => 'required',
@@ -114,7 +137,7 @@ public function datatableindex(Request $request)
     public function update(Request $request, Nasabah $nasabah)
      {
         $request->validate([
-             'nik' => 'required',
+             'nik' => 'required|digits:16',
             'no_telp'=>'required|numeric',
             'tgl_lahir'=>'required|date',
             'nama' => 'required',
@@ -125,10 +148,17 @@ public function datatableindex(Request $request)
         ]);
         //dd($request->all());
        
-       
+       try{
         $nasabah->update($request->all());
 
         return redirect()->route('nasabah.index')->with('success', 'nasabah berhasil diperbarui.');
+       }catch(QueryException $e){
+            if ($e->getCode() == 23000) {
+                // Duplicate entry error
+                return redirect()->back()->withInput()->with('error','NIK KTP sudah terdaftar');
+            }
+           throw $e;
+        }
     }
 
     public function cari(Request $request)
@@ -146,12 +176,14 @@ public function datatableindex(Request $request)
     public function destroy($id)
     {
         $nasabah = Nasabah::findorFail($id);
-        $nasabah->delete();
-        return redirect()->route('nasabah.index')->with('success', 'Nasabah berhasil dihapus.');
+        $nasabah->update(['status','nonaktif']);
+        return redirect()->route('nasabah.index')->with('success', 'Nasabah berhasil dinonaktifkan.');
     }
 
-    public function datatables()
+    public function datatables(Request $request)
 {
+    if ($request->ajax()) {
+
     $query = Nasabah::with([
         'pinjaman' => function ($q) {
             $q->where('tmpinjaman.status', 'aktif');
@@ -159,8 +191,16 @@ public function datatableindex(Request $request)
         'pengajuan' => function ($q) {
             $q->where('tmpengajuan.status', 'pengajuan'); // sesuaikan
         }
-    ])
-    ->orderBy('id_nasabah','desc');
+    ])->where('status','aktif');
+    if ($request->filled('id_nasabah')) {
+            $query->where('id_nasabah', $request->id_nasabah);
+        }
+
+        // filter nama
+        if ($request->filled('nama')) {
+            $query->where('nama','like','%'.$request->nama.'%');
+            }
+    $query->orderBy('id_nasabah','desc');
 
 
     return DataTables::of($query)
@@ -214,6 +254,8 @@ public function datatableindex(Request $request)
 ->rawColumns(['aksi'])
 ->make(true);
 
+}
+return view('pengajuan.index');
 }
 
 }
