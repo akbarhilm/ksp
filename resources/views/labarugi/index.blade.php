@@ -14,24 +14,32 @@
             {{-- FORM FILTER --}}
             <form class="row g-3" method="GET">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Tanggal Awal</label>
                     <input type="date" name="tanggal_awal" class="form-control"
                         value="{{ $tanggalAwal }}">
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Tanggal Akhir</label>
                     <input type="date" name="tanggal_akhir" class="form-control"
                         value="{{ $tanggalAkhir }}">
                 </div>
 
-                <div class="col-md-4 d-grid">
+                <div class="col-md-3 d-grid">
                     <label class="form-label invisible">Filter</label>
                     <button class="btn btn-info">
                         <i class="bi bi-filter"></i> Tampilkan
                     </button>
                 </div>
+                    <div class="col-md-3 d-grid">
+                    <label class="form-label invisible">Cetak</label>
+                <a href="{{ url('/laporan/labarugi/pdf?tanggal_awal='.$tanggalAwal.'&tanggal_akhir='.$tanggalAkhir) }}"
+   target="_blank"
+   class="btn btn-success mb-3">
+   Cetak PDF
+</a>
+                    </div>
 
             </form>
 

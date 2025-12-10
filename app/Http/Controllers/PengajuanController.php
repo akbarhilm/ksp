@@ -73,7 +73,8 @@ class PengajuanController extends Controller
             'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
             'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
             'admin' => str_replace('.', '', $request->admin),
-            'asuransi' => str_replace('.', '', $request->asuransi)
+            'asuransi' => str_replace('.', '', $request->asuransi),
+            'survey' => str_replace('.', '', $request->survey)
         ]);
         $request->validate([
             'id_rekening' => 'required',
@@ -85,6 +86,7 @@ class PengajuanController extends Controller
             'kode_resort'            => 'required',
             'admin'            => 'required|numeric',
             'asuransi'            => 'required|numeric',
+            'survey'            => 'required|numeric',
             'jenis_jaminan.*'  => 'required|string|max:100',
             'keterangan.*'     => 'required|string|max:255'
         ]);
@@ -110,7 +112,9 @@ class PengajuanController extends Controller
             'jumlah_pengajuan' => str_replace('.', '', $request->jumlah_pengajuan),
             'simpanan_pokok' => str_replace('.', '', $request->simpanan_pokok),
             'admin' => str_replace('.', '', $request->admin),
-            'asuransi' => str_replace('.', '', $request->asuransi)
+            'asuransi' => str_replace('.', '', $request->asuransi),
+            'survey' => str_replace('.', '', $request->survey)
+
         ]);
 
         $request->validate([
@@ -122,6 +126,7 @@ class PengajuanController extends Controller
             'simpanan_pokok'            => 'required|numeric',
             'admin'            => 'required|numeric',
             'asuransi'            => 'required|numeric',
+            'survey'            => 'required|numeric',
             'jenis_jaminan.*'  => 'required|string|max:100',
             'keterangan.*'     => 'required|string|max:255',
             'kode_resort'            => 'required',

@@ -21,6 +21,14 @@
                     <label class="form-label invisible">Filter</label>
                     <button class="btn btn-info">Tampilkan</button>
                 </div>
+                   <div class="col-md-2 d-grid">
+                    <label class="form-label invisible">cetak</label>
+                  <a href="{{ url('/laporan/neraca/pdf?tanggal='.$tanggal) }}"
+   class="btn btn-success"
+   target="_blank">
+   Cetak PDF
+</a>
+ </div>
             </form>
 
             {{-- Flex container untuk dua kartu --}}

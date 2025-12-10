@@ -1,113 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
-    <title>Surat Perjanjian Hutang</title>
-    {{-- <link rel="stylesheet" href="{{ public_path('css/pdf.css') }}"> --}}
+    <title>Neraca</title>
+
     <style>
         body {
-    font-family: sans-serif;
-    font-size: 12px;
-    line-height: 1.35;
-}
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 11px;
+        }
 
+        h3 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
 
-h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-    padding: 0;
-}
+        .row {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
 
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.text-left { text-align: left; }
-.text-justify { text-align: justify; }
+        .col {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding: 5px;
+        }
 
-.text-sm { font-size: 14px; }
-.text-xs { font-size: 12px; }
+        .card {
+            border: 1px solid #666;
+        }
 
-.table {
-    width: 100%;
-    border:solid 1px;
-}
-.table tr {
-border: solid 1px;
-}
-.table td {
-    padding: 3px 4px;
-    vertical-align: top;
-}
-.pasal td:first-child {
-    width: 20px;
-    vertical-align: top;
-}
+        .card-header {
+            background: #0277ba;
+            color: white;
+            padding: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
 
-.pasal td:last-child {
-    vertical-align: top;
-}
+        .km-header {
+            background: #198754;
+            color: white;
+        }
 
-.table-borderless td {
-    border: none !important;
-}
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
 
-.underline { text-decoration: underline; }
+        td {
+            border: 1px solid #999;
+            padding: 4px;
+        }
 
-.mt-2 { margin-top: 8px; }
-.mt-3 { margin-top: 12px; }
-.mt-4 { margin-top: 16px; }
-.mt-5 { margin-top: 20px; }
+        .text-end {
+            text-align: right;
+        }
 
-.mb-0 { margin-bottom: 0; }
-.mb-2 { margin-bottom: 8px; }
-.mb-4 { margin-bottom: 16px; }
+        .bg-info { background:#0277ba;color:white; }
+        .bg-success { background:#198754;color:white; }
+        .fw-bold { font-weight:bold; }
 
-.page {
-    width: 100%;
-    max-width: 210mm;
-    margin: 0 auto;
-    padding: 15px 20px;
-    background: white;
-}
-
-        </style>
+    </style>
 </head>
-
 <body>
-    <div class="page">
-    <!-- TITLE -->
-    <div class="text-center mb-2 mt-3">
-        <h3 class="underline">Neraca</h3>
-        <div class="text-md">Per Periode</div>
-    </div>       
- <h3 class="mt-3">Aktiva</h3>
-<table class="table">
-@foreach($ledger as $row)
-    @if($row->akun->tipe_akun == 'Aset')
-    <tr>
-        <td>{{ $row->akun->nama_akun }}</td>
-        <td class="text-right">{{ number_format($row->saldo,0) }}</td>
-    </tr>
-    @endif
-@endforeach
-<tr>
-    <td><b>Total Aktiva / Aset<b></td>
-    <td class ="text-right"><b>{{number_format($total['aset'],0)}}<b></td>
-</tr>
-</table>
-<h3 class="mt-3">Kewajiban</h3>
-<table class="table">
-@foreach($ledger as $row)
-    @if($row->akun->tipe_akun == 'Kewajiban')
-    <tr>
-        <td>{{ $row->akun->nama_akun }}</td>
-        <td class="text-right">{{ number_format($row->saldo,0) }}</td>
-    </tr>
-    @endif
-@endforeach
-<tr style="border-top:solid 1px">
-    <td class=""><b>Total Kewajiban<b></td>
-    <td class ="text-right"><b>{{number_format($total['wajib'],0)}}<b></td>
-</tr>
-</table>
+
+<h3>Neraca ({{ date('d-m-Y', strtotime($tanggal)) }})</h3>
+
+@php
+    $totalAset = 0;
+    $totalKewajiban = 0;
+    $totalModal = 0;
+
+    $asetCount = count($neraca['Aset']);
+    $kmCount = count($neraca['Kewajiban']) + count($neraca['Modal']);
+    $maxRows = max($asetCount, $kmCount);
+@endphp
+
+<div class="row">
+
+    {{-- ASET --}}
+    <div class="col">
+        <div class="card">
+            <div class="card-header">ASET</div>
+            <table>
+                <tbody>
+                @for($i=0;$i<$maxRows;$i++)
+                    @if(isset($neraca['Aset'][$i]))
+                        <tr>
+                            <td>{{ $neraca['Aset'][$i]['nama'] }}</td>
+                            <td class="text-end">{{ number_format($neraca['Aset'][$i]['saldo'],0,',','.') }}</td>
+                        </tr>
+                        @php $totalAset += $neraca['Aset'][$i]['saldo']; @endphp
+                    @else
+                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    @endif
+                @endfor
+                <tr class="fw-bold">
+                    <td class="bg-info">TOTAL ASET</td>
+                    <td class="bg-info text-end">{{ number_format($totalAset,0,',','.') }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    {{-- KEWAJIBAN & MODAL --}}
+    <div class="col">
+        <div class="card">
+            <div class="card-header km-header">KEWAJIBAN & MODAL</div>
+            <table>
+                <tbody>
+                @for($i=0;$i<$maxRows;$i++)
+                    @php
+                        $kmItem = null;
+                        if($i < count($neraca['Kewajiban'])) {
+                            $kmItem = $neraca['Kewajiban'][$i];
+                            $totalKewajiban += $kmItem['saldo'];
+                        } elseif($i - count($neraca['Kewajiban']) < count($neraca['Modal'])) {
+                            $kmItem = $neraca['Modal'][$i - count($neraca['Kewajiban'])];
+                            $totalModal += $kmItem['saldo'];
+                        }
+                    @endphp
+
+                    @if($kmItem)
+                        <tr>
+                            <td>{{ $kmItem['nama'] }}</td>
+                            <td class="text-end">{{ number_format($kmItem['saldo'],0,',','.') }}</td>
+                        </tr>
+                    @else
+                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    @endif
+                @endfor
+                <tr class="fw-bold">
+                    <td class="bg-success">TOTAL KEWAJIBAN & MODAL</td>
+                    <td class="bg-success text-end">
+                        {{ number_format($totalKewajiban + $totalModal,0,',','.') }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
 </body>
 </html>

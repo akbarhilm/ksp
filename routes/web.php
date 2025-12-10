@@ -23,6 +23,8 @@ use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\TransaksiHarianController;
 use App\Http\Controllers\TutupBukuController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\CetakPdfController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ReportFileController;
 
 /*
@@ -39,8 +41,17 @@ use App\Http\Controllers\ReportFileController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/perjanjian/cetak/{id}', [CetakPdfController::class, 'cetakPerjanjian'])->name('cetak.perjanjian');
 
+Route::get('/pencairan/riwayat/{id}/pdf', [CetakPdfController::class, 'cetakRiwayat'])->name('cetak.angsuran');
 
+Route::get('/pencairan/cetak/{id}', [CetakPdfController::class, 'cetakPencairan'])->name('cetak.pencairan');
+
+Route::get('/jaminan/cetak/{id}', [CetakPdfController::class, 'cetakJaminan'])->name('cetak.jaminan');
+
+Route::get('/laporan/labarugi/pdf', [LabarugiController::class, 'labaRugiPdf']);
+
+Route::get('/laporan/neraca/pdf', [NeracaController::class, 'neracaPdf']);
 
 Route::get('/pdf/sphutang/{id}', function($id){
     $data = session('pdf_data_'.$id);
@@ -94,6 +105,8 @@ Route::post('/deposito/penarikan/store', [DepositoController::class, 'penarikanS
     ->name('deposito.penarikan.store');
 	
 Route::get('/nasabah/datatablesindex', [NasabahController::class, 'datatableindex'])->name('nasabah.datatablesindex');
+Route::get('/history/datatablesindex', [HistoryController::class, 'datatableindex'])->name('history.datatablesindex');
+
 Route::get('/rekening/datatablesindexrekning', [RekeningController::class, 'datatableindexrekening'])->name('rekening.datatablesindexrekening');
 Route::get('/tabungan/datatablestabungan', [TabunganController::class, 'datatablestabungan'])->name('tabungan.datatablestabungan');
 Route::get('/deposito/datatablesdeposito', [DepositoController::class, 'datatablesdeposito'])->name('deposito.datatablesdeposito');
@@ -126,6 +139,8 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('bunga', BungaController::class);
 	 Route::resource('akun', AkunController::class);
 	  Route::resource('tutupbuku', TutupBukuController::class);
+	  Route::resource('history', HistoryController::class);
+	
 
  Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
     Route::post('/backup/run', [BackupController::class, 'run'])->name('backup.run');

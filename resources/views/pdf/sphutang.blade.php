@@ -116,7 +116,31 @@ if (!function_exists('terbilang')) {
 	}
 }
 	
-	
+	if (!function_exists('bulatKhusus')) {
+function bulatKhusus($nilai)
+{
+     $nilai = floor($nilai);
+    $sisa = $nilai % 1000;
+
+    // jika sudah bulat ribuan
+    if ($sisa == 0) {
+        return $nilai;
+    }
+
+    // jika tepat 500, biarkan
+    if ($sisa == 500) {
+        return $nilai;
+    }
+
+    // jika di bawah 500, naikkan ke 500
+    if ($sisa < 500) {
+        return $nilai + (500 - $sisa);
+    }
+
+    // jika di atas 500, naikkan ke 1000
+    return $nilai + (1000 - $sisa);
+}
+    }
 			
 			
 		
@@ -177,8 +201,8 @@ if (!function_exists('terbilang')) {
                 <p class="text-justify">
                     Untuk pengembalian pinjaman Tersebut <b>PIHAK KESATU</b> bersedia diambil angsurannya 
 melalui ATM oleh <b>PIHAK KEDUA</b> sesuai dengan angsuran pinjaman yang telah ditetapkan & 
-disepakati kedua belah pihak sebesar <b>Rp {{number_format(($data->jumlah_pencairan/$data->tenor*(($data->bunga*$data->tenor/100)+1)),2,',','.')}}
-    ({{terbilang(($data->jumlah_pencairan*(($data->bunga/100)+1))) }} Rupiah)</b>.
+disepakati kedua belah pihak sebesar <b>Rp {{number_format(bulatKhusus($data->jumlah_pencairan/$data->tenor*(($data->bunga*$data->tenor/100)+1)),2,',','.')}}
+    ({{terbilang(bulatKhusus($data->jumlah_pencairan*(($data->bunga/100)+1))) }} Rupiah)</b>.
                 </p>
             </td>
         </tr>
@@ -191,8 +215,7 @@ disepakati kedua belah pihak sebesar <b>Rp {{number_format(($data->jumlah_pencai
         ->format(new DateTime('+1 month')) }} sampai dengan bulan {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'MMMM yyyy'))
         ->format(new DateTime("+".($data->tenor+1)."month")) }}
 atau sampai hutang PIHAK KESATU lunas. Dengan ketentuan apabila terjadi 
-keterlambatan pembayaran maka setiap bulannya akan dikenakan denda sebesar 1% 
-perbulan atau 0.1% perhari dari saldo pinjaman.
+keterlambatan pembayaran maka setiap bulannya akan dikenakan denda sebesar 0.1% perhari dari saldo pinjaman.
 
                 </p>
             </td>

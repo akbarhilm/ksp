@@ -185,7 +185,7 @@ $(function(){
             { data: 'DT_RowIndex', orderable:false },
             { data: 'tanggal_transaksi' },
             { data: 'akun' },
-            { data: 'keterangan' },
+            { data: 'keterangan',className:'text-wrap' },
             { data: 'debit', className:'text-end' },
             { data: 'kredit', className:'text-end' }
         ]

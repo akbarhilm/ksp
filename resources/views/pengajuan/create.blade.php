@@ -105,6 +105,10 @@
                                 <label class="form-label">Asuransi</label>
                                 <input type="text"  name="asuransi" value="{{ old('asuransi') }}" class="form-control format-angka  input-jumlah">
                             </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Survey</label>
+                                <input type="text"  name="survey" value="{{ old('survey') }}" class="form-control format-angka  input-jumlah">
+                            </div>
                             
                         </div>
 

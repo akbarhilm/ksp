@@ -94,6 +94,7 @@
 
                                 </div>
                             </div>
+                            @if($pengajuan->status == 'approv')
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label">Metode Pencairan</label>
@@ -108,6 +109,7 @@
                                 </div>
 
                             </div>
+                            @endif
 
                             <hr>
                             <h6 class="mb-3">Potongan</h6>
@@ -132,16 +134,24 @@
                                         value="{{ number_format($pengajuan->asuransi, 0) }}"
                                         class="form-control format-angka  input-jumlah">
                                 </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">survey</label>
+                                    <input type="text" readonly name="survey"
+                                        value="{{ number_format($pengajuan->survey, 0) }}"
+                                        class="form-control format-angka  input-jumlah">
+                                </div>
+                            </div>
                                 @if ($pengajuan->jenis == 'topup')
+                                <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <label class="form-label">Sisa Pinjaman Sebelumnya</label>
                                         <input type="text" readonly name="asuransi"
                                             value="{{ number_format($pinjaman->sisa_pokok, 0) }}"
                                             class="form-control format-angka  input-jumlah">
                                     </div>
+                                </div>
                                 @endif
 
-                            </div>
 
                             <hr>
 
@@ -154,13 +164,13 @@
                                         <div class="col-md-5">
                                             <label class="form-label">Jenis Jaminan</label>
                                             <input type="text" name="jenis_jaminan[]" class="form-control"
-                                                placeholder="Contoh: ATM">
+                                                placeholder="Contoh: ATM" value='{{$j->jenis_jaminan}}'>
                                         </div>
 
                                         <div class="col-md-5">
                                             <label class="form-label">Keterangan</label>
                                             <input type="text" name="keterangan[]" class="form-control"
-                                                placeholder="Contoh: No kartu 1234...">
+                                                placeholder="Contoh: No kartu 1234..." value='{{$j->keterangan}}'>
                                         </div>
 
 
@@ -171,10 +181,12 @@
 
                             {{-- TOMBOL --}}
                             <div class="d-flex gap-2">
+                                @if($pengajuan->status == 'approv')
                                 <button id="btnCair" class="btn btn-info" data-id="{{ $pengajuan->id_pengajuan }}"
                                     title="Cairkan">
                                     Cairkan<i class="material-icons">print</i>
                                 </button>
+                                @endif
                                 <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
 
                             </div>
