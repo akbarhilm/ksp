@@ -28,6 +28,7 @@ class User extends Authenticatable
         'tgl_lahir',
         'jabatan',
         'no_telp',
+        'kode_resort',
         'id_nasabah',
     ];
     /**

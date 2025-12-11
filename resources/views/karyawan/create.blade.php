@@ -120,13 +120,23 @@
                                         <div class="input-group input-group-static mb-4">
                                             <label>Role</label>
                                             <select name='role' class='form-control'>
-                                                <option value='superadmin'>Super Admin</option>
-                                                <option value='kepalaadmin'>Kepala Admin</option>
-                                                <option value='admin'>Admin</option>
+                                                <option value='superadmin' @selected(old('role')=='superadmin')>Super Admin</option>
+                                                <option value='kepalaadmin' @selected(old('role')=='kepalaadmin')>Kepala Admin</option>
+                                                <option value='admin' @selected(old('role')=='admin')>Admin</option>
                                             </select>
 
                                         </div>
                                         @error('role')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Kode Resort</label>
+                                            <input type="number" class="form-control" name="kode_resort" value="{{$max}}"/>
+                                            <span class="text-xs">Kosongkan jika bukan resort</span>
+                                        </div>
+                                        @error('kode_resor')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>

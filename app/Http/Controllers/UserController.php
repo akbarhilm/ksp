@@ -28,7 +28,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('karyawan.create');
+        $max = User::max('kode_resort')+1;
+        return view('karyawan.create',compact('max'));
     }
 
     /**
@@ -44,7 +45,7 @@ class UserController extends Controller
             'alamat'=>'required',
             'no_telp'=>'required',
                         'nik'=>'required|digits:16',
-
+            'kode_resort'=>'nullable|numeric|unique:users,kode_resort',
             'jabatan'=>'required',
             'tgl_lahir'=>'required'
 
@@ -75,6 +76,7 @@ class UserController extends Controller
            'alamat'=>$request->alamat,
            'jabatan'=>$request->jabatan,
            'tgl_lahir'=>$request->tgl_lahir,
+           'kode_resort'=>$request->kode_resort,
            'no_telp'=>$request->no_telp,
             'id_nasabah' => $nasabah->id_nasabah,
         ]);
@@ -121,6 +123,7 @@ class UserController extends Controller
             'no_telp'=>'required',
             'nik'=>'required|digits:16',
             'jabatan'=>'required',
+            'kode_resort'=>['nullable','numeric',Rule::unique('users','kode_resort')->ignore($user->id)],
             'tgl_lahir'=>'required'
 
         ]);
@@ -135,6 +138,7 @@ class UserController extends Controller
            'alamat'=>$request->alamat,
            'jabatan'=>$request->jabatan,
            'tgl_lahir'=>$request->tgl_lahir,
+           'kode_resort'=>$request->kode_resort,
            'no_telp'=>$request->no_telp,
         ];
 
@@ -179,6 +183,7 @@ public function datatableindex(Request $request)
         'nama',
         'username',
         'role',
+        'kode_resort',
         'id_nasabah',
     ]);
      if ($request->filled('kode_resort')) {

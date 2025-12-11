@@ -1,6 +1,9 @@
-@extends('layouts.app')
+<x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-@section('content')
+    <x-navbars.sidebar activePage="jurnal" menuParent="laporan"></x-navbars.sidebar>
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+        <!-- Navbar -->
+        <x-navbars.navs.auth titlePage="Jurnal"></x-navbars.navs.auth>
 <div class="container">
 
     <h4 class="mb-4">Edit Jurnal</h4>
@@ -91,7 +94,8 @@
 
     </form>
 </div>
-
+</main>
+</x-layout>
 
 {{-- Script Tambah Baris --}}
 <script>

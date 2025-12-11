@@ -129,7 +129,16 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
-                                    
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static mb-4">
+                                            <label>Kode Resort</label>
+                                            <input type="text" class="form-control" name="kode_resort" value="{{$user->kode_resort}}"/>
+                                            <span class="text-xs">Kosongkan jika bukan resort</span>
+                                        </div>
+                                        @error('kode_resort')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
                                    
                                 </div>
                                 

@@ -35,10 +35,11 @@
       <table id="nasabahTable"  class="table table-striped table-hover align-middle text-sm" width="100%">
     <thead class="table-dark">
         <tr>
-            <th>Kode Resort</th>
             <th>Nama</th>
             <th>Usernmae</th>
             <th>Role</th>
+            <th>Kode Resort</th>
+
             <th>Aksi</th>
         </tr>
     </thead>
@@ -65,10 +66,11 @@ $(function () {
             }
         },
         columns: [
-            { data: 'id', name: 'id' },
             { data: 'nama', name: 'nama' },
             { data: 'username', name: 'username' },
             { data: 'role', name: 'role' },
+            { data: 'kode_resort', name: 'kode_resort' },
+
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
         ],
          language: {

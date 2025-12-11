@@ -1,11 +1,11 @@
 Sekalian tlg aturan² nya ya supaya bisa disesuaikan spt
-1. Tabungan bisa diambil sebagian
-2. Angsuran bisa di input sebagian
+1. Tabungan bisa diambil sebagian v
+2. Angsuran bisa di input sebagian v
 3. Jurnal bisa di ubah
 4. Pembayaran Angsuran bisa di ubah dan di hapus
-5. History angsuran tertera di bawah nama jangka waktu ya
+5. History angsuran tertera di bawah nama jangka waktu ya v 
 6. ⁠npl
-7. ⁠penginputan data anggota tertera masing2 resot
+7. ⁠penginputan data anggota tertera masing2 resot v  
 8. ⁠untuk penghapusan hanya ada di akun pengawas
 9. ⁠simpanan ada adm 2000 dan bunga di atas 500 rbu simpanan 0,5%
 10. Penambahan Menu NPL

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bunga;
+use App\Models\User;
+
 use App\Models\Nasabah;
 use App\Models\Rekening;
 use Illuminate\Database\QueryException;
@@ -83,8 +85,8 @@ public function datatableindex(Request $request)
 
        public function create()
     {
-        
-        return view('nasabah.create');
+        $resort = User::where('kode_resort','<>',null)->orderBy('kode_resort','asc')->get();   
+        return view('nasabah.create',compact('resort'));
     }
 
       public function store(Request $request)
