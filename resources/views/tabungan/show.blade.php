@@ -40,7 +40,11 @@
                             <input type="hidden" id="id_rekening" name="id_rekening"
                                    value="{{ $rekening[0]->id_rekening }}">
                         </div>
-
+<div class="col-md-6 mb-3">
+                            <label class="form-label">Bulan</label>
+                            <input type="month" class="form-control" id="tanggal" name="tgl"
+                                   >
+                        </div>
                        
                     </div>
 
@@ -48,7 +52,7 @@
                     <div class="row">
                         <div class="col-md-4">
                         <div class='d-flex gap-2'>
-                            <button type="button" class="btn btn-info" onclick="lihat()">Lihat</button>
+                            <button type="button" id='btnlihat' class="btn btn-info" onclick="lihat()">Lihat</button>
                         
                             <a class="btn btn-dark" href="{{ url()->previous() }}">Kembali</a>
                         </div>
@@ -102,6 +106,9 @@
     </main>
     @push('js')
         <script>
+            $(document).ready(function(){
+               lihat();
+            })
             function lihat() {
     var idrekening = $("#id_rekening").val();
     var date = $("#tanggal").val();
@@ -111,7 +118,7 @@
         type: "GET",
         data: {
             'idrekening': idrekening,
-            'tanggal': date
+            'tgl': date
         },
         success: function(data) {
             $('#result').html(''); // kosongkan dulu

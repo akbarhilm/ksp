@@ -30,8 +30,7 @@
       <table id="rekeningTable"  class="table table-striped table-hover align-middle text-sm" width="100%">
     <thead class="table-dark">
         <tr>
-            <th class='w-10'>Nasabah</th>
-            <th class='d-none'>Nama</th>
+            <th class=''>Nasabah</th>
             <th>No KTP</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
@@ -62,14 +61,13 @@
             }
         },
         columns: [
-            { data: 'id_nasabah', name: 'id_nasabah', className: 'w-10' },
-            { data: 'nama', name: 'nama',visible:false },
+            { data: 'id_nasabah', name: 'id_nasabah', className: 'text-wrap' },
 
-            { data: 'nik', name: 'nik',className: 'w-15' },
+            { data: 'nik', name: 'nik', },
             
-            { data: 'alamat', name: 'alamat',className: 'text-wrap w-30'  },
-            { data: 'tgl_lahir', name: 'tgl_lahir',className: 'w-5'  },
-            { data: 'no_telp', name: 'no_telp',className: 'w-10'  },
+            { data: 'alamat', name: 'alamat',className: 'text-wrap '  },
+            { data: 'tgl_lahir', name: 'tgl_lahir'  },
+            { data: 'no_telp', name: 'no_telp'},
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false,className: 'w-15'  },
         ],
          language: {

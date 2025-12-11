@@ -128,8 +128,12 @@ class TabunganController extends Controller
 
     public function lihat(Request $request){
         $idrekening = $request->get('idrekening');
-        $result = Simpanan::where('id_rekening','=',$idrekening)->get();
-        return response()->json($result);
+        $result = Simpanan::where('id_rekening','=',$idrekening);
+        if($request->filled('tgl')){
+            $result->whereRaw("substr(tanggal,1,7)='".$request->get('tanggal')."'");
+        }
+        $rs = $result->get();
+        return response()->json($rs);
     }
 
     public function show($id)
@@ -205,15 +209,26 @@ class TabunganController extends Controller
 {
     $nojurnal = JurnalHelper::noJurnal();
      $request->merge([
-        'jumlah' => str_replace(',', '', $request->jumlah),
         'saldopokok' => str_replace(',', '', $request->saldopokok),
         'saldowajib' => str_replace(',', '', $request->saldowajib),
-        'saldosukarela' => str_replace(',', '', $request->saldosukarela)
+        'saldosukarela' => str_replace(',', '', $request->saldosukarela),
+               'tarik_pokok' => str_replace('.', '', $request->tarik_pokok),
+        'tarik_wajib' => str_replace('.', '', $request->tarik_wajib),
+
+        'tarik_rela' => str_replace('.', '', $request->tarik_rela),
+
+
     ]);
 
     $request->validate([
         'id_rekening' => 'required',
-        'jumlah' => 'required|numeric',
+        'tgl_tarik'=>'required|date',
+        'saldopokok'=>'required',
+        'saldowajib'=>'required',
+        'saldosukarela'=>'required',
+        'tarik_pokok' => 'required|numeric|lte:saldopokok',
+        'tarik_wajib' => 'required|numeric|lte:saldowajib',
+        'tarik_rela'=>'required|numeric|lte:saldosukarela'
     ]);
     if($request->metode == 'tunai'){
         $idakunjurnal = '1';
@@ -221,75 +236,100 @@ class TabunganController extends Controller
         $idakunjurnal = '5';
     }
 
-    // $rekening = Rekening::findOrFail($request->id_rekening);
+$saldopokok = $request->saldopokok;
+$saldowajib = $request->saldowajib;
+$saldosukarela = $request->saldosukarela;
+$tarikpokok = $request->tarik_pokok;
+$tarikwajib = $request->tarik_wajib;
+$tarikrela = $request->tarik_rela;
+  
+if($tarikpokok>$saldopokok || $tarikwajib>$saldowajib || $tarikrela>$saldosukarela){
+            return redirect()->back()->with('warning', 'Penarikan melebihi saldo.');
 
-    // Cek Saldo
-    // $saldo = Simpanan::where('id_rekening', $rekening->id_rekening)
-    //             ->sum('v_kredit') - Simpanan::where('id_rekening', $rekening->id_rekening)->sum('v_debit');
-
-    // if ($request->jumlah > $saldo) {
-    //     return back()->with('error', 'Saldo tidak cukup!');
-    // }
-
-    // Input transaksi penarikan
-    $simpanan = Simpanan::create([
+}
+    
+    if($tarikpokok > 0 ){
+        $jurnal = Jurnal::create([
+        'id_akun' => 35,
+        'no_jurnal'=>$nojurnal,
+        'tanggal_transaksi' => $request->tgl_tarik,
+        'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
+        'v_debet' =>$tarikpokok,
+        'v_kredit' => 0,
+        'id_entry' => auth()->id()
+    ]);
+        $simpanan = Simpanan::create([
         'id_rekening' => $request->id_rekening,
-        'tanggal' => now()->format('Y-m-d'),
+        'tanggal' => $request->tgl_tarik,
         'id_akun' => 0, // Kas
         'jenis' => 'pokok',
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
-        'v_debit' => $request->jumlah, // debit = keluar
+        'v_debit' => $request->tarik_pokok, // debit = keluar
         'v_kredit' => 0,
+        'no_jurnal'=>$nojurnal,
+        'id_jurnal'=>$jurnal->id_jurnal,
         'id_entry' => auth()->id()
     ]);
 
     
-    if($request->saldopokok > 0){
-    Jurnal::create([
-        'id_akun' => 35,
-        'no_jurnal'=>$nojurnal,
-        'id_simpanan' =>$simpanan->id_simpanan,
-        'tanggal_transaksi' => now()->format('Y-m-d'),
-        'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
-        'v_debet' =>$request->saldopokok,
-        'v_kredit' => 0,
-        'id_entry' => auth()->id()
-    ]);
 }
 
- if($request->saldowajib > 0){
-    Jurnal::create([
+ if($tarikwajib > 0){
+    $jurnal = Jurnal::create([
         'id_akun' => 36,
         'no_jurnal'=>$nojurnal,
-        'id_simpanan' =>$simpanan->id_simpanan,
-        'tanggal_transaksi' => now()->format('Y-m-d'),
+        'tanggal_transaksi' => $request->tgl_tarik,
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
-        'v_debet' => $request->saldowajib,
+        'v_debet' => $tarikwajib,
         'v_kredit' => 0,
         'id_entry' => auth()->id()
     ]);
+    $simpanan = Simpanan::create([
+        'id_rekening' => $request->id_rekening,
+        'tanggal' => $request->tgl_tarik,
+        'id_akun' => 0, // Kas
+        'jenis' => 'wajib',
+        'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
+        'v_debit' => $tarikwajib, // debit = keluar
+        'v_kredit' => 0,
+        'no_jurnal'=>$nojurnal,
+        'id_jurnal'=>$jurnal->id_jurnal,
+        'id_entry' => auth()->id()
+    ]);
+    
 }
- if($request->saldosukarela > 0){
-    Jurnal::create([
+ if($tarikrela > 0){
+     $jurnal = Jurnal::create([
         'id_akun' => 37,
         'no_jurnal'=>$nojurnal,
-        'id_simpanan' =>$simpanan->id_simpanan,
-        'tanggal_transaksi' => now()->format('Y-m-d'),
+        'tanggal_transaksi' =>$request->tgl_tarik,
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
-        'v_debet' => $request->saldosukarela,
+        'v_debet' => $tarikrela,
         'v_kredit' => 0,
         'id_entry' => auth()->id()
     ]);
+    $simpanan = Simpanan::create([
+        'id_rekening' => $request->id_rekening,
+        'tanggal' => $request->tgl_tarik,
+        'id_akun' => 0, // Kas
+        'jenis' => 'sukarela',
+        'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
+        'v_debit' => $tarikrela, // debit = keluar
+        'v_kredit' => 0,
+        'no_jurnal'=>$nojurnal,
+        'id_jurnal'=>$jurnal->id_jurnal,
+        'id_entry' => auth()->id()
+    ]);
+   
 }
 
 Jurnal::create([
         'id_akun' => $idakunjurnal,
         'no_jurnal'=>$nojurnal,
-        'id_simpanan' =>$simpanan->id_simpanan,
-        'tanggal_transaksi' => now()->format('Y-m-d'),
+        'tanggal_transaksi' => $request->tgl_tarik,
         'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
         'v_debet' => 0, // debet = keluar
-        'v_kredit' => $request->jumlah,
+        'v_kredit' => $tarikpokok+$tarikrela+$tarikwajib,
         'id_entry' => auth()->id()
     ]);
 

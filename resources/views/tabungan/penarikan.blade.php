@@ -35,10 +35,21 @@
                         </div>
 
                         {{-- Rekening --}}
-                        <div class="mb-3">
+                        <div class='row'>
+                             <div class="mb-3 col-md-6">
+                                <div class='col-md-6'>
+                            <label class="form-label">Tanggal Penarikan</label>
+                            <input type="date" class="form-control" name='tgl_tarik' value={{old('tgl_tarik')}} required>
+                              @error('tgl_tarik')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
+                             </div>
+                        <div class="mb-3 col-md-6">
                             <label class="form-label">Rekening Tabungan</label>
                             <input type="text" class="form-control" readonly value="{{ $rekening->jenis_rekening }}">
                             <input type="hidden" name="id_rekening" value="{{ $rekening->id_rekening }}">
+                        </div>
                         </div>
 
                         {{-- Saldo Sekarang --}}
@@ -57,19 +68,35 @@
                         </div>
                         </div>
                           <div class="row">
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">Total Saldo</label>
-                            <input type="text" class="form-control" readonly value="{{ number_format($saldo['total'],0) }}">
+                        <div class="mb-3 col-md-4">
+                            <div class='input-group input-group-static'>
+                            <label class="">Penarikan saldo Pokok</label>
+                            <input type="text" class="form-control input-jumlah" name='tarik_pokok' value={{old('tarik_pokok')??0}}>
+                            </div>
+                            @error('tarik_pokok')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         {{-- Jumlah Penarikan --}}
                       
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">Jumlah Penarikan</label>
-                            <input type="text" class="form-control input-jumlah" name="jumlah" readonly value="{{ number_format($saldo['total'],0)}}"  required>
-                            @error('jumlah')
+                        <div class="mb-3 col-md-4 ">
+                            <div class='input-group input-group-static'>
+                            <label class="">Penarikan Saldo Wajib</label>
+                            <input type="text" class="form-control input-jumlah" name="tarik_wajib" value={{ old('tarik_wajib')??0}} >
+                            </div>
+                               @error('tarik_wajib')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
+                        </div>
+                           <div class="mb-3 col-md-4">
+                            <div class='input-group input-group-static '>
+                            <label >Penarikan Saldo Sukarela</label>
+                            <input type="text" class="form-control input-jumlah" name="tarik_rela" value={{ old('tarik_rela')??0}} >
+                                 @error('tarik_rela')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
                         </div>
                           </div>
                           <div class="row">
@@ -78,8 +105,8 @@
                             <label class="form-label">Metode Penarikan</label>
                             <select class="form-control" name="metode" required>
                                 <option value="">--Pilih Metode--</option>
-                                <option value="tunai">Tunai</option>
-                                <option value="non">Non Tunai</option>
+                                <option value="tunai" @selected(old('metode')=='tunai')>Tunai</option>
+                                <option value="non"  @selected(old('metode')=='non')>Non Tunai</option>
                             </select>
                             @error('metode')
                                 <span class="text-danger small">{{ $message }}</span>
@@ -93,7 +120,7 @@
                           </div>
 
                         {{-- Button --}}
-                        <div class="d-flex">
+                        <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-success">Proses Penarikan</button>
                             <a href="{{ url()->previous() }}" class="btn btn-secondary">Kembali</a>
 
@@ -109,7 +136,6 @@
     </div>
 </div>
     </main>
-    <x-plugins></x-plugins>
     @push('js')
     <script>
     

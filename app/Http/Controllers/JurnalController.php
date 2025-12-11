@@ -43,9 +43,12 @@ class JurnalController extends Controller
 
             ->addIndexColumn()
             
+            ->addColumn('nojurnal', function ($row) {
+                return $row->no_jurnal;
+            })
 
             ->addColumn('akun', function ($row) {
-                return optional($row->akun)->nama_akun;
+                return $row->akun->kode_akun.' / '.$row->akun->nama_akun;
             })
 
             ->addColumn('debit', function ($row) {

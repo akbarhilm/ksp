@@ -126,7 +126,7 @@
             <table class="table   mb-4" id="table-jurnal">
     <thead class="table-dark">
         <tr>
-            <th>No</th>
+            <th>No Jurnal</th>
             <th>Tanggal</th>
             <th>Akun</th>
             <th>Keterangan</th>
@@ -182,9 +182,9 @@ $(function(){
         
 
         columns: [
-            { data: 'DT_RowIndex', orderable:false },
+            { data: 'no_jurnal' },
             { data: 'tanggal_transaksi' },
-            { data: 'akun' },
+            { data: 'akun',className:'text-wrap'  },
             { data: 'keterangan',className:'text-wrap' },
             { data: 'debit', className:'text-end' },
             { data: 'kredit', className:'text-end' }
