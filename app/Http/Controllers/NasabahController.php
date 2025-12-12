@@ -33,6 +33,7 @@ public function datatableindex(Request $request)
         'nama',
         'alamat',
         'tgl_lahir',
+        'kode_resort',
         'no_telp',
     ]);
 
@@ -50,7 +51,7 @@ public function datatableindex(Request $request)
     return DataTables::of($query)
         ->addIndexColumn()
         ->editColumn('id_nasabah', function ($row) {
-            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
+            return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->nama;
         })
         
         ->addColumn('aksi', function ($row) {
@@ -58,13 +59,13 @@ public function datatableindex(Request $request)
             $edit = route('nasabah.edit', $row->id_nasabah);
             $delete = route('nasabah.destroy', $row->id_nasabah);
             $btnEdit = '';
-            if (!$user || $user->role !== 'superadmin') {
+            // if (!$user || $user->role !== 'superadmin') {
         $btnEdit = '
             <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
                 <i class="material-icons">edit</i>
             </a>
         ';
-    }
+    // }
 
             return '
                 '.$btnEdit.'
@@ -102,6 +103,7 @@ public function datatableindex(Request $request)
             'nama_suami_istri' => 'required',
             'pekerjaan' => 'required',
             'sektor_ekonomi' => 'required',
+            'kode_resort'=>'required',
             
         ]);
         $request->request->add(['id_entry' => auth()->user()->id]);
@@ -131,9 +133,10 @@ public function datatableindex(Request $request)
         public function edit($id)
     {
         $nasabah = Nasabah::find($id);
+        $resort = User::where('kode_resort','<>',null)->get();
         $rekening = Rekening::where('id_nasabah',$id)->get();
         $bunga = Bunga::all();
-        return view('nasabah.edit', compact('nasabah','rekening','bunga'));
+        return view('nasabah.edit', compact('nasabah','rekening','bunga','resort'));
     }
 
     public function update(Request $request, Nasabah $nasabah)
@@ -147,6 +150,7 @@ public function datatableindex(Request $request)
             'nama_suami_istri' => 'required',
             'pekerjaan' => 'required',
             'sektor_ekonomi' => 'required',
+            'kode_resort'=>'required',
         ]);
         //dd($request->all());
        

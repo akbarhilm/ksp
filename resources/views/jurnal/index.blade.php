@@ -59,7 +59,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Jumlah Debit</label>
-                            <input type="number" id="jumlah_debet" name="jumlah_debet" class="form-control" required min="0">
+                            <input type="text" id="jumlah_debet" name="jumlah_debet" class="form-control input-jumlah" required min="0">
                         </div>
 
                         <h6 class="text-danger fw-bold mt-3">Baris Kredit</h6>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Jumlah Kredit</label>
-                            <input type="number" id="jumlah_kredit" name="jumlah_kredit" class="form-control" required min="0">
+                            <input type="text" id="jumlah_kredit" name="jumlah_kredit" class="form-control input-jumlah" required min="0">
                         </div>
 
                     </div>
@@ -164,6 +164,22 @@ $(document).ready(function() {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+
+    const debit = document.getElementById("jumlah_debet");
+    const kredit = document.getElementById("jumlah_kredit");
+
+    // Jika debit berubah, kredit ikut
+    debit.addEventListener("input", function() {
+        kredit.value = this.value;
+    });
+
+    // Jika kredit berubah, debit ikut
+    kredit.addEventListener("input", function() {
+        debit.value = this.value;
+          });
+
+});
 $(function(){
 
 
@@ -182,7 +198,7 @@ $(function(){
         
 
         columns: [
-            { data: 'no_jurnal' },
+            { data: 'nojurnal',name:'nojurnal' },
             { data: 'tanggal_transaksi' },
             { data: 'akun',className:'text-wrap'  },
             { data: 'keterangan',className:'text-wrap' },

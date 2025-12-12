@@ -87,6 +87,7 @@ Route::get('/nasabah/cari', [NasabahController::class, 'cari'])->middleware('aut
 Route::get('/tabungan/cari', [TabunganController::class, 'cari'])->middleware('auth')->name('tabungan.cari');
 Route::get('/jurnal/cari', [JurnalController::class, 'cari'])->middleware('auth')->name('jurnal.cari');
 Route::get('/bukubesar', [JurnalController::class, 'bukuBesar'])->middleware('auth')->name('bukubesar.index');
+Route::put('/jurnal/updates/{nojurnal}', [JurnalController::class, 'update'])->middleware('auth')->name('jurnal.updates');
 
 Route::get('/pinjaman/{id}/angsuran', [AngsuranController::class, 'index'])->middleware('auth')->name('angsuran.index');
 Route::post('/pinjaman/{id}/angsuran', [AngsuranController::class, 'store'])->middleware('auth')->name('angsuran.store');

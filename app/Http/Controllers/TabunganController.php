@@ -114,14 +114,16 @@ class TabunganController extends Controller
             $request->request->add(['id_akun' => $id_akun]);
 
         $id_entry =  auth()->user()->id;
-        $request->request->add(['id_entry' => $id_entry]);
-        $nasabah = Rekening::find($request->id_rekening);
+          $nasabah = Rekening::find($request->id_rekening);
+       
+           $datajurnalkredit = ['id_akun'=>$id_akun,'no_jurnal'=>$nojurnal,'jenis'=>'simpanan','keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'no_jurnal'=>$nojurnal,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+        $ini = Jurnal::create($datajurnalkredit);
+        Jurnal::create($datajurnaldebet);
+       $request->request->add(['id_entry' => $id_entry,'no_jurnal'=>$nojurnal,'id_jurnal'=>$ini->id_jurnal]);
         $simpanan= Simpanan::create($request->all());
 
-        $datajurnalkredit = ['id_akun'=>$id_akun,'no_jurnal'=>$nojurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'no_jurnal'=>$nojurnal,'id_simpanan'=>$simpanan->id,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
-        Jurnal::create($datajurnaldebet);
-        Jurnal::create($datajurnalkredit);
+     
 
         return redirect()->route('tabungan.index')->with('success', 'Simpanan berhasil ditambahkan.');
     }

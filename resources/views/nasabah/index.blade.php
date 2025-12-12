@@ -36,8 +36,7 @@
     <thead class="table-dark">
         <tr>
             <th>Nomor</th>
-            <th>No KTP</th>
-            <th>Nama</th>
+            <th>Resort</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
             <th>No Telp</th>
@@ -67,9 +66,8 @@
             }
         },
         columns: [
-            { data: 'id_nasabah', name: 'id_nasabah' },
-            { data: 'nik', name: 'nik' },
-            { data: 'nama', name: 'nama' },
+            { data: 'id_nasabah', name: 'id_nasabah',className:'text-wrap' },
+            { data: 'kode_resort', name: 'kode_resort',className:'text-center' },
             { data: 'alamat', name: 'alamat', className:'text-wrap' },
             { data: 'tgl_lahir', name: 'tgl_lahir' },
             { data: 'no_telp', name: 'no_telp' },

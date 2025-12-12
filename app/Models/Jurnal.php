@@ -10,7 +10,7 @@ class Jurnal extends Model
      protected $table = 'tmjurnal';
     protected $primaryKey = 'id_jurnal';
 
-    protected $fillable = ['id_akun','no_jurnal','id_simpanan','id_pinjaman',  'keterangan', 'v_debet', 'v_kredit','id_entry'];
+    protected $fillable = ['id_akun','no_jurnal','jenis', 'keterangan', 'v_debet', 'v_kredit','id_entry'];
 
     protected $casts = [
     'v_debet'  => 'float',

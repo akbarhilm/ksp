@@ -119,6 +119,7 @@
                                         <div class='input-group input-group-static mb-4'>
                                             <label>Kode Resort</label>
                                             <select name='kode_resort' class='form-control'>
+                                                <option value="">--Pilih Resort--</option>
                                                 @foreach($resort as $r)
                                                     <option value="{{$r->kode_resort}}" @selected(old('kode_resort')=='{{$r->kode_resort}}')>{{$r->kode_resort.' / '.$r->nama}}</option>
                                                 @endforeach

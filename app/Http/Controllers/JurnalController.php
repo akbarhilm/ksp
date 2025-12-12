@@ -6,6 +6,8 @@ use App\Helpers\JurnalHelper;
 use Illuminate\Http\Request;
 use App\Models\Jurnal;
 use App\Models\Akun;
+use App\Models\Simpanan;
+use Egulias\EmailValidator\Result\Reason\DetailedReason;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -44,7 +46,11 @@ class JurnalController extends Controller
             ->addIndexColumn()
             
             ->addColumn('nojurnal', function ($row) {
-                return $row->no_jurnal;
+                $edit = route('jurnal.edit', $row->no_jurnal);
+                return  '<a href="'.$edit.'">
+                '.$row->no_jurnal.'
+            </a>
+        ';
             })
 
             ->addColumn('akun', function ($row) {
@@ -63,7 +69,7 @@ class JurnalController extends Controller
                 return date('d-m-Y', strtotime($row->tanggal_transaksi));
             })
 
-            ->rawColumns(['akun'])
+            ->rawColumns(['akun','nojurnal'])
 
             ->make(true);
     }
@@ -71,6 +77,44 @@ class JurnalController extends Controller
 
 }
 
+public function edit($nojurnal){
+    $jurnal = Jurnal::where('no_jurnal',$nojurnal)->get();
+    $akun = Akun::where('status','aktif')->get();
+    // $data =['no_jurnal'=>$jurnal[0]->no_jurnal,'tanggal_transaksi'=>$jurnal[0]->tanggal_transaksi,'keterangan'=>$jurnal[0]->keterangan];
+    // foreach($jurnal as $j){
+    //     $data['detail'][]=['id_jurnal'=>$j->id_jurnal,'id_akun'=>$j->id_akun,'debit'=>$j->v_debet,'kredit'=>$j->v_kredit,'jenis'=>$j->jenis];
+    // }
+    return view('jurnal.edit',compact('jurnal','akun'));
+}
+
+public function update(Request $request){
+    //  if ($request->jumlah_debet != $request->jumlah_kredit) {
+    //     return back()->with('error', 'Debit dan Kredit harus sama nominalnya.');
+    // }
+   $tgl =  $request->tanggal_transaksi;
+   $ket = $request->keterangan;
+   $detail['detail'][]=['id_akun'=>$request->akun_id[0],'id_jurnal'=>$request->id_jurnal[0],'v_debet'=>$request->v_debet[0],'v_kredit'=>$request->v_kredit[0],'jenis'=>$request->jenis[0]];
+   $detail['detail'][]=['id_akun'=>$request->akun_id[1],'id_jurnal'=>$request->id_jurnal[1],'v_debet'=>$request->v_debet[1],'v_kredit'=>$request->v_kredit[1],'jenis'=>$request->jenis[1]];
+   foreach($detail['detail'] as $i=>$d){
+        $d['keterangan'] = $ket;
+        $d['tanggal_transaksi'] = $tgl;
+       
+      $jurnal = Jurnal::find($d['id_jurnal'])->update($d);
+     
+       if($d['jenis']=='simpanan'){
+            $s = ['v_debit'=>$d['v_debet'],'v_kredit'=>$d['v_kredit'],'id_akun'=>$d['id_akun'],'keterangan'=>$ket,'tanggal'=>$tgl];
+
+             Simpanan::where('id_jurnal',$d['id_jurnal'])->update($s);
+        }
+       
+      
+    }
+  return redirect()->route('jurnal.index')->with('success', 'Jurnal berhasil diperbarui.');
+}
+
+public function show(){
+    dd('sini');
+}
 
 
 
