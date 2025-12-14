@@ -7,7 +7,7 @@
 <div class="container">
 
     <h4 class="mb-4">Edit Jurnal</h4>
-    <form action="{{ route('jurnal.updates', $jurnal[0]->no_jurnal) }}" method="POST">
+    <form action="{{ route('jurnal.update', $jurnal[0]->no_jurnal) }}" id='rubah' method="POST">
         @csrf
         @method('PUT')
 
@@ -85,11 +85,19 @@
                 </table>
   <div class="row">
            <div class=' col-md-6 gap-2'>
-            <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+            @if(!$angsuran)
+            <a href="javascript:{}" onclick="rubah({{ $jurnal[0]->no_jurnal }})" class="btn btn-success " title="hapus">Simpan Perubahan
+                </a>
+                @endif
+            {{-- <button type="submit" class="btn btn-success">Simpan Perubahan</button> --}}
              <a href="{{ route('jurnal.index') }}" class="btn btn-secondary">Batal</a>
         </div>
         <div class='col-md-6 text-end'>
-             <a href="{{ route('jurnal.destroy',$jurnal[0]->no_jurnal) }}" class="btn btn-danger">Hapus</a>
+            @if(!$angsuran)
+             <a href="javascript:{}" onclick="hapusjurnal({{ $jurnal[0]->no_jurnal }})" class="btn btn-sm btn-danger btn-link" title="hapus">Hapus
+                </a>
+                @endif
+             {{-- <a href="{{ route('jurnal.hapus',$jurnal[0]->no_jurnal) }}" class="btn btn-danger">Hapus</a> --}}
         </div>
   </div>
                 {{-- <button type="button" class="btn btn-primary" id="addRow">+ Tambah Baris</button> --}}
@@ -101,31 +109,26 @@
       
 
     </form>
+    <form id="formDelete" action="{{route('jurnal.destroy',$jurnal[0]->no_jurnal)}}" method="POST" >
+                    @csrf
+                    @method('DELETE')
+                </form>
 </div>
 </main>
 
 {{-- Script Tambah Baris --}}
 <script>
 
-    document.getElementById('addRow').addEventListener('click', function () {
-        let row = `
-        <tr>
-            <td>
-                <select name="akun_id[]" class="form-control" required>
-                    <option value="">-- Pilih Akun --</option>
-                    @foreach ($akun as $ak)
-                    <option value="{{ $ak->id }}">{{ $ak->kode_akun }} - {{ $ak->nama_akun }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td><input type="number" name="debit[]" class="form-control"></td>
-            <td><input type="number" name="kredit[]" class="form-control"></td>
-            <td><button type="button" class="btn btn-danger btn-sm removeRow">X</button></td>
-        </tr>`;
-
-        document.getElementById('detail-body').insertAdjacentHTML('beforeend', row);
-        attachRemoveEvents();
-    });
+function hapusjurnal(id) {
+    if (confirm('Hapus Jurnal?')) {
+        document.getElementById('formDelete').submit();
+    }
+}
+   function rubah(id) {
+    if (confirm('Simpan Perubahan?')) {
+        document.getElementById('rubah').submit();
+    }
+}
 
     function attachRemoveEvents() {
         document.querySelectorAll('.removeRow').forEach(btn => {
@@ -141,14 +144,7 @@
     const kredit = document.getElementById("jumlah_kredit");
 
     // Jika debit berubah, kredit ikut
-    debit.addEventListener("input", function() {
-        kredit.value = this.value;
-    });
-
-    // Jika kredit berubah, debit ikut
-    kredit.addEventListener("input", function() {
-        debit.value = this.value;
-          });
+    
 
 });
 </script>

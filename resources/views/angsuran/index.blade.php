@@ -15,6 +15,8 @@
             <p><strong>Sisa Pokok:</strong> {{ number_format($pinjaman->sisa_pokok,0) }}</p>
             <p><strong>Sisa Bunga:</strong> {{ number_format($pinjaman->sisa_bunga,0) }}</p>
             <p><strong>Status:</strong> {{ ucfirst($pinjaman->status) }}</p>
+            <p><strong>Tenor:</strong> {{ $pinjaman->pengajuan->tenor }}</p>
+
         </div>
     </div>
 
@@ -90,7 +92,7 @@
         return date('Y-m', strtotime($h->tanggal)) === $bulanIni;
     });
 @endphp
-            <button type="submit" class="btn btn-info" {{ $sudahBayarBulanIni ? 'disabled' : '' }}>Simpan Pembayaran</button>
+            <button type="submit" class="btn btn-info" >Simpan Pembayaran</button>
         </form>
     </div>
 </div>
@@ -112,6 +114,7 @@
                         <th>Denda</th>
                         <th>Simpanan</th>
                         <th>Keterangan</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -136,6 +139,7 @@
             <td class="text-end">{{ number_format($denda,0) }}</td>
             <td class="text-end">{{ number_format($simpanan,0) }}</td>
             <td></td>
+            <td></td>
         </tr>
 
         {{-- RESET HITUNGAN --}}
@@ -157,6 +161,10 @@
         <td class="text-end">{{ number_format($h->bayar_denda,0) }}</td>
         <td class="text-end">{{ number_format($h->simpanan,0) }}</td>
         <td>Pembayaran Angsuran ke {{ $h->cicilan_ke }}</td>
+        <td class=''>
+            <a href='{{ route('angsuran.edit',$h->id_pembayaran) }}' class='btn btn-warning'>Edit</a>
+        </td>
+
     </tr>
 
     {{-- AKUMULASI --}}
@@ -185,6 +193,8 @@
     <td class="text-end">{{ number_format($denda,0) }}</td>
     <td class="text-end">{{ number_format($simpanan,0) }}</td>
     <td></td>
+    <td></td>
+
 </tr>
 @endif
 

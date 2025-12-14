@@ -62,8 +62,8 @@ Route::get('/pdf/sphutang/{id}', function($id){
         ->setOption('enable-local-file-access', true)
         ->setOption('no-stop-slow-scripts', true)
         ->setOption('disable-smart-shrinking', false);
-
-    return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+	
+     return $pdf->download('Surat_Pernyataan_Hutang.pdf');
 })->name('pdf.sphutang.download');
 
 Route::get('/pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.index');
@@ -87,9 +87,16 @@ Route::get('/nasabah/cari', [NasabahController::class, 'cari'])->middleware('aut
 Route::get('/tabungan/cari', [TabunganController::class, 'cari'])->middleware('auth')->name('tabungan.cari');
 Route::get('/jurnal/cari', [JurnalController::class, 'cari'])->middleware('auth')->name('jurnal.cari');
 Route::get('/bukubesar', [JurnalController::class, 'bukuBesar'])->middleware('auth')->name('bukubesar.index');
-Route::put('/jurnal/updates/{nojurnal}', [JurnalController::class, 'update'])->middleware('auth')->name('jurnal.updates');
+// Route::put('/jurnal/hapus/{nojurnal}', [JurnalController::class, 'hapus'])->middleware('auth')->name('jurnal.hapus');
+
 
 Route::get('/pinjaman/{id}/angsuran', [AngsuranController::class, 'index'])->middleware('auth')->name('angsuran.index');
+Route::get('/pinjaman/{id}/angsuran/edit', [AngsuranController::class, 'edit'])->middleware('auth')->name('angsuran.edit');
+Route::put('/pinjaman/{id}/angsuran/update', [AngsuranController::class, 'update'])->middleware('auth')->name('angsuran.update');
+Route::delete('/pinjaman/{id}/angsuran/delete', [AngsuranController::class, 'destroy'])->middleware('auth')->name('angsuran.destroy');
+
+
+
 Route::post('/pinjaman/{id}/angsuran', [AngsuranController::class, 'store'])->middleware('auth')->name('angsuran.store');
 Route::get('/pinjaman/{id}/pelunasan', [AngsuranController::class, 'pelunasan'])->middleware('auth')->name('angsuran.pelunasan');
 Route::post('/pinjaman/{id}/pelunasan', [AngsuranController::class, 'storePelunasan'])->middleware('auth')->name('angsuran.store.pelunasan');
@@ -141,6 +148,7 @@ Route::middleware(['auth'])->group(function () {
 	 Route::resource('akun', AkunController::class);
 	  Route::resource('tutupbuku', TutupBukuController::class);
 	  Route::resource('history', HistoryController::class);
+// Route::put('/jurnal/updates/{nojurnal}', [JurnalController::class, 'update'])->name('jurnal.updates');
 	
 
  Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');

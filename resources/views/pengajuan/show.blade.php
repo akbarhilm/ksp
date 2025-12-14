@@ -1,229 +1,293 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
 
-    <x-navbars.sidebar activePage="deposito" menuParent="simpanan"></x-navbars.sidebar>
+    <x-navbars.sidebar activePage="pengajuan" menuParent="loan"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Deposito"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Pengajuan Pinjaman"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card my-4">
-                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Transaksi Deposito</h6>
-                            </div>
-                        </div>
-                        <div class="card-body px-4 pb-2 py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>No Nasabah</label>
-                                        <input type="text" readonly class="form-control" id="idnasabah"
-                                            name="nama"
-                                            value="{{ str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT) }}" />
-
-                                    </div>
-                                    @error('nama')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Nama Nasabah</label>
-                                        <input type="text" readonly class="form-control" name="nama"
-                                            value="{{ $nasabah->nama }}" />
-
-                                    </div>
-                                    @error('nama')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                     <label>Rekening</label>
-                                            <input type="text" id="nama_rekening" class="form-control" readonly name="jenis" value="{{ $rekening[0]->jenis_rekening}}"/>
-                                            <input type="hidden" id="id_rekening" name="id_rekening" value="{{ $rekening[0]->id_rekening}}"/>
-
-
-                                    </div>
-                                    @error('jenis_rekening')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                     <label>Bulan</label>
-                                            <input type="date" id="nama_rekening" class="form-control"  name="tanggal" value="{{ $rekening[0]->jenis_rekening}}"/>
-
-
-                                    </div>
-                                    @error('jenis_rekening')
-                                        <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <div class="input-group input-group-static mb-4">
-                                        <button class="btn btn-info" onclick="lihat()">Lihat</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-
-                                    <div class="input-group input-group-static mb-4 right">
-                                        <a class="btn btn-dark " href="{{ url()->previous() }}">kembali</a>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            {{-- <x-footers.auth></x-footers.auth> --}}
-                        </div>
-                    </div>
-                    <div class="card my-4">
-
-                        <div class="card-body px-4 pb-2 py-4">
-                            <div class="table-responsive p-0">
-                                <table class="table align-items-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Tanggal
-                                            </th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Jenis</th>
-                                            <th
-                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Keterangan</th>
-                                            <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Debit</th>
-                                            <th
-                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Kredit</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody id="result">
-
-
-
-                                    </tbody>
-                                    <tfoot>
-                                        {{-- <tr>
-                                            <td colspan="8">
-                                                <div class="d-flex justify-content-center">
-                                                    {{ $nasabah->links() }}
-                                                </div>
-                                            </td>
-                                        </tr> --}}
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
+                <div class="card-header p-0 mt-n4 mx-3 z-index-2 position-relative">
+                    <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white ps-3 mb-0">Pengajuan Pinjaman</h6>
                     </div>
                 </div>
+
+                <div class="card-body px-4 py-4">
+                    <form method="POST" action="{{ route('pengajuan.approv') }}">
+                        @csrf
+                        {{-- DATA NASABAH --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">No Nasabah</label>
+                                <input type="text" readonly class="form-control bg-light"
+                                    value="{{ str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT) }}">
+                                    <input type='hidden' name='id_pengajuan' value='{{ $pengajuan->id_pengajuan }}'>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nama Nasabah</label>
+                                <input type="text" readonly class="form-control bg-light" value="{{ $nasabah->nama }}">
+                            </div>
+                        </div>
+
+                        {{-- REKENING & BUNGA --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Rekening</label>
+                                <input type="text" readonly class="form-control bg-light"
+                                    value="{{ $rekening->no_rekening }} / {{ $rekening->jenis_rekening }}">
+
+                                <input type="hidden" name="id_rekening" value="{{ $rekening->id_rekening }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Bunga per Bulan (%)</label>
+                                <input type="number" readonly id="bunga" name="bunga" class="form-control bg-light input-bunga"
+                                    value="{{ $pengajuan->bunga }}">
+                                @error('bunga') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            </div>
+                        </div>
+
+                        {{-- JUMLAH PINJAMAN & TENOR --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Jumlah Pinjaman</label>
+                                <input type="text" readonly
+         id="jumlah" name="jumlah_pengajuan" class="form-control bg-light format-angka bg-light  input-jumlah"
+                                    value="{{ number_format($pengajuan->jumlah_pengajuan,0,',','.') }}">
+                                @error('jumlah_pengajuan') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Tenor (bulan)</label>
+                                <input type="number" readonly id="tenor" name="tenor" value="{{ $pengajuan->tenor }}" class="form-control bg-light input-tenor">
+                                @error('tenor') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            </div>
+                        </div>
+
+                        {{-- CICILAN PER BULAN --}}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Cicilan Per Bulan</label>
+                                <input type="text" readonly name="cicilan" id="cicilan" value="{{ $pengajuan->cicilan }}" class="form-control bg-light fw-bold">
+                            </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Jumlah Disetujui</label>
+                                <input type="text"  name="jumlah_pencairan" id='setuju'  value="{{ number_format($pengajuan->jumlah_pengajuan,0,',','.') }}" class="form-control input-jumlah">
+                            </div>
+                            </div>
+                            
+                        </div>
+
+                        <hr>
+                          <h6 class="mb-3">Potongan</h6>
+                          <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Simpanan Pokok</label>
+                                <input type="text" readonly name="simpanan_pokok"  value="{{ $pengajuan->simpanan_pokok }}" class="form-control bg-light format-angka  input-jumlah">
+                             @error('simpanan_pokok') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            </div>
+                             <div class="col-md-6 mb-4">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Provisi</label>
+                                <input type="text" readonly name="admin"  value="{{ $pengajuan->admin }}" class="form-control format-angka bg-light input-jumlah">
+                             @error('admin') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Asuransi</label>
+                                <input type="text" readonly  name="asuransi" value="{{ $pengajuan->asuransi }}" class="form-control format-angka bg-light  input-jumlah">
+                            @error('asuransi') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class='input-group input-group-static'>
+
+                                <label class="">Survey</label>
+                                <input type="text" readonly  name="survey" value="{{$pengajuan->survey }}" class="form-control format-angka bg-light input-jumlah">
+                             @error('survey') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            </div>
+                            
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-6 mb-4'>
+                            <div class='input-group input-group-static'>
+                                <label>Materai</label>
+                                <input type="text" readonly name="materai" value='{{ $pengajuan->materai }}' class='form-control bg-light input-jumlah'>
+                             @error('materai') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                        </div>
+                        </div>
+
+                        <hr>
+
+                        {{-- INPUT JAMINAN DINAMIS --}}
+                        <h6 class="mb-3">Jaminan</h6>
+
+                        <div id="jaminan-container">
+                            @foreach ($jaminan as $j)
+                                    <div class="row jaminan-item mb-3">
+                                        <div class="col-md-5">
+                                            <label class="form-label">Jenis Jaminan</label>
+                                            <input readonly type="text" name="jenis_jaminan[]" class="form-control bg-light"
+                                                placeholder="Contoh: ATM" value='{{$j->jenis_jaminan}}'>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <label class="form-label">Keterangan</label>
+                                            <input readonly type="text" name="keterangan[]" class="form-control bg-light"
+                                                placeholder="Contoh: No kartu 1234..." value='{{$j->keterangan}}'>
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                    {{-- <button type="button" class="btn btn-danger w-100 remove-jaminan">Hapus</button> --}}
+                                </div>
+
+                                    </div>
+                                @endforeach
+                            
+                        </div>
+
+                        {{-- <button type="button" id="addJaminan" class="btn btn-secondary mb-4">+ Tambah Jaminan</button> --}}
+                        <hr/>
+                        {{-- TOMBOL --}}
+                        <div class='row'>
+                            <div class='col-md-6'>
+                        <div class="d-flex gap-2 mt-4">
+                            <button class="btn btn-info" type="submit">Setujui</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
+
+                        </div>
+                            </div>
+                            <div class="col-md-6 text-end mt-3">
+                                <a href="javascript:{}" onclick="hapus()" class='btn btn-danger'> Hapus Pengajuan</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <form action='{{ route('pengajuan.destroy',$pengajuan->id_pengajuan) }}' id='formdelete' method='POST'>
+                    @csrf
+                    @method('DELETE')
+                </form>
             </div>
         </div>
+    </div>
+</div>
+
+
+
 
     </main>
-    <x-plugins></x-plugins>
     @push('js')
-        <script>
-            function lihat() {
-                var idrekening = $("#id_rekening").val()
-                $.ajax({
-                    url: "{{ route('deposito.lihat') }}",
-                    type: "GET",
-                    data: {
-                        'idrekening': idrekening
-                    },
-                    success: function(data) {
-                        $('#result').html(''); // kosongkan dulu
-                        if (data.length > 0) {
-                            $.each(data, function(index, simpanan) {
-                                $('#result').append(`
-                            <tr>
-                                <td>
-                                     <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-start">
-                                             ${simpanan.tanggal}
-                                        </div>
-                                    </div>
-                                </td>
-                                
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-start">
-                                            ${simpanan.jenis}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-start">
-                                            ${simpanan.keterangan}
-                                        </div>
-                                    </div>
-                                </td>
-                                 <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-end">
-                                            ${simpanan.v_debit}
-                                        </div>
-                                    </div>
-                                </td>
-                                 <td class="align-right text-center">
-                                    <div class="d-flex px-2 py-1">
-                                        <div class="d-flex flex-column justify-content-end">
-                                            ${simpanan.v_kredit}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        `);
-                            });
-                        } else {
-                            $('#result').html('<tr><td colspan="2">Tidak ada hasil</td></tr>');
-                        }
-                    }
-                });
-            }
+    <script>
+$(document).ready(function() {
 
-            function setnama() {
-                var select = document.getElementById("jenis_rekening");
-                var selectedOption = select.options[select.selectedIndex];
-                var namaRekening = selectedOption.text;
-                document.getElementById("nama_rekening").value = namaRekening;
+    hitungCicilan()
+});
+function hapus(){
+    if (confirm('Hapus Pengajuan?')) {
+        document.getElementById('formdelete').submit();
+    }
+}
+      function hitungCicilan() {
 
-            }
+    let jumlah = toNumber($("#setuju").val());
+    let bunga  = parseFloat($("#bunga").val());
+    let tenor  = parseInt($("#tenor").val());
 
-            function padWithZeros(number, length) {
-                let numString = String(number);
-                let padding = "0".repeat(Math.max(0, length - numString.length));
-                return padding + numString;
-            }
+    if (jumlah > 0 && !isNaN(bunga) && tenor > 0) {
 
-            function generaterekening() {
+        let totalBunga = (jumlah * bunga * tenor / 100);
+        let total = jumlah + totalBunga;
+        let cicilan = total / tenor;
 
-                var jenis_rekening = document.getElementById("jenis_rekening").value;
-                var today = new Date();
-                var year = today.getFullYear().toString().substr(-2);
-                var id_nasabah = '{{ $nasabah->id_nasabah }}';
-                var paddedIdNasabah = padWithZeros(id_nasabah, 5);
-                var no_rekening = jenis_rekening + year + paddedIdNasabah;
-                console.log(no_rekening);
-                document.getElementById("no_rekening").value = no_rekening;
-                document.getElementById("no_tabungan").value = no_rekening;
-            }
-        </script>
+        $("#cicilan").val( formatAngka(cicilan.toFixed(0)) );
+    } else {
+        $("#cicilan").val("");
+    }
+}
+
+// ================= TRIGGER SAAT BUNGA / TENOR BERUBAH ===========
+$("#setuju").on("input", function () {
+    hitungCicilan();
+});
+
+    // JAMINAN DINAMIS
+    document.getElementById('addJaminan').addEventListener('click', function() {
+        let container = document.getElementById('jaminan-container');
+
+        let html = `
+            <div class="row jaminan-item mb-3">
+                <div class="col-md-5">
+                    <label class="form-label">Jenis Jaminan</label>
+                    <input type="text" name="jenis_jaminan[]" class="form-control" placeholder="Contoh: ATM">
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label">Keterangan</label>
+                    <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: No kartu 1234...">
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger w-100 remove-jaminan">Hapus</button>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML("beforeend", html);
+    });
+
+    // Hapus baris jaminan
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-jaminan')) {
+            e.target.closest('.jaminan-item').remove();
+        }
+    });
+    
+    function padWithZeros(number, length) {
+        let numString = String(number);
+        let padding = "0".repeat(Math.max(0, length - numString.length));
+        return padding + numString;
+    }
+    function generaterekening() {
+        
+        var jenis_rekening = document.getElementById("jenis_rekening").value;
+        var today = new Date();
+        var year = today.getFullYear().toString().substr(-2);
+       var id_nasabah = '{{ $nasabah->id_nasabah }}';
+       var paddedIdNasabah = padWithZeros(id_nasabah, 5);
+        var no_rekening = jenis_rekening + year + paddedIdNasabah;
+        console.log(no_rekening);
+        document.getElementById("no_rekening").value = no_rekening;
+         document.getElementById("no_tabungan").value = no_rekening;
+        }
+</script>
     @endpush
 </x-layout>
+

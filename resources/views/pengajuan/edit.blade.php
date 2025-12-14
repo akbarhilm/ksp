@@ -17,9 +17,9 @@
                 </div>
 
                 <div class="card-body px-4 py-4">
-                    <form method="POST" action="{{ route('pengajuan.store') }}">
+                    <form method="POST" action="{{ route('pengajuan.update',$pengajuan->id_pengajuan) }}">
                         @csrf
-
+                        @method('PUT')
                         {{-- DATA NASABAH --}}
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -39,9 +39,9 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Rekening</label>
                                 <input type="text" readonly class="form-control"
-                                    value="{{ $rekening[0]->no_rekening }} / {{ $rekening[0]->jenis_rekening }}">
+                                    value="{{ $rekening->no_rekening }} / {{ $rekening->jenis_rekening }}">
 
-                                <input type="hidden" name="id_rekening" value="{{ $rekening[0]->id_rekening }}">
+                                <input type="hidden" name="id_rekening" value="{{ $rekening->id_rekening }}">
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -49,7 +49,7 @@
 
                                 <label class="">Bunga per Bulan (%)</label>
                                 <input type="number" id="bunga" name="bunga" class="form-control input-bunga"
-                                    value="{{ old('bunga') }}">
+                                    value="{{ $pengajuan->bunga }}">
                                 @error('bunga') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                             </div>
@@ -63,7 +63,7 @@
                                 <label class="">Jumlah Pinjaman</label>
                                 <input type="text" 
          id="jumlah" name="jumlah_pengajuan" class="form-control format-angka  input-jumlah"
-                                    value="{{ old('jumlah_pengajuan') }}">
+                                    value="{{ number_format($pengajuan->jumlah_pengajuan,0,',','.') }}">
                                 @error('jumlah_pengajuan') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                             </div>
@@ -72,7 +72,7 @@
                                 <div class='input-group input-group-static'>
 
                                 <label class="">Tenor (bulan)</label>
-                                <input type="number" id="tenor" name="tenor" value="{{ old('tenor') }}" class="form-control input-tenor">
+                                <input type="number" id="tenor" name="tenor" value="{{ $pengajuan->tenor }}" class="form-control input-tenor">
                                 @error('tenor') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                             </div>
@@ -84,7 +84,7 @@
                                 <div class='input-group input-group-static'>
 
                                 <label class="">Cicilan Per Bulan</label>
-                                <input type="text" readonly name="cicilan" id="cicilan" value="{{ old('cicilan') }}" class="form-control bg-light fw-bold">
+                                <input type="text" readonly name="cicilan" id="cicilan" value="{{ $pengajuan->cicilan }}" class="form-control bg-light fw-bold">
                             </div>
                             </div>
                             
@@ -97,7 +97,7 @@
                                 <div class='input-group input-group-static'>
 
                                 <label class="">Simpanan Pokok</label>
-                                <input type="text"  name="simpanan_pokok"  value="{{ old('simpanan_pokok') }}" class="form-control format-angka  input-jumlah">
+                                <input type="text"  name="simpanan_pokok"  value="{{ $pengajuan->simpanan_pokok }}" class="form-control format-angka  input-jumlah">
                              @error('simpanan_pokok') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                             </div>
@@ -105,7 +105,7 @@
                                 <div class='input-group input-group-static'>
 
                                 <label class="">Provisi</label>
-                                <input type="text"  name="admin"  value="{{ old('admin') }}" class="form-control format-angka  input-jumlah">
+                                <input type="text"  name="admin"  value="{{ $pengajuan->admin }}" class="form-control format-angka  input-jumlah">
                              @error('admin') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                              </div>
@@ -115,7 +115,7 @@
                                 <div class='input-group input-group-static'>
 
                                 <label class="">Asuransi</label>
-                                <input type="text"  name="asuransi" value="{{ old('asuransi') }}" class="form-control format-angka  input-jumlah">
+                                <input type="text"  name="asuransi" value="{{ $pengajuan->asuransi }}" class="form-control format-angka  input-jumlah">
                             @error('asuransi') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                             </div>
@@ -123,7 +123,7 @@
                                 <div class='input-group input-group-static'>
 
                                 <label class="">Survey</label>
-                                <input type="text"  name="survey" value="{{ old('survey') }}" class="form-control format-angka  input-jumlah">
+                                <input type="text"  name="survey" value="{{$pengajuan->survey }}" class="form-control format-angka  input-jumlah">
                              @error('survey') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                             </div>
@@ -133,7 +133,7 @@
                             <div class='col-md-6 mb-4'>
                             <div class='input-group input-group-static'>
                                 <label>Materai</label>
-                                <input type="text" name="materai" value='{{ old('materai') }}' class='form-control input-jumlah'>
+                                <input type="text" name="materai" value='{{ $pengajuan->materai }}' class='form-control input-jumlah'>
                              @error('materai') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
                         </div>
@@ -145,35 +145,49 @@
                         <h6 class="mb-3">Jaminan</h6>
 
                         <div id="jaminan-container">
-                            <div class="row jaminan-item mb-3">
-                                <div class="col-md-5">
-                                    <label class="form-label">Jenis Jaminan</label>
-                                    <input type="text" name="jenis_jaminan[]" class="form-control" placeholder="Contoh: ATM">
-                                </div>
+                            @foreach ($jaminan as $j)
+                                    <div class="row jaminan-item mb-3">
+                                        <div class="col-md-5">
+                                            <label class="form-label">Jenis Jaminan</label>
+                                            <input type="text" name="jenis_jaminan[]" class="form-control"
+                                                placeholder="Contoh: ATM" value='{{$j->jenis_jaminan}}'>
+                                        </div>
 
-                                <div class="col-md-5">
-                                    <label class="form-label">Keterangan</label>
-                                    <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: No kartu 1234...">
-                                </div>
-
-                                <div class="col-md-2 d-flex align-items-end">
+                                        <div class="col-md-5">
+                                            <label class="form-label">Keterangan</label>
+                                            <input type="text" name="keterangan[]" class="form-control"
+                                                placeholder="Contoh: No kartu 1234..." value='{{$j->keterangan}}'>
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
                                     <button type="button" class="btn btn-danger w-100 remove-jaminan">Hapus</button>
                                 </div>
-                            </div>
+
+                                    </div>
+                                @endforeach
+                            
                         </div>
 
                         <button type="button" id="addJaminan" class="btn btn-secondary mb-4">+ Tambah Jaminan</button>
-
+                        <hr/>
                         {{-- TOMBOL --}}
+                        <div class='row'>
+                            <div class='col-md-6'>
                         <div class="d-flex gap-2 mt-4">
-                            <button class="btn btn-info" type="submit">Simpan</button>
+                            <button class="btn btn-info" type="submit">Simpan Perubahan</button>
                             <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
 
                         </div>
-
+                            </div>
+                            <div class="col-md-6 text-end mt-3">
+                                <a href="javascript:{}" onclick="hapus()" class='btn btn-danger'> Hapus Pengajuan</a>
+                            </div>
+                        </div>
                     </form>
                 </div>
-
+                <form action='{{ route('pengajuan.destroy',$pengajuan->id_pengajuan) }}' id='formdelete' method='POST'>
+                    @csrf
+                    @method('DELETE')
+                </form>
             </div>
         </div>
     </div>
@@ -185,7 +199,15 @@
     </main>
     @push('js')
     <script>
+$(document).ready(function() {
 
+    hitungCicilan()
+});
+function hapus(){
+    if (confirm('Hapus Pengajuan?')) {
+        document.getElementById('formdelete').submit();
+    }
+}
       function hitungCicilan() {
 
     let jumlah = toNumber($("#jumlah").val());

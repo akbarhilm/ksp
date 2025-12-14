@@ -23,7 +23,49 @@ class AngsuranController extends Controller
 
     return view('angsuran.index', compact('pinjaman', 'history'));
 }
+public function edit($id){
+    $angsuran = Angsuran::find($id);
+    $pinjaman = Pinjaman::find($angsuran->id_pinjaman);
+    return view('angsuran.edit',compact('angsuran','pinjaman'));
+}
+public function update(Request $request,$id){
+        $request->merge([
+            'total_bayar'=>str_replace('.','',$request->total_bayar),
+            'bayar_pokok'=>str_replace('.','',$request->bayar_pokok),
+            'bayar_bunga'=>str_replace('.','',$request->bayar_bunga),
+            'bayar_denda'=>str_replace('.','',$request->bayar_denda),
+            'simpanan'=>str_replace('.','',$request->simpanan)
+        ]);
+   $an =  Angsuran::find($id);
+   $jur = Jurnal::where('no_jurnal',$an->no_jurnal)->get();
+   $an->update($request->all());
+   foreach($jur as $j){
+    if($j->id_akun == '5'){
+    Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_debet'=>$request->total_bayar,'tanggal_transaksi'=>$request->tanggal]);
+    }
+    if($j->id_akun == '9'){
+        Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_kredit'=>$request->bayar_pokok, 'tanggal_transaksi'=>$request->tanggal]);
+    }
+    if($j->id_akun == '47'){
+         Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_kredit'=>$request->bayar_bunga,'tanggal_transaksi'=>$request->tanggal]);
+    }
+    if($j->id_akun == '36'){
+         Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_kredit'=>$request->simpanan,'tanggal_transaksi'=>$request->tanggal]);
+    }
+    if($j->id_akun == '80'){
+         Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_kredit'=>$request->bayar_denda,'tanggal_transaksi'=>$request->tanggal]);
+    }
+   }
+    return  redirect()->route('angsuran.index',$an->id_pinjaman)->with('success','Angsuran Berhasil Di Edit');
+}
 
+public function destroy($id){
+    $angsuran = Angsuran::find($id);
+    $jurnal = Jurnal::where('no_jurnal',$angsuran->no_jurnal)->delete();
+    $angsuran->delete();
+    return  redirect()->route('angsuran.index',$angsuran->id_pinjaman)->with('success','Angsuran Berhasil Di Hapus');
+    
+}
     public function store(Request $request, $id_pinjaman)
 {
     $nojurnal = JurnalHelper::noJurnal();
@@ -36,18 +78,7 @@ class AngsuranController extends Controller
 
  $cicilanKe = Angsuran::where('id_pinjaman', $pinjamanId)->count() + 1;
     //bayar angsuran
-     $angsuran = Angsuran::create([
-        'id_pinjaman' => $pinjamanId,
-        'bayar_pokok' => $pokok,
-        'bayar_bunga' => $bunga,
-        'total_bayar' => $total,
-        'tanggal' => $request->tanggal,
-        'cicilan_ke' => $cicilanKe,
-        'id_entry' =>$userId,
-        'metode' => $request->metode,
-        'bayar_denda' =>str_replace('.', '',$request->denda),
-        'simpanan' =>str_replace('.', '',$request->simpanan)
-    ]);
+     
 
     //update pinjaman
     $datapinjaman = Pinjaman::find($pinjamanId);
@@ -55,7 +86,7 @@ class AngsuranController extends Controller
 
     if($datapinjaman->sisa_pokok <=0 ){
         $datapinjaman->update(['status'=>'Lunas']);
-        $pengajuan = Pengajuan::where('id_pengajuan',$datapinjaman->id_pengajuan)->get();
+        $pengajuan = Pengajuan::where('id_pengajuan',$datapinjaman->id_pengajuan)->first();
     if($pengajuan->asuransi >0){
       $dataasuransidebet = ['id_akun' => '82','no_jurnal'=>$nojurnal, 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Dana Cadangan Klaim', 'v_debet' => $pengajuan->asuransi, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
             $dataasuransikredit = ['id_akun' => '50','no_jurnal'=>$nojurnal, 'id_pinjaman' => $datapinjaman->id_pinjaman, 'keterangan' => 'Pendapatan Asuransi ' . str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->asuransi, 'id_entry' => auth()->user()->id];
@@ -65,19 +96,7 @@ class AngsuranController extends Controller
     }
 
     //add kesimpanan
-    $rekening = Rekening::where('id_nasabah',$datapinjaman->id_nasabah)->where('jenis_rekening','Tabungan')->first();
-    $simpanan = Simpanan::create([
-        'id_rekening'=>$rekening->id_rekening,
-        'id_akun' => 14,
-        'tanggal' => $request->tanggal,
-        'jenis'=>'pokok',
-        'v_debit'=>0,
-        'v_kredit'=>str_replace('.', '',$request->simpanan),
-        'keterangan'=>'Simpanan dari angsuran',
-        'id_entry'=>$userId
-
-
-    ]);
+    
 
     if($request->metode == 'Cash'){
         $idakunaset = 1;
@@ -88,7 +107,7 @@ class AngsuranController extends Controller
     // 1. Debet Kas total (id_akun = 1)
     DB::table('tmjurnal')->insert([
         'id_akun' => $idakunaset, // Kas
-        'id_pinjaman' => $pinjamanId,
+        'jenis'=>'angsuran',
         'no_jurnal'=>$nojurnal,
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pembayaran angsuran pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
@@ -97,10 +116,11 @@ class AngsuranController extends Controller
         'id_entry' => $userId,
     ]);
     // angsuran pokok 
-     DB::table('tmjurnal')->insert([
+     $ini = Jurnal::create([
         'id_akun' => 9, // Kas
         'no_jurnal'=>$nojurnal,
-        'id_pinjaman' => $pinjamanId,
+        'jenis'=>'angsuran',
+
         'tanggal_transaksi' => now(),
         'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
@@ -112,7 +132,8 @@ class AngsuranController extends Controller
     DB::table('tmjurnal')->insert([
         'id_akun' => 47, // Pendapatan Bunga Pinjaman
         'no_jurnal'=>$nojurnal,
-        'id_pinjaman' => $pinjamanId,
+        'jenis'=>'angsuran',
+
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
@@ -126,7 +147,8 @@ class AngsuranController extends Controller
      DB::table('tmjurnal')->insert([
         'id_akun' => 80, // Pendapatan Denda
         'no_jurnal'=>$nojurnal,
-        'id_pinjaman' => $pinjamanId,
+        'jenis'=>'angsuran',
+
         'tanggal_transaksi' => now(),
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
@@ -136,18 +158,46 @@ class AngsuranController extends Controller
     }
 
      // simpanan jurnal
-    DB::table('tmjurnal')->insert([
+   $itu =  Jurnal::create([
         'id_akun' => 36, // Simpanan wajib Anggota
         'no_jurnal'=>$nojurnal,
-        'id_simpanan' => $simpanan->id_simpanan,
+        'jenis'=>'angsuran',
+
         'tanggal_transaksi' => now(),
         'keterangan' => 'Simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
         'v_kredit' => str_replace('.', '',$request->simpanan),
         'id_entry' => $userId,
     ]);
+$angsuran = Angsuran::create([
+        'id_pinjaman' => $pinjamanId,
+        'bayar_pokok' => $pokok,
+        'bayar_bunga' => $bunga,
+        'no_jurnal'=>$nojurnal,
+        'id_jurnal'=>$ini->id_jurnal,
+        'total_bayar' => $total-str_replace('.', '',$request->simpanan),
+        'tanggal' => $request->tanggal,
+        'cicilan_ke' => $cicilanKe,
+        'id_entry' =>$userId,
+        'metode' => $request->metode,
+        'bayar_denda' =>str_replace('.', '',$request->denda),
+        'simpanan' =>str_replace('.', '',$request->simpanan)
+    ]);
+   $rekening = Rekening::where('id_nasabah',$datapinjaman->id_nasabah)->where('jenis_rekening','Tabungan')->first();
+    $simpanan = Simpanan::create([
+        'id_rekening'=>$rekening->id_rekening,
+        'id_akun' => 14,
+        'no_jurnal'=>$nojurnal,
+        'id_jurnal'=>$itu->id_jurnal,
+        'tanggal' => $request->tanggal,
+        'jenis'=>'pokok',
+        'v_debit'=>0,
+        'v_kredit'=>str_replace('.', '',$request->simpanan),
+        'keterangan'=>'Simpanan dari angsuran',
+        'id_entry'=>$userId
 
-   
+
+    ]);
 
     return redirect()->route('pinjaman.index')->with('success', 'Angsuran berhasil dicatat!');
 }

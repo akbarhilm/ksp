@@ -56,7 +56,7 @@
                                         </div>
                                         @endif
                                         <div class="input-group input-group-outline mt-3">
-                                            <label class="form-label">Email</label>
+                                            <label class="form-label">Username</label>
                                             <input type="username" class="form-control" name="username" >
                                         </div>
                                         @error('username')

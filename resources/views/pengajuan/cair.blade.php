@@ -84,18 +84,10 @@
                                     <input type="text" readonly name="cicilan" id="cicilan"
                                         value="{{ $pengajuan->cicilan }}" class="form-control bg-light fw-bold">
                                 </div>
-                                <div class="col-md-6 mb-4">
-                                    <label class="form-label">Kode Resort</label>
-                                    <input type="text" readonly name="kode_resort"
-                                        value="{{ $pengajuan->kode_resort }}" class="form-control">
-                                    @error('kode_resort')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-
-                                </div>
-                            </div>
+                                
+                            
                             @if($pengajuan->status == 'approv')
-                            <div class="row">
+                          
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label">Metode Pencairan</label>
                                     <select class="form-control" name="metode">
@@ -213,7 +205,9 @@
 
                         if (res.success) {
                             window.open(res.pdf_url, '_blank');
-                            location.reload();
+                            window.location.href = document.referrer;
+
+
                         }
 
                     })

@@ -233,8 +233,14 @@ public function datatableindex(Request $request)
     $routeTopup     = route('pengajuan.topup', ['id_nasabah' => $n->id_nasabah]);
     
       if ($punyaPengajuan) {
+    $routeEdit      = route('pengajuan.edit', ['pengajuan'=>$n->pengajuan[0]->id_pengajuan]);
 
-        return '<span class="badge bg-secondary">Dalam Proses</span>';
+        return '
+            <a href="'.$routeEdit.'" class="btn btn-sm btn-success">
+                 Edit Pengajuan
+            </a>
+        ';
+
 
     }
 

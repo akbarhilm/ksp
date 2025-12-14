@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\Jurnal;
 use App\Models\Akun;
 use App\Models\Simpanan;
+use App\Models\Angsuran;
+use App\Models\Pinjaman;
+use App\Models\Pengajuan;
+
+
+
+
 use Egulias\EmailValidator\Result\Reason\DetailedReason;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -80,11 +87,16 @@ class JurnalController extends Controller
 public function edit($nojurnal){
     $jurnal = Jurnal::where('no_jurnal',$nojurnal)->get();
     $akun = Akun::where('status','aktif')->get();
+    if($jurnal[0]->jenis == 'pinjaman'){
+        $pinjaman = Pinjaman::where('no_jurnal',$jurnal[0]->no_jurnal)->get();
+        $angsuran = Angsuran::where('id_pinjaman',$pinjaman[0]->id_pinjaman)->count() > 0 ? true : false;
+        
+    }
     // $data =['no_jurnal'=>$jurnal[0]->no_jurnal,'tanggal_transaksi'=>$jurnal[0]->tanggal_transaksi,'keterangan'=>$jurnal[0]->keterangan];
     // foreach($jurnal as $j){
     //     $data['detail'][]=['id_jurnal'=>$j->id_jurnal,'id_akun'=>$j->id_akun,'debit'=>$j->v_debet,'kredit'=>$j->v_kredit,'jenis'=>$j->jenis];
     // }
-    return view('jurnal.edit',compact('jurnal','akun'));
+    return view('jurnal.edit',compact('jurnal','akun','angsuran'));
 }
 
 public function update(Request $request){
@@ -93,8 +105,10 @@ public function update(Request $request){
     // }
    $tgl =  $request->tanggal_transaksi;
    $ket = $request->keterangan;
-   $detail['detail'][]=['id_akun'=>$request->akun_id[0],'id_jurnal'=>$request->id_jurnal[0],'v_debet'=>$request->v_debet[0],'v_kredit'=>$request->v_kredit[0],'jenis'=>$request->jenis[0]];
-   $detail['detail'][]=['id_akun'=>$request->akun_id[1],'id_jurnal'=>$request->id_jurnal[1],'v_debet'=>$request->v_debet[1],'v_kredit'=>$request->v_kredit[1],'jenis'=>$request->jenis[1]];
+   foreach($request->id_jurnal as $i=>$jr){
+   $detail['detail'][]=['id_akun'=>$request->akun_id[$i],'id_jurnal'=>$request->id_jurnal[$i],'v_debet'=>$request->v_debet[$i],'v_kredit'=>$request->v_kredit[$i],'jenis'=>$request->jenis[$i]];
+   $detail['detail'][]=['id_akun'=>$request->akun_id[$i],'id_jurnal'=>$request->id_jurnal[$i],'v_debet'=>$request->v_debet[$i],'v_kredit'=>$request->v_kredit[$i],'jenis'=>$request->jenis[$i]];
+   }
    foreach($detail['detail'] as $i=>$d){
         $d['keterangan'] = $ket;
         $d['tanggal_transaksi'] = $tgl;
@@ -106,14 +120,58 @@ public function update(Request $request){
 
              Simpanan::where('id_jurnal',$d['id_jurnal'])->update($s);
         }
+        if($d['jenis']=='angsuran'){
+            $j = Jurnal::find($d['id_jurnal']);
+            $angsuran = Angsuran::where('no_jurnal',$j->no_jurnal);
+            if($d['id_akun']=='9'){
+                $angsuran->update(['bayar_pokok'=>$d['v_kredit']]);
+            }
+            if($d['id_akun']=='47'){
+                 $angsuran->update(['bayar_bunga'=>$d['v_kredit']]);
+            }
+            if($d['id_akun']=='80'){
+                $angsuran->update(['bayar_denda'=>$d['v_kredit']]);
+            }
+            if($d['id_akun']=='36'){
+
+             Simpanan::where('id_jurnal',$d['id_jurnal'])->update(['v_kredit'=>$d['v_kredit']]);
+                
+                $angsuran->update(['simpanan'=>$d['v_kredit']]);
+            }
+        }
+        if($d['jenis']=='pinjaman'){
+            $j = Jurnal::find($d['id_jurnal']);
+
+            $pinjaman = Pinjaman::where('no_jurnal',$j->no_jurnal)->first();
+            $pengajuan = Pengajuan::find($pinjaman->id_pengajuan);
+            if($d['id_akun']=='9'){
+                $pokok = ($pengajuan->bunga * $pengajuan->tenor * $d['v_debet'])/100;
+                $pengajuan->update(['jumlah_pencairan'=>$d['v_debet']]);
+                $pinjaman->update(['total_pinjaman'=>$d['v_debet'],'sisa_pokok'=>$d['v_debet'],'sisa_bunga'=>$pokok]);
+            }
+        }
        
       
     }
   return redirect()->route('jurnal.index')->with('success', 'Jurnal berhasil diperbarui.');
 }
 
-public function show(){
-    dd('sini');
+public function hapus($nojurnal){
+    $jurnal = Jurnal::where('no_jurnal',$nojurnal)->get();
+    foreach($jurnal as $j){
+        if($j->jenis == 'simpanan'){
+            $simpanan = simpanan::where('id_jurnal',$j->id_jurnal)->first();
+            $simpanan->delete();
+        }
+        if($j->jenis == 'angsuran'){
+            $angsuran = Angsuran::where('no_jurnal',$nojurnal)->first();
+            $angsuran->delete();
+            $s = simpanan::where('id_jurnal',$j->id_jurnal)->first();
+            $s->delete();
+        }
+        $j->delete();
+    }
+    return back()->with('success', 'Jurnal berhasil dihapus.');
 }
 
 
@@ -258,6 +316,23 @@ public function storeDouble(Request $request)
 
 
 
+public function destroy($nojurnal){
+     $jurnal = Jurnal::where('no_jurnal',$nojurnal)->get();
+    foreach($jurnal as $j){
+        if($j->jenis == 'simpanan'){
+            $simpanan = simpanan::where('id_jurnal',$j->id_jurnal)->delete();
+            
+        }
+        if($j->jenis == 'angsuran'){
+            $angsuran = Angsuran::where('id_jurnal',$j->id_jurnal)->delete();
+        }
+        $j->delete();
+    }
+  return redirect()->route('jurnal.index')->with('success', 'Jurnal berhasil dihapus.');
+
+    
+
+}
 
  public function cari(Request $request){
 

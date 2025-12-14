@@ -8,10 +8,10 @@ use DB;
 
 class AssetHelper
 {
-    public static function susutGlobalTahunan($persen = 20)
+    public static function susutGlobalTahunan($persen = 25)
     {
         $nojurnal = JurnalHelper::noJurnal();
-        $tanggal = Carbon::now()->endOfMonth();
+        // $tanggal = Carbon::now()->endOfMonth();
 
         // ambil total saldo ALL akun aset
         //$aset = Akun::where('tipe_akun', 'Aset')->get();
@@ -38,7 +38,7 @@ class AssetHelper
 
         // jurnal global
         Jurnal::create([
-            'tanggal_transaksi' => $tanggal,
+            'tanggal_transaksi' => now(),
             'id_akun' => $akunBeban,
             'no_jurnal'=>$nojurnal,
             'v_debet' => $bebanBulanan,
@@ -48,7 +48,7 @@ class AssetHelper
         ]);
 
         Jurnal::create([
-            'tanggal_transaksi' => $tanggal,
+            'tanggal_transaksi' => now(),
             'id_akun' => $akunAkumulasi,
             'no_jurnal'=>$nojurnal,
             'v_debet' => 0,
