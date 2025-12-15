@@ -114,7 +114,7 @@
                     @foreach($angsuran as $a)
                     <tr>
                         <td>{{ $a->tanggal }}</td>
-                        <td>{{  str_pad($a->pinjaman->id_nasabah, 5, '0', STR_PAD_LEFT) ?? '-' }}</td>
+                        <td>{{  str_pad($a->pinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$a->pinjaman->nasabah->nama ?? '-' }}</td>
                         <td class="text-end">{{ number_format($a->bayar_pokok,0) }}</td>
                         <td class="text-end">{{ number_format($a->bayar_bunga,0) }}</td>
                         <td class="text-end">{{ number_format($a->bayar_denda,0) }}</td>

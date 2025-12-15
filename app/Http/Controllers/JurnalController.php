@@ -327,8 +327,19 @@ public function destroy($nojurnal){
         if($j->jenis == 'angsuran'){
             $angsuran = Angsuran::where('id_jurnal',$j->id_jurnal)->delete();
         }
-        $j->delete();
-    }
+         $j->delete();
+        }
+
+        if($j->jenis == 'pinjaman'){
+            $pinjaman = Pinjaman::where('no_jurnal',$nojurnal)->first();
+            $pengajuan =  Pengajuan::where('id_pengajuan',$pinjaman->id_pengajuan)->update(['tanggal_pencairan'=>null,'status'=>'approv']);
+            $pl = Pinjaman::where('id_nasabah', $pinjaman->id_nasabah)->where('status', 'lunas')->first();
+           $pinjaman->delete() ;
+                 
+             $pl->update(['status'=>'aktif']);
+        }
+       
+    
   return redirect()->route('jurnal.index')->with('success', 'Jurnal berhasil dihapus.');
 
     

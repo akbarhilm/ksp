@@ -84,10 +84,11 @@
                                     <input type="text" readonly name="cicilan" id="cicilan"
                                         value="{{ $pengajuan->cicilan }}" class="form-control bg-light fw-bold">
                                 </div>
-                                
+                            </div>
+                            <div class="row">
                             
                             @if($pengajuan->status == 'approv')
-                          
+                          <hr/>
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label">Metode Pencairan</label>
                                     <select class="form-control" name="metode">
@@ -95,12 +96,25 @@
                                         <option value="tunai">Tunai</option>
                                         <option value="non">Non Tunai</option>
                                     </select>
-                                   <small id="error-metode" class="text-danger"></small>
+                                    @error('metode')
+                                   <small  class="text-danger">{{$message}}</small>
+                                   @enderror
 
 
                                 </div>
+<div class="col-md-6 mb-4">
+                                    <label class="form-label">Tanggal Pencairan</label>
+                                    <input type='date' class="form-control" id='tgl' name="tanggal_pencairan" required>
+                                       
+                                    @error('tanggal_pencairan')
+                                   <small  class="text-danger">{{$message}}</small>
+                                   @enderror
 
+
+
+                                </div>
                             </div>
+                            <hr>
                             @endif
 
                             <hr>
@@ -175,7 +189,7 @@
                             <div class="d-flex gap-2">
                                 @if($pengajuan->status == 'approv')
                                 @if(auth()->user()->role != 'kepalaadmin')
-                                <button id="btnCair" class="btn btn-info" data-id="{{ $pengajuan->id_pengajuan }}"
+                                <button id="btnCair" class="btn btn-info" data-id="{{ $pengajuan->id_pengajuan }} data"
                                     title="Cairkan">
                                     Cairkan<i class="material-icons">print</i>
                                 </button>
@@ -201,13 +215,14 @@
             $('#btnCair').click(function() {
                 let metode = $('select[name="metode"]').val();
                 let id = $(this).data('id');
-
-                $.get('/pengajuan/cair/' + id + '?metode=' + metode)
+                console.log($("#tgl").val())
+                $.get('/pengajuan/cair/' + id + '?metode=' + metode+'&tgl_cair='+$('#tgl').val())
                     .then(function(res) {
 
                         if (res.success) {
-                            window.open(res.pdf_url, '_blank');
-                            window.location.href = document.referrer;
+                            //  window.open(res.pdf_url, '_blank');
+                            alert(res.message)
+                            window.location.href = window.location.origin+'/pengajuan/pencairan';
 
 
                         }

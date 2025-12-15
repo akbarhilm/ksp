@@ -190,10 +190,10 @@ $angsuran = Angsuran::create([
         'no_jurnal'=>$nojurnal,
         'id_jurnal'=>$itu->id_jurnal,
         'tanggal' => $request->tanggal,
-        'jenis'=>'pokok',
+        'jenis'=>'wajib',
         'v_debit'=>0,
         'v_kredit'=>str_replace('.', '',$request->simpanan),
-        'keterangan'=>'Simpanan dari angsuran',
+        'keterangan'=>'Simpanan dari angsuran '.str_pad($rekening->id_nasabah, 5, '0', STR_PAD_LEFT),
         'id_entry'=>$userId
 
 

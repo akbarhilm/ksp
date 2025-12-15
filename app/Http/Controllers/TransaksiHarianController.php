@@ -28,7 +28,7 @@ class TransaksiHarianController extends Controller
             ->whereDate('tanggal_pengajuan', $tanggal)
             ->orderBy('tanggal_pengajuan', 'ASC')
             ->get();
-        $angsuran = Angsuran::with('pinjaman')->where('id_entry', $userId)
+        $angsuran = Angsuran::with('pinjaman.nasabah')->where('id_entry', $userId)
             ->whereDate('tanggal', $tanggal)
             ->orderBy('tanggal', 'ASC')
             ->get();
@@ -38,7 +38,6 @@ class TransaksiHarianController extends Controller
             })
             ->with('pengajuan')
             ->get();
-
 
 
 

@@ -75,7 +75,7 @@
                                 <label class="form-label">Cicilan Per Bulan</label>
                                 <input type="text" readonly name="cicilan" id="cicilan" value="{{ old('cicilan') }}" class="form-control bg-light fw-bold">
                             </div>
-                            <div class="col-md-6 mb-4">
+                            {{-- <div class="col-md-6 mb-4">
                                 <label class="form-label">Kode Resort</label>
                                 <select name="kode_resort" class="form-control">
                                     <option value="">-- Pilih Kode Resort --</option>
@@ -85,7 +85,7 @@
                                 </select>
                                 @error('kode_resort') <small class="text-danger">{{ $message }}</small> @enderror
 
-                            </div>
+                            </div> --}}
                         </div>
 
                         <hr>
@@ -98,7 +98,7 @@
                                 
                             </div>
                              <div class="col-md-6 mb-4">
-                                <label class="form-label">Biaya Admin</label>
+                                <label class="form-label">Provisi</label>
                                 <input type="text"  name="admin"  value="{{ old('admin') }}" class="form-control format-angka  input-jumlah">
                                 @error('admin') <small class="text-danger">{{ $message }}</small> @enderror
                             
@@ -111,8 +111,21 @@
                                 @error('asuransi') <small class="text-danger">{{ $message }}</small> @enderror
                                 
                             </div>
-                            
+                            <div class="col-md-6 mb-4">
+
+                                <label class="">Survey</label>
+                                <input type="text"  name="survey" value="{{ old('survey') }}" class="form-control format-angka  input-jumlah">
+                             @error('survey') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
                         </div>
+                        <div class='row'>
+                            <div class='col-md-6 mb-4'>
+                                <label>Materai</label>
+                                <input type="text" name="materai" value='{{ old('materai') }}' class='form-control input-jumlah'>
+                             @error('materai') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                        </div>
+                            
 <hr>
                           <h6 class="mb-3">Pinjaman Sebelumnya</h6>
                         <div class="row">
@@ -133,7 +146,8 @@
                         <h6 class="mb-3">Jaminan</h6>
 
                         <div id="jaminan-container">
-                            @foreach ($jaminan as $j )
+                            @foreach ($pinjaman->pengajuan->jaminan as $j )
+                            
                                 <div class="row jaminan-item mb-3">
                                 <div class="col-md-5">
                                     <label class="form-label">Jenis Jaminan</label>
@@ -156,9 +170,10 @@
                         <button type="button" id="addJaminan" class="btn btn-secondary mb-4">+ Tambah Jaminan</button>
 
                         {{-- TOMBOL --}}
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
+                        <div class="d-flex gap-2 mt-4">
                             <button class="btn btn-info" type="submit">Simpan</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
+
                         </div>
 
                     </form>
