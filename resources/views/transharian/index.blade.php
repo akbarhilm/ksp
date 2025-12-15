@@ -111,6 +111,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php $totalpokok = 0;
+                            $totalbunga = 0;
+                            $totaldenda = 0;
+                            $totalbayara = 0;
+                            @endphp
                     @foreach($angsuran as $a)
                     <tr>
                         <td>{{ $a->tanggal }}</td>
@@ -119,9 +124,27 @@
                         <td class="text-end">{{ number_format($a->bayar_bunga,0) }}</td>
                         <td class="text-end">{{ number_format($a->bayar_denda,0) }}</td>
                         <td class="text-end">{{ number_format($a->total_bayar,0) }}</td>
+                        {{ $totalpokok += $a->bayar_pokok; }}
+                        {{ $totalbunga += $a->bayar_bunga; }}
+
+                        {{ $totaldenda += $a->bayar_denda; }}
+
+                        {{ $totalbayar += $a->total_bayar; }}
+
                     </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan='2'>
+                            Total
+                        </th>
+                        <th class='text-end'>{{ number_format($totalpokok,0) }}</th>
+                        <th class='text-end'>{{ number_format($totalbunga,0) }}</th>
+                        <th class='text-end'>{{ number_format($totaldenda,0) }}</th>
+                        <th class='text-end'>{{ number_format($totalbayar,0) }}</th>
+                    </tr>
+                </tfoot>
             </table>
             @else
             <div class="p-3">Tidak ada transaksi angsuran.</div>
