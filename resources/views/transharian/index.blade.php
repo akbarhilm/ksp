@@ -40,6 +40,9 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php $tdebit = 0;
+                    $tkredit = 0;
+                    @endphp
                     @foreach($simpanan as $s)
                     <tr>
                         <td>{{ $s->tanggal }}</td>
@@ -48,8 +51,21 @@
                         <td class="text-end">{{ number_format($s->v_debit,0) }}</td>
                         <td class="text-end">{{ number_format($s->v_kredit,0) }}</td>
                     </tr>
+                    @php $tdebit += $s->v_debit;
+                    $tkredit += $s->v_kredit;
+                    @endphp
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan='3'>
+                            Total
+                        </th>
+                    
+                        <th class='text-end'>{{ number_format($tdebit,0) }}</th>
+                        <th class='text-end'>{{ number_format($tkredit,0) }}</th>
+                    </tr>
+                </tfoot>
             </table>
             @else
             <div class="p-3">Tidak ada transaksi simpanan.</div>
@@ -124,12 +140,12 @@
                         <td class="text-end">{{ number_format($a->bayar_bunga,0) }}</td>
                         <td class="text-end">{{ number_format($a->bayar_denda,0) }}</td>
                         <td class="text-end">{{ number_format($a->total_bayar,0) }}</td>
-                        {{ $totalpokok += $a->bayar_pokok; }}
-                        {{ $totalbunga += $a->bayar_bunga; }}
+                        @php $totalpokok += $a->bayar_pokok; 
+                         $totalbunga += $a->bayar_bunga; 
 
-                        {{ $totaldenda += $a->bayar_denda; }}
+                         $totaldenda += $a->bayar_denda; 
 
-                        {{ $totalbayar += $a->total_bayar; }}
+                         $totalbayar += $a->total_bayar; @endphp
 
                     </tr>
                     @endforeach
