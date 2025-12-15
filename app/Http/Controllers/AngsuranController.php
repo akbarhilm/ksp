@@ -109,7 +109,7 @@ public function destroy($id){
         'id_akun' => $idakunaset, // Kas
         'jenis'=>'angsuran',
         'no_jurnal'=>$nojurnal,
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Pembayaran angsuran pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $total,
         'v_kredit' => 0,
@@ -121,7 +121,7 @@ public function destroy($id){
         'no_jurnal'=>$nojurnal,
         'jenis'=>'angsuran',
 
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
         'v_kredit' => $pokok,
@@ -134,7 +134,7 @@ public function destroy($id){
         'no_jurnal'=>$nojurnal,
         'jenis'=>'angsuran',
 
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
         'v_kredit' => $bunga,
@@ -149,7 +149,7 @@ public function destroy($id){
         'no_jurnal'=>$nojurnal,
         'jenis'=>'angsuran',
 
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
         'v_kredit' => str_replace('.', '',$request->denda),
@@ -163,7 +163,7 @@ public function destroy($id){
         'no_jurnal'=>$nojurnal,
         'jenis'=>'angsuran',
 
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
         'v_kredit' => str_replace('.', '',$request->simpanan),
@@ -258,7 +258,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'id_akun' => $idakunaset, // Kas
         'no_jurnal'=>$nojurnal,
         'id_pinjaman' => $pinjamanId,
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Pelunasan pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $total,
         'v_kredit' => 0,
@@ -269,7 +269,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'id_akun' => 9, // Kas
         'no_jurnal'=>$nojurnal,
         'id_pinjaman' => $pinjamanId,
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => 0,
         'v_kredit' => $total+$request->simpananpokok+$request->simpananwajib,
@@ -301,7 +301,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         DB::table('tmjurnal')->insert([
         'id_akun' => 36, // Simpanan wajib Anggota
         'no_jurnal'=>$nojurnal,
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Penarikan simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $request->simpananwajib??0,
         'v_kredit' => 0,
@@ -310,7 +310,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         DB::table('tmjurnal')->insert([
         'id_akun' => 35, // Simpanan Pokok Anggota
         'no_jurnal'=>$nojurnal,
-        'tanggal_transaksi' => now(),
+        'tanggal_transaksi' => $request->tanggal,
         'keterangan' => 'Penarikan simpanan pokok '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
         'v_debet' => $request->simpananpokok??0,
         'v_kredit' => 0,
