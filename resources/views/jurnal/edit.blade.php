@@ -93,9 +93,11 @@
              <a href="{{ route('jurnal.index') }}" class="btn btn-secondary">Batal</a>
         </div>
         <div class='col-md-6 text-end'>
+            @if(auth()->user()->role != 'admin')
             @if(!$angsuran)
              <a href="javascript:{}" onclick="hapusjurnal({{ $jurnal[0]->no_jurnal }})" class="btn btn-sm btn-danger btn-link" title="hapus">Hapus
                 </a>
+                @endif
                 @endif
              {{-- <a href="{{ route('jurnal.hapus',$jurnal[0]->no_jurnal) }}" class="btn btn-danger">Hapus</a> --}}
         </div>
