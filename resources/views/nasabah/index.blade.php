@@ -28,9 +28,11 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body overflow-auto">
                     <div class="d-flex justify-content-end mb-3">
+                        @if(auth()->user()->role != 'kepalaadmin')
                         <a href="{{ route('nasabah.create') }}" class="btn btn-info">
                             <i class="fas fa-plus me-1"></i> Tambah Nasabah
                         </a>
+                        @endif
                     </div>
       <table id="nasabahTable"  class="table table-striped table-hover align-middle text-sm" width="100%">
     <thead class="table-dark">
@@ -39,7 +41,7 @@
             <th>Resort</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
-            <th>No Telp</th>
+            <th>Status</th>
             <th>Aksi</th>
         </tr>
     </thead>
@@ -70,7 +72,7 @@
             { data: 'kode_resort', name: 'kode_resort',className:'text-center' },
             { data: 'alamat', name: 'alamat', className:'text-wrap' },
             { data: 'tgl_lahir', name: 'tgl_lahir' },
-            { data: 'no_telp', name: 'no_telp' },
+            { data: 'status', name: 'status' },
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
         ],
          language: {

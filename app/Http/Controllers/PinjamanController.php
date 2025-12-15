@@ -38,7 +38,7 @@ public function index(Request $request)
             })
 
             ->addColumn('resort', function($p){
-                return $p->pengajuan->kode_resort ?? '-';
+                return $p->nasabah->kode_resort ?? '-';
             })
 
             ->addColumn('pinjaman', function($p){

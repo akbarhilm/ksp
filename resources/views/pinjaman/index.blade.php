@@ -68,7 +68,7 @@
             { data: 'nasabah', name: 'nasabah',className:'text-sm' },
             { data: 'nasabah', name: 'nasabah',visible:false },
 
-            { data: 'resort', name: 'pengajuan.kode_resort',className:'text-sm' },
+            { data: 'resort', name: 'nasabah.kode_resort',className:'text-sm text-center' },
             { data: 'pinjaman', name: 'total_pinjaman', className:'text-end text-sm' },
             { data: 'sisa_pokok', name: 'sisa_pokok', className:'text-end text-sm' },
             { data: 'sisa_bunga', name: 'sisa_bunga', className:'text-end text-sm' },

@@ -48,9 +48,12 @@ class DepositoController extends Controller
             return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$row->nama;
         })
         ->addColumn('aksi', function ($row) {
+             $user = auth()->user();
             $create = route('deposito.create',  ['id_nasabah'=>$row->id_nasabah]);
             $edit = route('deposito.show', $row->id_nasabah);
  $tarik = route('deposito.penarikan', ['id_nasabah'=>$row->id_nasabah]);
+if (!$user || $user->role != 'kepalaadmin') {
+
             return '
                 <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="edit">
                     <i class="material-icons">add</i>
@@ -62,6 +65,11 @@ class DepositoController extends Controller
                     <i class="material-icons">south</i>
                 </a>
             ';
+}else{
+    return ' <a href="'.$edit.'" class="btn btn-sm btn-warning btn-link" title="lihat">
+                    <i class="material-icons">visibility</i>
+                </a>';
+}
         })
         ->rawColumns(['aksi'])
         ->make(true);

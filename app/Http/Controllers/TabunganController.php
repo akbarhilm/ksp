@@ -49,12 +49,12 @@ class TabunganController extends Controller
         })
      
         ->addColumn('aksi', function ($row) {
+               $user = auth()->user();
             $create = route('tabungan.create', ['id_nasabah'=>$row->id_nasabah]);
             $edit = route('tabungan.show', $row->id_nasabah);
             $tarik = route('tabungan.penarikan', ['id_nasabah'=>$row->id_nasabah]);
-
-            return '
-                <a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="tambah">
+if (!$user || $user->role != 'kepalaadmin') {
+   return '<a href="'.$create.'" class="btn btn-sm btn-info btn-link" title="tambah">
                     <i class="material-icons">add</i>
                 </a>
                  <a href="'.$edit.'" class="btn btn-sm btn-warning btn-link" title="lihat">
@@ -62,8 +62,13 @@ class TabunganController extends Controller
                 </a>
                 <a href="'.$tarik.'" class="btn btn-sm btn-success btn-link" title="penarikan">
                     <i class="material-icons">south</i>
-                </a>
-            ';
+                </a>';
+}else{
+    return ' <a href="'.$edit.'" class="btn btn-sm btn-warning btn-link" title="lihat">
+                    <i class="material-icons">visibility</i>
+                </a>';
+}
+            
         })
         ->rawColumns(['aksi'])
         ->make(true);

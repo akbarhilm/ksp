@@ -5,6 +5,7 @@ use App\Exports\BukuBesarRekapExport;
 use App\Exports\BukuBesarDetailExport;
 use App\Exports\JurnalExport;
 use App\Models\Akun;
+use App\Models\Pinjaman;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
@@ -46,5 +47,9 @@ public function exportJurnal(Request $request)
     }
     
     return Excel::download(new JurnalExport($request), $filename);      
+}
+public function npl(){
+   $pinjaman = Pinjaman::where('status','aktif')->get();
+   return view('npl.index',compact('pinjaman'));
 }
 }

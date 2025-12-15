@@ -47,15 +47,17 @@ class RekeningController extends Controller
             return str_pad($row->id_nasabah, 5, '0', STR_PAD_LEFT);
         })
         ->addColumn('aksi', function ($row) {
+             $user = auth()->user();
             $create = route('rekening.create', ['id_nasabah' => $row->id_nasabah]);
             $edit = route('rekening.edit', $row->id_nasabah);
+            $btnEdit = '';
 
-            return '
-              
-                 <a href="'.$edit.'" class="btn  btn-sm btn-success btn-link" title="edit">
+ if (!$user || $user->role != 'kepalaadmin') {
+        $btnEdit = '<a href="'.$edit.'" class="btn  btn-sm btn-success btn-link" title="edit">
                     <i class="material-icons">edit</i>
-                </a>
-            ';
+                </a>';
+ }
+            return $btnEdit;
         })
         ->rawColumns(['aksi'])
         ->make(true);

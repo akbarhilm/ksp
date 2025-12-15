@@ -19,7 +19,6 @@
                 <a class="nav-link ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8" data-bs-toggle="collapse" href="#collapseAdmin" role="button" aria-expanded="false" aria-controls="collapseAdmin">
                 Admin</a>
             </li>
-          
             <div class="collapse {{$menuParent == 'admin' ? 'show':''}}" id="collapseAdmin">
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'nasabah' ? ' active bg-gradient-info' : '' }} "
@@ -30,7 +29,7 @@
                     <span class="nav-link-text ms-1">Data Nasabah</span>
                 </a>
             </li>
-            {{-- @if(auth()->user()->role == 'superadmin' || auth()->user()->role == 'kepalaadmin') --}}
+            @if(auth()->user()->role == 'superadmin' || auth()->user()->role == 'kepalaadmin')
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'karyawan' ? ' active bg-gradient-info' : '' }} "
                     href="{{ route('users.index') }}">
@@ -58,7 +57,7 @@
                     <span class="nav-link-text ms-1">Data Akun</span>
                 </a>
             </li>
-            {{-- @endif --}}
+            @endif
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'rekening' ? ' active bg-gradient-info' : '' }} "
                     href="{{ route('rekening.index') }}">
@@ -109,7 +108,7 @@
                     <span class="nav-link-text ms-1">Pengajuan</span>
                 </a>
             </li>
-            {{-- @if(auth()->user()->role == 'superadmin' || auth()->user()->role == 'kepalaadmin') --}}
+            @if(auth()->user()->role == 'superadmin' || auth()->user()->role == 'kepalaadmin')
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'approval' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pengajuan.approval') }}">
@@ -119,7 +118,7 @@
                     <span class="nav-link-text ms-1">Approval Pengajuan</span>
                 </a>
             </li>
-            {{-- @endif --}}
+            @endif
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'cair' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pengajuan.pencairan') }}">
@@ -138,6 +137,7 @@
                     <span class="nav-link-text ms-1">Pembayaran Angsuran</span>
                 </a>
             </li>
+            @if(auth()->user()->role != 'kepalaadmin')
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'pelunasan' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pelunasan.index') }}">
@@ -147,6 +147,7 @@
                     <span class="nav-link-text ms-1">Pelunasan Pinjaman</span>
                 </a>
             </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'history' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('history.index') }}">
@@ -172,15 +173,15 @@
                     <span class="nav-link-text ms-1">Transaksi Harian</span>
                 </a>
             </li>
-             <li class="nav-item">
+             {{-- <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'cbook' ? ' active bg-gradient-info' : '' }}  "
-                    href="{{ route('tutupbuku.index') }}">
+                    href="{{ route('npl.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">library_books</i>
                     </div>
-                    <span class="nav-link-text ms-1">Tutup Buku</span>
+                    <span class="nav-link-text ms-1">NPL</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'jurnal' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('jurnal.index') }}">

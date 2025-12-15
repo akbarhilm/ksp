@@ -92,7 +92,9 @@
         return date('Y-m', strtotime($h->tanggal)) === $bulanIni;
     });
 @endphp
+@if(auth()->user()->role != 'kepalaadmin')
             <button type="submit" class="btn btn-info" >Simpan Pembayaran</button>
+            @endif
         </form>
     </div>
 </div>
@@ -102,7 +104,7 @@
 
     <!-- History Pembayaran -->
     <div class="card">
-        <div class="card-body">
+        <div class="card-body  overflow-auto">
             <h5>History Pembayaran</h5>
             <table class="table table-striped">
                 <thead>

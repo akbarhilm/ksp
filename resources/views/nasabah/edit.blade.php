@@ -131,6 +131,19 @@
                                             <p class='text-danger inputerror'>{{ $message }} </p>
                                         @enderror
                                     </div>
+                                    <div class='col-md-6'>
+                                        <div class='input-group input-group-static mb-4'>
+                                            <label>Status</label>
+                                            <select name='status' class='form-control'>
+                                                <option value="aktif" {{$nasabah->status == 'aktif'?'selected':''}}> Aktif</option>
+                                                <option value="nonaktif" {{$nasabah->status == 'nonaktif'?'selected':''}}>Non Aktif</option>
+
+                                            </select>
+                                        </div>
+                                         @error('status')
+                                            <p class='text-danger inputerror'>{{ $message }} </p>
+                                        @enderror
+                                    </div>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="d-flex gap-2 input-group input-group-static mb-4">

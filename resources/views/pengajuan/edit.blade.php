@@ -173,13 +173,18 @@
                         <div class='row'>
                             <div class='col-md-6'>
                         <div class="d-flex gap-2 mt-4">
+                            @if(auth()->user()->role != 'kepalaadmin')
                             <button class="btn btn-info" type="submit">Simpan Perubahan</button>
+                            @endif
                             <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
 
                         </div>
                             </div>
                             <div class="col-md-6 text-end mt-3">
+                            @if(auth()->user()->role != 'admin')
+
                                 <a href="javascript:{}" onclick="hapus()" class='btn btn-danger'> Hapus Pengajuan</a>
+                            @endif
                             </div>
                         </div>
                     </form>

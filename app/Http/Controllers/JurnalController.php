@@ -87,6 +87,7 @@ class JurnalController extends Controller
 public function edit($nojurnal){
     $jurnal = Jurnal::where('no_jurnal',$nojurnal)->get();
     $akun = Akun::where('status','aktif')->get();
+    $angsuran='';
     if($jurnal[0]->jenis == 'pinjaman'){
         $pinjaman = Pinjaman::where('no_jurnal',$jurnal[0]->no_jurnal)->get();
         $angsuran = Angsuran::where('id_pinjaman',$pinjaman[0]->id_pinjaman)->count() > 0 ? true : false;

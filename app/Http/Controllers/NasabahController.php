@@ -34,7 +34,7 @@ public function datatableindex(Request $request)
         'alamat',
         'tgl_lahir',
         'kode_resort',
-        'no_telp',
+        'status',
     ]);
 
     if ($request->filled('id_nasabah')) {
@@ -59,23 +59,28 @@ public function datatableindex(Request $request)
             $edit = route('nasabah.edit', $row->id_nasabah);
             $delete = route('nasabah.destroy', $row->id_nasabah);
             $btnEdit = '';
-            // if (!$user || $user->role !== 'superadmin') {
+            $btnhapus = '';
+            if (!$user || $user->role != 'kepalaadmin') {
         $btnEdit = '
             <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
                 <i class="material-icons">edit</i>
             </a>
         ';
-    // }
-
-            return '
-                '.$btnEdit.'
-                <a href="javascript:{}" onclick="hapusNasabah('.$row->id_nasabah.')" class="btn btn-sm btn-danger btn-link" title="hapus">
+    }
+    if (!$user || $user->role != 'admin') {
+        $btnhapus = '
+           <a href="javascript:{}" onclick="hapusNasabah('.$row->id_nasabah.')" class="btn btn-sm btn-danger btn-link" title="Non aktifkan">
                     <i class="material-icons">close</i>
                 </a>
                 <form id="formDelete'.$row->id_nasabah.'" action="'.$delete.'" method="POST" style="display:none;">
                     '.csrf_field().method_field('DELETE').'
                 </form>
             ';
+    }
+
+            return '
+                '.$btnEdit.''.$btnhapus
+                ;
         })
         ->rawColumns(['aksi'])
         ->make(true);
@@ -151,6 +156,7 @@ public function datatableindex(Request $request)
             'pekerjaan' => 'required',
             'sektor_ekonomi' => 'required',
             'kode_resort'=>'required',
+            'status'=>'required'
         ]);
         //dd($request->all());
        
@@ -222,7 +228,7 @@ public function datatableindex(Request $request)
         })
         
      ->addColumn('aksi', function ($n) {
-
+   $user = auth()->user();
         $punyaPengajuan = $n->pengajuan->count() > 0;
 
     // ada pinjaman aktif?
@@ -231,6 +237,7 @@ public function datatableindex(Request $request)
     // route
     $routePengajuan = route('pengajuan.create', ['id_nasabah' => $n->id_nasabah]);
     $routeTopup     = route('pengajuan.topup', ['id_nasabah' => $n->id_nasabah]);
+ if (!$user || $user->role == 'kepalaadmin') {
     
       if ($punyaPengajuan) {
     $routeEdit      = route('pengajuan.edit', ['pengajuan'=>$n->pengajuan[0]->id_pengajuan]);
@@ -242,8 +249,22 @@ public function datatableindex(Request $request)
         ';
 
 
+    }else{
+        return '';
     }
+}else{
 
+    if ($punyaPengajuan) {
+    $routeEdit      = route('pengajuan.edit', ['pengajuan'=>$n->pengajuan[0]->id_pengajuan]);
+
+        return '
+            <a href="'.$routeEdit.'" class="btn btn-sm btn-success">
+                 Edit Pengajuan
+            </a>
+        ';
+
+
+    }
     if ($punyaPinjamanAktif) {
 
         // ✅ ADA PINJAMAN AKTIF → TOPUP
@@ -262,6 +283,7 @@ public function datatableindex(Request $request)
             </a>
         ';
     }
+}
 })
 ->rawColumns(['aksi'])
 ->make(true);

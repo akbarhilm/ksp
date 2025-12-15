@@ -29,10 +29,18 @@ class SessionsController extends Controller
                 'username' => 'Your provided credentials could not be verified.'
             ]);
         }
+        if(auth()->user()->status == 'aktif')
+        {
 
         session()->regenerate();
 
         return redirect('/dashboard');
+        }else{
+            auth()->logout();
+             throw ValidationException::withMessages([
+                'username' => 'User Telah Di Non Aktifkan'
+            ]);
+        }
 
     }
 

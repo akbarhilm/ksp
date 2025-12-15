@@ -86,8 +86,13 @@
     </div>
             
           <div class='d-flex justify-content-between'>
+            @if(auth()->user()->role != 'kepalaadmin')
             <button type="submit" class="btn btn-info" >Simpan Perubahan Angsuran</button>
+            @endif
+            @if(auth()->user()->role !== 'admin')
             <a href='javascript:{}'  class="btn btn-danger" onclick="hapus()">Hapus Angsuran</a>
+            @endif
+
             </div>
         </form>
     </div>

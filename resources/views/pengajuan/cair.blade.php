@@ -174,10 +174,12 @@
                             {{-- TOMBOL --}}
                             <div class="d-flex gap-2">
                                 @if($pengajuan->status == 'approv')
+                                @if(auth()->user()->role != 'kepalaadmin')
                                 <button id="btnCair" class="btn btn-info" data-id="{{ $pengajuan->id_pengajuan }}"
                                     title="Cairkan">
                                     Cairkan<i class="material-icons">print</i>
                                 </button>
+                                @endif
                                 @endif
                                 <a href="{{ url()->previous() }}" class="btn btn-dark">Kembali</a>
 

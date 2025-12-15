@@ -166,7 +166,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
+        $user->update(['status'=>'nonaktif']);
 
         return redirect()->route('users.index')
                          ->with('success', 'User berhasil dihapus.');
@@ -209,7 +209,7 @@ public function datatableindex(Request $request)
                 <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
                     <i class="material-icons">edit</i>
                 </a>
-                <a href="javascript:{}" onclick="hapusNasabah('.$row->id.')" class="btn btn-sm btn-danger btn-link" title="hapus">
+                <a href="javascript:{}" onclick="hapusNasabah('.$row->id.')" class="btn btn-sm btn-danger btn-link" title="Non Aktif kan">
                     <i class="material-icons">close</i>
                 </a>
                 <form id="formDelete'.$row->id.'" action="'.$delete.'" method="POST" style="display:none;">

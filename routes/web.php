@@ -158,6 +158,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/buku-besar/export/rekap',   [ReportFileController::class,'exportRekap'])->name('bukubesar.export.rekap');
 Route::get('/buku-besar/export/detail',  [ReportFileController::class,'exportDetail'])->name('bukubesar.export.detail');
 Route::get('/export/jurnal',  [ReportFileController::class,'exportJurnal'])->name('export.jurnal');
+Route::get('/npl',  [ReportFileController::class,'npl'])->name('npl.index');
 
 });
 
