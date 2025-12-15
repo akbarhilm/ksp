@@ -130,7 +130,7 @@
                     @php $totalpokok = 0;
                             $totalbunga = 0;
                             $totaldenda = 0;
-                            $totalbayara = 0;
+                            $totalbayar = 0;
                             @endphp
                     @foreach($angsuran as $a)
                     <tr>
