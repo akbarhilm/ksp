@@ -388,10 +388,12 @@ class PengajuanController extends Controller
             $pdfFileName = 'SP_Hutang_' . $id . '.pdf';
             session(['pdf_data_' . $id => $data]);
             DB::commit();
-            return response()->json([
-                'success' => true,
-                'pdf_url' => route('pdf.sphutang.download', $id)
-            ]);
+            return redirect()->route('pengajuan.pencairan')->with('success', 'Pencairan berhasil.');
+
+            // return response()->json([
+            //     'success' => true,
+            //     'pdf_url' => route('pdf.sphutang.download', $id)
+            // ]);
         } catch (\Exception $e) {
             dd($e->getMessage());
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
