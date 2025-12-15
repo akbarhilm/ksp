@@ -59,7 +59,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Jumlah Debit</label>
-                            <input type="text" id="jumlah_debet" name="jumlah_debet" class="form-control input-jumlah" required min="0">
+                            <input type="text" id="jumlah_debet" name="jumlah_debet" class="form-control " required min="0">
                         </div>
 
                         <h6 class="text-danger fw-bold mt-3">Baris Kredit</h6>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Jumlah Kredit</label>
-                            <input type="text" id="jumlah_kredit" name="jumlah_kredit" class="form-control input-jumlah" required min="0">
+                            <input type="text" id="jumlah_kredit" name="jumlah_kredit" class="form-control " required min="0">
                         </div>
 
                     </div>
