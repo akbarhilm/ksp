@@ -276,7 +276,6 @@ public function bukuBesar(Request $request)
 public function storeDouble(Request $request)
 {
     $nojurnal = JurnalHelper::noJurnal();
-    dd($request->all());
     $request->validate([
         'tanggal_transaksi' => 'required|date',
         'keterangan' => 'required',
