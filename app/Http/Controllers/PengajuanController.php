@@ -15,6 +15,8 @@ use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\JurnalHelper;
 use DB;
+use Mpdf\Mpdf;
+
 
 
 
@@ -397,8 +399,7 @@ class PengajuanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message'=>'Pencairan Berhasil'
-                //'pdf_url' => route('pdf.sphutang.download', $id)
+                'pdf_url' => route('pdf.sphutang.download', $id)
             ]);
         } catch (\Exception $e) {
             dd($e->getMessage());

@@ -8,11 +8,112 @@ use App\Models\PengajuanJaminan;
 use App\Models\Pinjaman;
 use App\Models\User;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Mpdf\Mpdf;
+use App\Helpers\Helper;
 
 use Illuminate\Http\Request;
 
 class CetakPdfController extends Controller
 {
+
+      public function nplPerResort(Request $request)
+    {
+        $tanggal = $request->tanggal ?? date('Y-m-d');
+
+        $pinjaman = Pinjaman::with('nasabah')
+            ->where('status', 'aktif')
+            ->get();
+
+        $dataResort = [];
+
+        foreach ($pinjaman as $p) {
+
+            if (!$p->nasabah) continue;
+
+            $resort = $p->nasabah->kode_resort ?? 'UNKNOWN';
+
+            // hitung hari tunggakan & kolek
+            $hariTelat = Helper::hariTunggakan($p->id_pinjaman, $tanggal);
+            $kolek     = Helper::getKolektibilitas($hariTelat);
+
+            $sisa = $p->sisa_pokok;
+
+            if (!isset($dataResort[$resort])) {
+                $dataResort[$resort] = [
+                    'total_kredit' => 0,
+                    'total_npl'    => 0,
+                    'detail'       => [],
+                ];
+            }
+
+            $dataResort[$resort]['total_kredit'] += $sisa;
+
+            // NPL = C3, C4, C5
+            if (in_array($kolek, ['C3','C4','C5'])) {
+                $dataResort[$resort]['total_npl'] += $sisa;
+            }
+
+            $dataResort[$resort]['detail'][] = [
+                'nasabah' => $p->nasabah->nama,
+                'sisa'    => $sisa,
+                'hari'    => $hariTelat,
+                'kolek'   => $kolek,
+            ];
+        }
+
+        // hitung rasio per resort
+        foreach ($dataResort as $resort => $row) {
+            $dataResort[$resort]['rasio'] = $row['total_kredit'] > 0
+                ? round(($row['total_npl'] / $row['total_kredit']) * 100, 2)
+                : 0;
+        }
+
+        return view('npl.resumeresort', compact('tanggal', 'dataResort'));
+    }
+    public function nplindex(Request $request){
+         $tanggal = $request->tanggal ?? date('Y-m-d');
+
+    $pinjaman = Pinjaman::where('status', 'aktif')->get();
+
+    $totalKredit = 0;
+    $totalNPL    = 0;
+
+    $detail = [];
+
+    foreach ($pinjaman as $p) {
+
+        // hitung hari tunggakan (pakai fungsi kamu)
+        $data = PinjamanHelper::hitungDenda($p->id_pinjaman);
+        // $kolek     = Helper::getKolektibilitas($hariTelat);
+
+        $sisa = $p->sisa_pokok;
+
+        $totalKredit += $sisa;
+
+        if (in_array($data['kolek'], ['C3','C4','C5'])) {
+            $totalNPL += $sisa;
+        }
+
+        $detail[] = [
+            'nasabah' => $p->nasabah->nama,
+            'sisa'    => $sisa,
+            'hari'    => $data['haritelat'],
+            'kolek'   => $data['kolek']
+        ];
+    }
+
+    $rasioNPL = $totalKredit > 0
+        ? round(($totalNPL / $totalKredit) * 100, 2)
+        : 0;
+
+    return view('npl.index', compact(
+        'tanggal',
+        'totalKredit',
+        'totalNPL',
+        'rasioNPL',
+        'detail'
+    ));
+    }
 
 public function cetakJaminan($id)
 {
@@ -40,19 +141,24 @@ public function cetakJaminan($id)
     $data['ttd']=$user->nama;
 
    // return view('pdf.sttjaminan', compact('data'));
-    $html =  view('pdf.sttjaminan', compact('data'))->render();
+   $html = view('pdf.sttjaminan', compact('data'))->render();
 
-    $pdf = PDF::loadHTML($html)
-        ->setPaper('A4')
-        ->setOption('encoding','utf-8')
-        ->setOption('enable-local-file-access', true)
-        ->setOption('margin-top', 10)
-        ->setOption('margin-bottom', 15)
-        ->setOption('margin-left', 15)
-        ->setOption('margin-right', 15)
-        ->setOption('enable-local-file-access', true);
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4-L', // LANDSCAPE
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'default_font' => 'dejavusans'
+    ]);
 
-    return $pdf->inline("TandaTerimaJaminan-{$data['nama']}.pdf");
+    $mpdf->WriteHTML($html);
+
+    return response($mpdf->Output(
+        'Riwayat-Pembayaran.pdf',
+        'I'
+    ))->header('Content-Type', 'application/pdf');
 }
 
 public function cetakPencairan($id){
@@ -85,12 +191,30 @@ public function cetakPencairan($id){
         'diterima_bersih' => ($pinjaman->total_pinjaman -$provisi-$survey-$asuransi-$simpanan_pokok),
     ];
    // return view('pdf.pencairan',compact('data'));
-    $pdf = PDF::loadView('pdf.pencairan', compact('data'))
-        ->setPaper('A5', 'landscape')
-        ->setOption('enable-local-file-access', true)
-        ->setOption('encoding','utf-8');
+   $html = view('pdf.pencairan', compact('data'))->render();
 
-    return $pdf->inline('Pencairan-'.$pinjaman->nasabah->nama.'.pdf');
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4-L', // LANDSCAPE
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'default_font' => 'dejavusans'
+    ]);
+
+    $mpdf->WriteHTML($html);
+
+    return response($mpdf->Output(
+        'Riwayat-Pembayaran.pdf',
+        'I'
+    ))->header('Content-Type', 'application/pdf');
+    // $pdf = PDF::loadView('pdf.pencairan', compact('data'))
+    //     ->setPaper('A5', 'landscape')
+    //     ->setOption('enable-local-file-access', true)
+    //     ->setOption('encoding','utf-8');
+
+    // return $pdf->inline('Pencairan-'.$pinjaman->nasabah->nama.'.pdf');
 }
 
 public function cetakRiwayat($id)
@@ -110,14 +234,15 @@ public function cetakRiwayat($id)
     })->toArray();
 
     $data = [
-        'no_pinjaman' => $pinjaman->id_pinjaman,
-        'no_anggota' => str_pad($pinjaman->nasabah->id_nasabah,5,'0',STR_PAD_LEFT),
-        'nama' => $pinjaman->nasabah->nama,
-        'jumlah_pinjaman' => $pinjaman->total_pinjaman,
-        'tenor' => $pinjaman->pengajuan->tenor,
-        'tgl_pengajuan' => $pinjaman->pengajuan->tanggal_pengajuan,
-        'tgl_pelunasan' => $pinjaman->tanggal_pelunasan ? $pinjaman->tanggal_pelunasan->format('Y-m-d') : null,
-        'status_lunas' => $pinjaman->status == 'aktif' ? 'Tidak' : 'Lunas',
+        // 'no_pinjaman' => $pinjaman->id_pinjaman,
+        // 'no_anggota' => str_pad($pinjaman->nasabah->id_nasabah,5,'0',STR_PAD_LEFT),
+        // 'nama' => $pinjaman->nasabah->nama,
+        // 'jumlah_pinjaman' => $pinjaman->total_pinjaman,
+        // 'tenor' => $pinjaman->pengajuan->tenor,
+        // 'tgl_pengajuan' => $pinjaman->pengajuan->tanggal_pengajuan,
+        // 'tgl_pelunasan' => $pinjaman->tanggal_pelunasan ? $pinjaman->tanggal_pelunasan->format('Y-m-d') : null,
+        // 'status_lunas' => $pinjaman->status == 'aktif' ? 'Tidak' : 'Lunas',
+        'pinjaman'=>$pinjaman,
         'angsuran' => $angsuran,
         'tanggal_cetak' => date('d-m-Y'),
         'koperasi_name' => 'Koperasi Sinar Murni Sejahtera',
@@ -125,22 +250,53 @@ public function cetakRiwayat($id)
         'logo' => 'logo.png',
     ];
     // return view('pdf.historyangsuran',$data);
-    $pdf = PDF::loadView('pdf.historyangsuran', $data)
-        ->setPaper('A4')
-        ->setOption('enable-local-file-access', true)
-        ->setOption('encoding', 'utf-8');
+   $html = view('pdf.historyangsuran', $data)->render();
 
-    return $pdf->inline("Riwayat-Pembayaran-{$pinjaman->id}.pdf");
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4-L', // LANDSCAPE
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'default_font' => 'dejavusans'
+    ]);
+
+    $mpdf->WriteHTML($html);
+
+    return response($mpdf->Output(
+        'Riwayat-Pembayaran.pdf',
+        'I'
+    ))->header('Content-Type', 'application/pdf');
 }
 
 public function cetakPerjanjian($id){
     $data = Pengajuan::with('rekening.nasabah')->where('id_pengajuan',$id)->first();
-    $pdf = PDF::loadView('pdf.sphutang', compact('data'))
-        ->setPaper('A4')
-        ->setOption('enable-local-file-access', true)
-        ->setOption('encoding', 'utf-8');
 
-    return $pdf->inline("SP_Hutang_{$data->rekening[0]->nasabah[0]->nama}.pdf");
+    $html = view('pdf.sphutang', compact('data'))->render();
+
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4-L', // LANDSCAPE
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'default_font' => 'dejavusans'
+    ]);
+
+    $mpdf->WriteHTML($html);
+
+    return response($mpdf->Output(
+        'Riwayat-Pembayaran.pdf',
+        'I'
+    ))->header('Content-Type', 'application/pdf');
+    // $pdf = PDF::loadView('pdf.sphutang', compact('data'))
+    //     ->setPaper('A4')
+    //     ->setOption('enable-local-file-access', true)
+    //     ->setOption('encoding', 'utf-8');
+
+    // return $pdf->inline("SP_Hutang_{$data->rekening[0]->nasabah[0]->nama}.pdf");
 }
 
 

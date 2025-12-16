@@ -26,6 +26,8 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CetakPdfController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ReportFileController;
+use Mpdf\Mpdf;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -52,18 +54,40 @@ Route::get('/jaminan/cetak/{id}', [CetakPdfController::class, 'cetakJaminan'])->
 Route::get('/laporan/labarugi/pdf', [LabarugiController::class, 'labaRugiPdf']);
 
 Route::get('/laporan/neraca/pdf', [NeracaController::class, 'neracaPdf']);
+Route::get('/laporan/angsuranhari/pdf', [TransaksiHarianController::class, 'cetakAngsuran'])->name('cetak.angsuran.harian');
+Route::get('/laporan/simpanhari/pdf', [TransaksiHarianController::class, 'cetakSimpan'])->name('cetak.simpan.harian');
+
+
 
 Route::get('/pdf/sphutang/{id}', function($id){
     $data = session('pdf_data_'.$id);
     if(!$data) abort(404);
     
-    $pdf = PDF::loadView('pdf.sphutang', ['data'=>$data])
-        ->setPaper('a4')
-        ->setOption('enable-local-file-access', true)
-        ->setOption('no-stop-slow-scripts', true)
-        ->setOption('disable-smart-shrinking', false);
+    // $pdf = PDF::loadView('pdf.sphutang', ['data'=>$data])
+    //     ->setPaper('a4')
+    //     ->setOption('enable-local-file-access', true)
+    //     ->setOption('no-stop-slow-scripts', true)
+    //     ->setOption('disable-smart-shrinking', false);
 	
-     return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+    //  return $pdf->download('Surat_Pernyataan_Hutang.pdf');
+	$html = view('pdf.sphutang', ['data'=>$data])->render();
+
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4-L', // LANDSCAPE
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'default_font' => 'dejavusans'
+    ]);
+
+    $mpdf->WriteHTML($html);
+
+    return response($mpdf->Output(
+        'Riwayat-Pembayaran.pdf',
+        'I'
+    ))->header('Content-Type', 'application/pdf');
 })->name('pdf.sphutang.download');
 
 Route::get('/pinjaman', [PinjamanController::class, 'index'])->name('pinjaman.index');
@@ -158,7 +182,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/buku-besar/export/rekap',   [ReportFileController::class,'exportRekap'])->name('bukubesar.export.rekap');
 Route::get('/buku-besar/export/detail',  [ReportFileController::class,'exportDetail'])->name('bukubesar.export.detail');
 Route::get('/export/jurnal',  [ReportFileController::class,'exportJurnal'])->name('export.jurnal');
-Route::get('/npl',  [ReportFileController::class,'npl'])->name('npl.index');
+Route::get('/npl',  [CetakPdfController::class,'nplPerResort'])->name('npl.resume');
 
 });
 

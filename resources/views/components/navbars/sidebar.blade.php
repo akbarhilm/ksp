@@ -148,7 +148,7 @@
                 </a>
             </li>
             @endif
-            {{-- <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'history' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('history.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -156,7 +156,7 @@
                     </div>
                     <span class="nav-link-text ms-1">History Pinjaman</span>
                 </a>
-            </li> --}}
+            </li>
             </div>
 
             <li class="nav-item mt-3">
@@ -175,7 +175,7 @@
             </li>
              {{-- <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'cbook' ? ' active bg-gradient-info' : '' }}  "
-                    href="{{ route('npl.index') }}">
+                    href="{{ route('npl.resume') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">library_books</i>
                     </div>

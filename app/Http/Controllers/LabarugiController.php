@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Jurnal;
 use App\Models\Akun;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Mpdf\Mpdf;
 
 class LabarugiController extends Controller
 {
@@ -151,27 +152,53 @@ foreach ($jurnal as $row) {
 }
 
 $laba = $totalPendapatan - $totalBeban;
+$data = [
+    'tanggalAwal'=>$tanggalAwal,
+        'tanggalAkhir'=>$tanggalAkhir,
+        'pendapatanPerAkun'=>$pendapatanPerAkun,
+        'bebanPerAkun' =>$bebanPerAkun,
+        'totalPendapatan'=>$totalPendapatan,
+        'totalBeban'=>$totalBeban,
+        'laba'=>$laba
+];
+$html = view('pdf.labarugi', $data)->render();
 
-    $html = view('pdf.labarugi', compact(
-        'tanggalAwal',
-        'tanggalAkhir',
-        'pendapatanPerAkun',
-        'bebanPerAkun',
-        'totalPendapatan',
-        'totalBeban',
-        'laba'
-    ))->render();
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4',
+        'margin_top' => 15,
+        'margin_bottom' => 15,
+        'margin_left' => 15,
+        'margin_right' => 15,
+        'default_font' => 'dejavusans'
+    ]);
 
-    $pdf = PDF::loadHTML($html)
-        ->setPaper('A4')
-        ->setOrientation('portrait')
-        ->setOption('margin-top', 15)
-        ->setOption('margin-bottom', 15)
-        ->setOption('margin-left', 15)
-        ->setOption('margin-right', 15)
-        ->setOption('encoding', 'utf-8');
+    $mpdf->WriteHTML($html);
 
-    return $pdf->inline("LabaRugi-$tanggalAwal-$tanggalAkhir.pdf");
+    return response(
+        $mpdf->Output('Laporan-Laba-Rugi.pdf', 'I')
+    )->header('Content-Type', 'application/pdf');
+
+    // $html = view('pdf.labarugi', compact(
+    //     'tanggalAwal',
+    //     'tanggalAkhir',
+    //     'pendapatanPerAkun',
+    //     'bebanPerAkun',
+    //     'totalPendapatan',
+    //     'totalBeban',
+    //     'laba'
+    // ))->render();
+
+    // $pdf = PDF::loadHTML($html)
+    //     ->setPaper('A4')
+    //     ->setOrientation('portrait')
+    //     ->setOption('margin-top', 15)
+    //     ->setOption('margin-bottom', 15)
+    //     ->setOption('margin-left', 15)
+    //     ->setOption('margin-right', 15)
+    //     ->setOption('encoding', 'utf-8');
+
+    // return $pdf->inline("LabaRugi-$tanggalAwal-$tanggalAkhir.pdf");
 }
 
 

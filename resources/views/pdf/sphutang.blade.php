@@ -6,7 +6,8 @@
     {{-- <link rel="stylesheet" href="{{ public_path('css/pdf.css') }}"> --}}
     <style>
         body {
-    font-family: sans-serif;
+    font-family: 'dejavusans';
+
     font-size: 12px;
     line-height: 1.35;
 }
@@ -70,7 +71,7 @@ h1, h2, h3, h4, h5, h6 {
 </head>
 
 <body>
-    <?php 
+    @php 
     if (!function_exists('penyebut')) {
 function penyebut($Nilai) {
 		$Nilai = abs($Nilai);
@@ -144,7 +145,7 @@ function bulatKhusus($nilai)
 			
 			
 		
-	?>
+	@endphp
 <div class="page">
     <!-- TITLE -->
     <div class="text-center mb-2 mt-3">
@@ -156,11 +157,11 @@ function bulatKhusus($nilai)
 
     <!-- BIODATA -->
     <table class="table table-borderless text-sm">
-        <tr><td>1.</td><td>Nama</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->nama) }}</td></tr>
-        <tr><td></td><td>Alamat</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->alamat) }}</td></tr>
-        <tr><td></td><td>NIK</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->nik) }}</td></tr>
-        <tr><td></td><td>Pekerjaan</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->pekerjaan) }}</td></tr>
-        <tr><td></td><td>No HP</td><td>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->no_telp) }}</td></tr>
+        <tr><td>1.</td><td>Nama</td><td width='10px'>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->nama) }}</td></tr>
+        <tr><td></td><td>Alamat</td><td width='10px'>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->alamat) }}</td></tr>
+        <tr><td></td><td>NIK</td><td width='10px'>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->nik) }}</td></tr>
+        <tr><td></td><td>Pekerjaan</td><td width='10px'>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->pekerjaan) }}</td></tr>
+        <tr><td></td><td>No HP</td><td width='10px'>:</td><td>{{strtoupper($data->rekening[0]->nasabah[0]->no_telp) }}</td></tr>
         <tr>
             <td></td>
             <td colspan="3"><b>Selanjutnya disebut PIHAK KESATU atau YANG BERHUTANG</b></td>
@@ -201,8 +202,13 @@ function bulatKhusus($nilai)
                 <p class="text-justify">
                     Untuk pengembalian pinjaman Tersebut <b>PIHAK KESATU</b> bersedia diambil angsurannya 
 melalui ATM oleh <b>PIHAK KEDUA</b> sesuai dengan angsuran pinjaman yang telah ditetapkan & 
-disepakati kedua belah pihak sebesar <b>Rp {{number_format(bulatKhusus($data->jumlah_pencairan/$data->tenor*(($data->bunga*$data->tenor/100)+1)),2,',','.')}}
-    ({{terbilang(bulatKhusus($data->jumlah_pencairan*(($data->bunga/100)+1))) }} Rupiah)</b>.
+ @php $angsuran = bulatKhusus(
+    ($data->jumlah_pencairan / $data->tenor) *
+    (($data->bunga * $data->tenor / 100) + 1)
+);@endphp
+disepakati kedua belah pihak sebesar <b>Rp {{number_format($angsuran,0,',','.')}}
+   
+    ({{terbilang($angsuran) }} Rupiah)</b>.
                 </p>
             </td>
         </tr>

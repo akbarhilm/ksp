@@ -12,13 +12,14 @@ class PinjamanHelper
    public static function statusJatuhTempo($id_pinjaman)
 {
     
-    $jatuhTempoTanggal = 20;
      $today = Carbon::today();
 $bulanIni = Carbon::today()->format('Y-m');
     // Jatuh tempo bulan ini (tanggal 20)
-    $jatuhTempo = Carbon::today()->setDay($jatuhTempoTanggal);
     // Ambil pinjaman & tenor
     $pinjaman = Pinjaman::with('pengajuan')->findOrFail($id_pinjaman);
+    $jtempo = substr($pinjaman->pengajuan->tanggal_pencairan,8,2);
+    $jatuhTempo = Carbon::today()->setDay($jtempo);
+
 
     $tenor = $pinjaman->pengajuan->tenor;
     $cicilanBulanan = round($pinjaman->total_pinjaman / $tenor);
@@ -89,21 +90,35 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
 
     // Jika sudah bayar bulan ini → denda = 0
     $bulanIni = date('Y-m');
-    $adaBayarBulanIni = Angsuran::where('id_pinjaman', $id_pinjaman)
-        ->whereRaw("DATE_FORMAT(tanggal, '%Y-%m') = ?", [$bulanIni])
-        ->exists();
-    if ($adaBayarBulanIni) {
-        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success'];
-    }
+    
 
     // ambil pinjaman
     $pinjaman = Pinjaman::with('pengajuan')->where('id_pinjaman', $id_pinjaman)->first();
-   
+    $cicilanBulanan = round($pinjaman->total_pinjaman / $pinjaman->pengajuan->tenor);
+
+   $jtempo = substr($pinjaman->pengajuan->tanggal_pencairan,8,2);
+    $jatuhTempo = Carbon::today()->setDay($jtempo);
 
     // ambil tanggal acuan: pembayaran terakhir jika ada, kalau tidak pakai created_at (pencairan)
     $lastPay = Angsuran::where('id_pinjaman', $id_pinjaman)
         ->orderBy('tanggal', 'DESC')
         ->first();
+
+           $cicilanSekarang = $lastPay ? $lastPay->cicilan_ke : 1;
+
+    // Total bayar cicilan ini
+    $totalBayar = Angsuran::where('id_pinjaman', $id_pinjaman)
+        ->where('cicilan_ke', $cicilanSekarang)
+        ->get();
+
+    // ============================
+    // STATUS
+    // ============================
+$bayarpokok = $totalBayar->sum('bayar_pokok');
+
+    if ($bayarpokok>=$cicilanBulanan) {
+        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
+    }
 
     if ($lastPay) {
         $acuan = Carbon::parse($lastPay->tanggal);
@@ -112,10 +127,9 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
     }
 
     // jatuh tempo setiap tanggal (misal 20)
-    $jatuhTempoTanggal = 20;
 
     // dueDate pertama yang terlewat = tanggal jatuhTempo pada bulan berikutnya setelah bulan acuan
-    $firstMissedDue = $acuan->copy()->addMonth()->startOfMonth()->setDay($jatuhTempoTanggal);
+    $firstMissedDue = $acuan->copy()->addMonth()->startOfMonth()->setDay($jatuhTempo);
 
     // jika bulan acuan memiliki tanggal > days in month (misal setDay overflow), Carbon akan handle.
     // pastikan firstMissedDue valid (Carbon setDay menangani)
@@ -124,7 +138,7 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
 
     // kalau hari ini belum melewati due date pertama → belum terlambat
     if ($today->lte($firstMissedDue)) {
-        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success'];
+        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
     }
 
     // hari telat = selisih hari antara due date pertama terlewat dan hari ini
@@ -134,16 +148,16 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
     $dasar = $pinjaman->total_pinjaman;
     $kolek = "C1";
      $kolekBadge = "success";
-    if ($hariTelat >= 1  && $hariTelat <= 30) {
+    if ($hariTelat >= 1  && $hariTelat <= 30 && $bayarpokok < $cicilanBulanan ) {
         $kolek = "C2";
         $kolekBadge = "info";
-    } elseif ($hariTelat >= 31  && $hariTelat <= 60) {
+    } elseif ($hariTelat >= 31  && $hariTelat <= 60 && $bayarpokok < $cicilanBulanan) {
         $kolek = "C3";
         $kolekBadge = "warning";
-    } elseif ($hariTelat >= 61 && $hariTelat <= 90) {
+    } elseif ($hariTelat >= 61 && $hariTelat <= 90 && $bayarpokok < $cicilanBulanan) {
         $kolek = "C4";
         $kolekBadge = "danger";
-    } elseif ($hariTelat > 90)  {
+    } elseif ($hariTelat > 90 && $bayarpokok < $cicilanBulanan)  {
         $kolek = "C5";
         $kolekBadge = "dark";
    
@@ -156,7 +170,7 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
     $denda = $dasar * ($persenDenda / 100) * $hariTelat;
 
     // opsi: dibulatkan ke integer
-    return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$kolekBadge];
+    return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$kolekBadge,'haritelat'=>$hariTelat];
 }
 
 }

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Jurnal;
 use App\Models\Akun;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Mpdf\Mpdf;
+
 
 
 class NeracaController extends Controller
@@ -133,18 +135,38 @@ public function neracaPdf(Request $request)
 
         $neraca['Modal'][] = ['nama' => 'Laba/Rugi Bersih', 'saldo' => $labaRugi];
 
-    $html = view('pdf.neraca', compact('neraca','tanggal'))->render();
+        $html = view('pdf.neraca', compact('neraca','tanggal'))->render();
 
-    $pdf = PDF::loadHTML($html)
-        ->setPaper('A4')
-        ->setOrientation('portrait')
-        ->setOption('margin-top', 10)
-        ->setOption('margin-bottom', 10)
-        ->setOption('margin-left', 10)
-        ->setOption('margin-right', 10)
-        ->setOption('encoding', 'utf-8');
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4-L', // LANDSCAPE
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+        'margin_left' => 10,
+        'margin_right' => 10,
+        'default_font' => 'dejavusans'
+    ]);
 
-    return $pdf->inline("Neraca-$tanggal.pdf");
+    $mpdf->WriteHTML($html);
+
+    return response($mpdf->Output(
+        'Riwayat-Pembayaran.pdf',
+        'I'
+    ))->header('Content-Type', 'application/pdf');
+
+
+    // $html = view('pdf.neraca', compact('neraca','tanggal'))->render();
+
+    // $pdf = PDF::loadHTML($html)
+    //     ->setPaper('A4')
+    //     ->setOrientation('portrait')
+    //     ->setOption('margin-top', 10)
+    //     ->setOption('margin-bottom', 10)
+    //     ->setOption('margin-left', 10)
+    //     ->setOption('margin-right', 10)
+    //     ->setOption('encoding', 'utf-8');
+
+    // return $pdf->inline("Neraca-$tanggal.pdf");
 }
 
 }

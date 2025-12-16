@@ -6,8 +6,9 @@
 
     <style>
         body {
-            font-family: "DejaVu Sans", sans-serif;
+            font-family: dejavusans;
             font-size: 12px;
+            margin: 20px 25px;
         }
 
         .header {
@@ -16,9 +17,9 @@
 
         .logo {
             position: absolute;
-            left: 20px;
-            top: 5px;
-            width: 50px;
+            left: 25px;
+            top: 20px;
+            width: 55px;
         }
 
         .instansi {
@@ -33,23 +34,16 @@
 
         hr {
             border: 1px solid #000;
-            margin-top: 10px;
-            margin-bottom: 15px;
+            margin-top: 15px;
+            margin-bottom: 18px;
         }
 
         .judul {
             text-align: center;
             font-weight: bold;
             text-decoration: underline;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             font-size: 15px;
-        }
-
-        .nik {
-            position: absolute;
-            right: 20px;
-            top: 110px;
-            font-size: 12px;
         }
 
         table {
@@ -67,37 +61,40 @@
         }
 
         .ttd {
-            margin-top: 40px;
+            margin-top: 45px;
             width: 100%;
         }
 
         .ttd td {
             text-align: center;
-            padding-top: 30px;
+            padding-top: 35px;
         }
 
         .catatan {
             margin-top: 20px;
             font-size: 11px;
+            line-height: 1.4;
         }
 
         .cap {
             position: absolute;
-            right: 120px;
-            bottom: 140px;
+            right: 130px;
+            bottom: 150px;
             width: 110px;
             opacity: 0.85;
         }
-
     </style>
 </head>
 <body>
 
 {{-- LOGO --}}
-<img src="{{public_path('koperasi.png')}}" class="logo">
+<img src="{{ public_path('koperasi.png') }}" class="logo">
 
 <div class="header">
-    <div class="instansi">KOPERASI SIMPAN PINJAM<br>SINAR MURNI</div>
+    <div class="instansi">
+        KOPERASI SIMPAN PINJAM<br>
+        SINAR MURNI
+    </div>
     <div class="alamat">
         Badan Hukum : No. 30/BH/XI/KUMKM/VI/2015
     </div>
@@ -105,9 +102,8 @@
 
 <hr>
 
-
 <div class="judul">
-    TANDA TERIMA SURAT JAMINAN 
+    TANDA TERIMA SURAT JAMINAN
 </div>
 
 <p>Telah diterima Surat Jaminan atas :</p>
@@ -121,49 +117,57 @@
         <td>ALAMAT</td>
         <td>: {{ $data['alamat'] }}</td>
     </tr>
-    @foreach ($data['jaminan'] as $j )
-        @if($j['jenis'] == 'raw')
-            <tr>
-                <td>{{$loop->iteration}}</td>
-                <td >: {{$j['ket']}}</td>
-            </tr>
-        @else
+
+    @foreach ($data['jaminan'] as $j)
         <tr>
-            <td>{{$loop->iteration.'. '.$j['jenis']}}</td>
-            <td>: {{$j['ket']}}</td>
+            <td>
+                {{ $loop->iteration }}
+                @if($j['jenis'] !== 'raw')
+                    . {{ strtoupper($j['jenis']) }}
+                @endif
+            </td>
+            <td>: {{ $j['ket'] }}</td>
         </tr>
-        @endif
     @endforeach
-   
 </table>
 
 <br>
 
 <p>
-Jaminan tersebut disimpan selama yang bersangkutan menjadi anggota  
-<b>Koperasi Simpan Pinjam SINAR MURNI</b>.
+    Jaminan tersebut disimpan selama yang bersangkutan menjadi anggota  
+    <b>Koperasi Simpan Pinjam SINAR MURNI</b>.
 </p>
 
 <div class="catatan">
     <strong>Catatan :</strong><br>
-    1. Surat tersebut tidak bisa di fotocopy / dipinjam. Jika pinjaman belum lunas<br>
+    1. Surat tersebut tidak bisa difotocopy / dipinjam jika pinjaman belum lunas.<br>
     2. Semua titipan tidak dapat diambil sebelum pinjaman lunas.<br>
-    3. Simpan tanda terima ini dengan baik. Jika hilang Koperasi Simpan Pinjam SINAR MURNI tidak akan memberikan (SK) tersebut di atas.
+    3. Simpan tanda terima ini dengan baik. Jika hilang, Koperasi Simpan Pinjam
+       SINAR MURNI tidak akan memberikan kembali surat jaminan tersebut.
 </div>
 
 <table class="ttd">
-<tr>
-<td style="width:60%;"></td>
-<td style="width:40%;">
-Pasar Kemis, {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'dd MMMM yyyy'))
-        ->format(new DateTime()) }}<br>
-Yang menerima,<br><br><br><br>
-<strong>{{ $data['ttd'] }}</strong>
-</td>
-</tr>
+    <tr>
+        <td style="width:60%"></td>
+        <td style="width:40%">
+            Pasar Kemis,
+            {{ (new IntlDateFormatter(
+                'id_ID',
+                IntlDateFormatter::NONE,
+                IntlDateFormatter::NONE,
+                null,
+                null,
+                'dd MMMM yyyy'
+            ))->format(new DateTime()) }}
+            <br>
+            Yang menerima,
+            <br><br><br><br>
+            <strong>{{ $data['ttd'] }}</strong>
+        </td>
+    </tr>
 </table>
 
-{{-- CAP --}}
+{{-- CAP / STEMPEL --}}
 {{-- <img src="{{ public_path('cap.png') }}" class="cap"> --}}
 
 </body>

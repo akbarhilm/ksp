@@ -6,34 +6,36 @@
 
     <style>
         body {
-            font-family: DejaVu Sans, sans-serif;
+            font-family: dejavusans;
             font-size: 11px;
+            color: #000;
         }
 
         h3 {
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .periode {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 12px;
+            margin-bottom: 12px;
+            font-size: 11px;
         }
 
         table {
             border-collapse: collapse;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         th, td {
-            border: 1px solid #333;
+            border: 1px solid #000;
             padding: 5px;
         }
 
         th {
-            background: #eee;
+            background-color: #eeeeee;
+            font-weight: bold;
         }
 
         .text-end {
@@ -45,14 +47,14 @@
         }
 
         .total {
-            background: #ddd;
-        }
-
-        .highlight {
-            background: #cfe2ff;
+            background-color: #dddddd;
             font-weight: bold;
         }
 
+        .highlight {
+            background-color: #cfe2ff;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -64,61 +66,71 @@
     s/d {{ date('d-m-Y', strtotime($tanggalAkhir)) }}
 </div>
 
-
+{{-- ================= PENDAPATAN ================= --}}
 <h4>PENDAPATAN</h4>
+
 <table>
     <thead>
         <tr>
-            <th>Kode</th>
-            <th>Akun</th>
-            <th>Jumlah</th>
+            <th width="15%">Kode</th>
+            <th width="55%">Akun</th>
+            <th width="30%">Jumlah</th>
         </tr>
     </thead>
     <tbody>
         @foreach($pendapatanPerAkun as $row)
-            <tr>
-                <td>{{ $row['kode'] }}</td>
-                <td>{{ $row['nama'] }}</td>
-                <td class="text-end">{{ number_format($row['total'],0,',','.') }}</td>
-            </tr>
+        <tr>
+            <td>{{ $row['kode'] }}</td>
+            <td>{{ $row['nama'] }}</td>
+            <td class="text-end">
+                {{ number_format($row['total'],0,',','.') }}
+            </td>
+        </tr>
         @endforeach
-        <tr class="fw-bold total">
+        <tr class="total">
             <td colspan="2">TOTAL PENDAPATAN</td>
-            <td class="text-end">{{ number_format($totalPendapatan,0,',','.') }}</td>
+            <td class="text-end">
+                {{ number_format($totalPendapatan,0,',','.') }}
+            </td>
         </tr>
     </tbody>
 </table>
 
-
+{{-- ================= BEBAN ================= --}}
 <h4>BEBAN / BIAYA</h4>
+
 <table>
     <thead>
         <tr>
-            <th>Kode</th>
-            <th>Akun</th>
-            <th>Jumlah</th>
+            <th width="15%">Kode</th>
+            <th width="55%">Akun</th>
+            <th width="30%">Jumlah</th>
         </tr>
     </thead>
     <tbody>
         @foreach($bebanPerAkun as $row)
-            <tr>
-                <td>{{ $row['kode'] }}</td>
-                <td>{{ $row['nama'] }}</td>
-                <td class="text-end">{{ number_format($row['total'],0,',','.') }}</td>
-            </tr>
+        <tr>
+            <td>{{ $row['kode'] }}</td>
+            <td>{{ $row['nama'] }}</td>
+            <td class="text-end">
+                {{ number_format($row['total'],0,',','.') }}
+            </td>
+        </tr>
         @endforeach
-        <tr class="fw-bold total">
+        <tr class="total">
             <td colspan="2">TOTAL BEBAN</td>
-            <td class="text-end">{{ number_format($totalBeban,0,',','.') }}</td>
+            <td class="text-end">
+                {{ number_format($totalBeban,0,',','.') }}
+            </td>
         </tr>
     </tbody>
 </table>
 
-
+{{-- ================= LABA RUGI ================= --}}
 <table>
     <tr class="highlight">
-        <td>LABA / RUGI</td>
-        <td class="text-end">
+        <td width="70%">LABA / RUGI</td>
+        <td width="30%" class="text-end">
             {{ number_format($laba,0,',','.') }}
         </td>
     </tr>

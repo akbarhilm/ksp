@@ -14,7 +14,7 @@
     <form method="GET" action="{{ route('transaksi.harian') }}" class="row g-3 mb-4">
         <div class="col-md-3">
             <label class="form-label">Tanggal</label>
-            <input type="date" name="tanggal" class="form-control" value="{{ request('tanggal') }}">
+            <input type="date" id='tanggal' name="tanggal" class="form-control" value="{{ request('tanggal') }}">
         </div>
 
         <div class="col-md-2 d-flex align-items-end">
@@ -25,7 +25,11 @@
     {{-- ========================== TABEL SIMPANAN ========================== --}}
     <div class="card mb-4">
         <div class="card-header bg-info text-white">
+            <div class='d-flex justify-content-between'>
+
             <strong>Transaksi Simpanan</strong>
+            <button onclick='cetaksimpan()' class='btn btn-dark'>Cetak Simpanan</a>
+            </div>
         </div>
         <div class="card-body p-0">
             @if($simpanan->count() > 0)
@@ -111,7 +115,10 @@
     {{-- ========================== TABEL ANGSURAN ========================== --}}
     <div class="card mb-4">
         <div class="card-header bg-success text-white">
+            <div class='d-flex justify-content-between'>
             <strong>Transaksi Angsuran</strong>
+            <button onclick='cetakang()' class='btn btn-dark'>Cetak Angsuran</a>
+            </div>
         </div>
         <div class="card-body p-0">
             @if($angsuran->count() > 0)
@@ -173,6 +180,12 @@
 
  @push('js')
 <script>
+    function cetakang(){
+        window.location.href = window.location.origin+'/laporan/angsuranhari/pdf?tanggal='+$("#tanggal").val()
+    }
+     function cetaksimpan(){
+        window.location.href = window.location.origin+'/laporan/simpanhari/pdf?tanggal='+$("#tanggal").val()
+    }
 function lihat() {
     var tanggal = $("#tanggal").val();
 

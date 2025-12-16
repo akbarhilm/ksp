@@ -6,48 +6,19 @@
 
     <style>
         body {
-            font-family: DejaVu Sans, sans-serif;
+            font-family: dejavusans;
             font-size: 11px;
+            color: #000;
         }
 
         h3 {
             text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .row {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-
-        .col {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-            padding: 5px;
-        }
-
-        .card {
-            border: 1px solid #666;
-        }
-
-        .card-header {
-            background: #0277ba;
-            color: white;
-            padding: 5px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .km-header {
-            background: #198754;
-            color: white;
+            margin-bottom: 12px;
         }
 
         table {
-            border-collapse: collapse;
             width: 100%;
+            border-collapse: collapse;
         }
 
         td {
@@ -55,14 +26,22 @@
             padding: 4px;
         }
 
-        .text-end {
-            text-align: right;
+        .text-end { text-align: right; }
+        .fw-bold { font-weight: bold; }
+
+        .bg-aset {
+            background-color: #0277ba;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
         }
 
-        .bg-info { background:#0277ba;color:white; }
-        .bg-success { background:#198754;color:white; }
-        .fw-bold { font-weight:bold; }
-
+        .bg-km {
+            background-color: #198754;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -79,47 +58,56 @@
     $maxRows = max($asetCount, $kmCount);
 @endphp
 
-<div class="row">
-
-    {{-- ASET --}}
-    <div class="col">
-        <div class="card">
-            <div class="card-header">ASET</div>
+{{-- ===== LAYOUT 2 KOLOM AMAN mPDF ===== --}}
+<table>
+    <tr>
+        {{-- ================= ASET ================= --}}
+        <td width="50%" valign="top">
             <table>
-                <tbody>
-                @for($i=0;$i<$maxRows;$i++)
+                <tr>
+                    <td colspan="2" class="bg-aset">ASET</td>
+                </tr>
+
+                @for($i = 0; $i < $maxRows; $i++)
                     @if(isset($neraca['Aset'][$i]))
                         <tr>
                             <td>{{ $neraca['Aset'][$i]['nama'] }}</td>
-                            <td class="text-end">{{ number_format($neraca['Aset'][$i]['saldo'],0,',','.') }}</td>
+                            <td class="text-end">
+                                {{ number_format($neraca['Aset'][$i]['saldo'],0,',','.') }}
+                            </td>
                         </tr>
                         @php $totalAset += $neraca['Aset'][$i]['saldo']; @endphp
                     @else
-                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
                     @endif
                 @endfor
-                <tr class="fw-bold">
-                    <td class="bg-info">TOTAL ASET</td>
-                    <td class="bg-info text-end">{{ number_format($totalAset,0,',','.') }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 
-    {{-- KEWAJIBAN & MODAL --}}
-    <div class="col">
-        <div class="card">
-            <div class="card-header km-header">KEWAJIBAN & MODAL</div>
+                <tr class="fw-bold">
+                    <td class="bg-aset">TOTAL ASET</td>
+                    <td class="bg-aset text-end">
+                        {{ number_format($totalAset,0,',','.') }}
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        {{-- ================= KEWAJIBAN & MODAL ================= --}}
+        <td width="50%" valign="top">
             <table>
-                <tbody>
-                @for($i=0;$i<$maxRows;$i++)
+                <tr>
+                    <td colspan="2" class="bg-km">KEWAJIBAN & MODAL</td>
+                </tr>
+
+                @for($i = 0; $i < $maxRows; $i++)
                     @php
                         $kmItem = null;
-                        if($i < count($neraca['Kewajiban'])) {
+                        if ($i < count($neraca['Kewajiban'])) {
                             $kmItem = $neraca['Kewajiban'][$i];
                             $totalKewajiban += $kmItem['saldo'];
-                        } elseif($i - count($neraca['Kewajiban']) < count($neraca['Modal'])) {
+                        } elseif ($i - count($neraca['Kewajiban']) < count($neraca['Modal'])) {
                             $kmItem = $neraca['Modal'][$i - count($neraca['Kewajiban'])];
                             $totalModal += $kmItem['saldo'];
                         }
@@ -128,24 +116,28 @@
                     @if($kmItem)
                         <tr>
                             <td>{{ $kmItem['nama'] }}</td>
-                            <td class="text-end">{{ number_format($kmItem['saldo'],0,',','.') }}</td>
+                            <td class="text-end">
+                                {{ number_format($kmItem['saldo'],0,',','.') }}
+                            </td>
                         </tr>
                     @else
-                        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
                     @endif
                 @endfor
+
                 <tr class="fw-bold">
-                    <td class="bg-success">TOTAL KEWAJIBAN & MODAL</td>
-                    <td class="bg-success text-end">
+                    <td class="bg-km">TOTAL KEWAJIBAN & MODAL</td>
+                    <td class="bg-km text-end">
                         {{ number_format($totalKewajiban + $totalModal,0,',','.') }}
                     </td>
                 </tr>
-                </tbody>
             </table>
-        </div>
-    </div>
-
-</div>
+        </td>
+    </tr>
+</table>
 
 </body>
 </html>

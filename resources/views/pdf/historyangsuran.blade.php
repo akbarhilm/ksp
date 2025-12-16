@@ -2,156 +2,134 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Riwayat Pembayaran</title>
     <style>
-        body { font-family: "DejaVu Sans", sans-serif; font-size:12px; color:#000; }
-        .header { width:100%; display:table; margin-bottom:6px; }
-        .logo { width:70px; }
-        .header-text { vertical-align:middle; padding-left:8px; font-size:12px; }
-        .koperasi { font-weight:bold; font-size:14px; }
-        .address { font-size:10px; margin-top:2px; }
-        hr { border:1px solid #000; margin:6px 0; }
-
-        .judul { text-align:center; font-weight:bold; font-size:16px; margin:6px 0 10px 0; }
-
-        .meta, .data-table { width:100%; border-collapse:collapse; margin-bottom:10px; }
-        .meta td { border:none; padding:2px 4px; vertical-align:top; font-size:11px; }
-        .meta .label { width:140px; font-weight:600; }
-
-        table.data-table th,
-        table.data-table td {
-            border:1px solid #000;
-            padding:6px 8px;
-            font-size:11px;
-        }
-        table.data-table th { background:#f0f0f0; font-weight:700; text-align:center; }
-
-        .right { text-align:right; }
-        .center { text-align:center; }
-
-        .stamp {
-            position:absolute;
-            right:40px;
-            top:90px;
-            width:220px;
-            opacity:0.9;
+        body {
+            font-family: dejavusans;
+            font-size: 11px;
         }
 
-        .footer { margin-top:14px; font-size:11px; }
-        .ttd-row { width:100%; margin-top:24px; }
-        .ttd-row td { border:none; vertical-align:top; padding-top:5px; }
-        .cap { position:absolute; right:120px; bottom:100px; width:120px; opacity:0.85; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-        /* ensure table fits page */
-        .table-wrap { overflow:hidden; }
+        .header td {
+            vertical-align: middle;
+        }
+
+        .judul {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        .border th, .border td {
+            border: 1px solid #000;
+            padding: 6px;
+        }
+
+        .right { text-align: right; }
+        .center { text-align: center; }
     </style>
 </head>
 <body>
 
+{{-- HEADER --}}
 <table class="header">
     <tr>
-        <td style="width:80px; border:none;">
-            <img src="{{ public_path('koperasi.png') }}" class="logo" alt="logo">
+        <td width="80">
+            <img src="{{ public_path('koperasi.png') }}" width="70">
         </td>
-        <td class="header-text" style="border:none;">
-            <div class="koperasi">{{ $koperasi_name ?? 'Koperasi Sinar Murni Sejahtera' }}</div>
-            <div class="address">{{ $koperasi_address ?? 'Jl. Raya Bumi Indah City Blok Ryc R No. 5, Pasar Kemis - Tangerang Banten' }}</div>
+        <td>
+            <b>KOPERASI SINAR MURNI SEJAHTERA</b><br>
+            Jl. Raya Bumi Indah City Blok Ryc R No. 5,<br>
+            Pasar Kemis – Tangerang Banten
         </td>
     </tr>
 </table>
 
 <hr>
 
-<div class="judul">Riwayat Pembayaran</div>
+<div class="judul">RIWAYAT PEMBAYARAN</div>
 
-<table class="meta">
+{{-- DATA PINJAMAN --}}
+<table>
     <tr>
-        <td class="label">Nomor Pinjaman</td>
-        <td>{{ $no_pinjaman }}</td>
-        <td class="label">Nama Anggota</td>
-        <td>{{ $nama }}</td>
+        <td width="25%">Nomor Pinjaman</td>
+        <td width="25%">: {{ $pinjaman->id_pinjaman }}</td>
+        <td width="25%">Nama Anggota</td>
+        <td width="25%">: {{ $pinjaman->nasabah->nama }}</td>
     </tr>
     <tr>
-        <td class="label">Nomor Anggota</td>
-        <td>{{ $no_anggota }}</td>
-        <td class="label">Jumlah Pinjaman</td>
-        <td class="">Rp {{ number_format($jumlah_pinjaman,0,',','.') }}</td>
-    </tr>
-    <tr>
-        <td class="label">Tenor</td>
-        <td>{{ $tenor }}</td>
-        <td class="label">Tanggal Pengajuan</td>
-        <td>{{ $tgl_pengajuan }}</td>
-    </tr>
-    <tr>
-        <td class="label">Tanggal Pelunasan</td>
-        <td>{{ $tgl_pelunasan ?? '-' }}</td>
-        <td class="label">Status Lunas</td>
-        <td>{{ $status_lunas ?? '-' }}</td>
+        <td>Nomor Anggota</td>
+        <td>: {{ str_pad($pinjaman->id_nasabah,5,'0',STR_PAD_LEFT) }}</td>
+        <td>Jumlah Pinjaman</td>
+        <td>: Rp {{ number_format($pinjaman->total_pinjaman,0,',','.') }}</td>
     </tr>
 </table>
 
-{{-- stamp image (opsional) --}}
+<br>
 
-
-<div class="table-wrap">
-<table class="data-table">
+{{-- TABEL ANGSURAN --}}
+<table class="border">
     <thead>
         <tr>
-            <th style="width:40px">No</th>
-            <th style="width:130px">Tgl Bayar</th>
-            <th style="width:80px">Angsuran</th>
-            <th style="width:110px">Pokok</th>
-            <th style="width:110px">Jasa</th>
-            <th style="width:110px">Total</th>
+            <th width="5%">No</th>
+            <th width="15%">Tgl Bayar</th>
+            <th width="10%">Angs</th>
+            <th width="20%">Pokok</th>
+            <th width="20%">Jasa</th>
+            <th width="20%">Total</th>
         </tr>
     </thead>
     <tbody>
-        @php $no = 1; $sumAngsuran = 0; $sumPokok = 0; $sumJasa = 0; $sumTotal = 0; @endphp
-        @forelse($angsuran as $item)
-            <tr>
-                <td class="center">{{ $no++ }}</td>
-                <td class="center">{{ \Carbon\Carbon::parse($item['tanggal'])->format('Y-m-d') }}</td>
-                <td class="center">{{ $item['angsuran_label'] ?? $item['angsuran'] ?? $item['nomor'] ?? '' }}</td>
-                <td class="right">Rp {{ number_format($item['pokok'] ?? 0,0,',','.') }}</td>
-                <td class="right">Rp {{ number_format($item['jasa'] ?? 0,0,',','.') }}</td>
-                <td class="right">Rp {{ number_format(($item['pokok'] ?? 0) + ($item['jasa'] ?? 0),0,',','.') }}</td>
-            </tr>
-            @php
-                $sumAngsuran += ($item['angsuran'] ?? 0);
-                $sumPokok += ($item['pokok'] ?? 0);
-                $sumJasa += ($item['jasa'] ?? 0);
-                $sumTotal += (($item['pokok'] ?? 0) + ($item['jasa'] ?? 0));
-            @endphp
-        @empty
-            <tr>
-                <td class="center" colspan="6">Tidak ada data pembayaran</td>
-            </tr>
-        @endforelse
+        @php
+            $totalPokok = 0;
+            $totalJasa = 0;
+            $total = 0;
+        @endphp
+        @foreach($angsuran as $i => $a)
+        @php
+            $rowTotal = $a['pokok'] + $a['jasa'];
+            $totalPokok += $a['pokok'];
+            $totalJasa += $a['jasa'];
+            $total += $rowTotal;
+        @endphp
         <tr>
-            <td colspan="3" class="right bold">Total</td>
-            <td class="right bold">Rp {{ number_format($sumPokok,0,',','.') }}</td>
-            <td class="right bold">Rp {{ number_format($sumJasa,0,',','.') }}</td>
-            <td class="right bold">Rp {{ number_format($sumTotal,0,',','.') }}</td>
+            <td class="center">{{ $i+1 }}</td>
+            <td class="center">{{ $a['tanggal'] }}</td>
+            <td class="center">{{ $a['angsuran'] }}</td>
+            <td class="right">{{ number_format($a['pokok'],0,',','.') }}</td>
+            <td class="right">{{ number_format($a['jasa'],0,',','.') }}</td>
+            <td class="right">{{ number_format($rowTotal,0,',','.') }}</td>
+        </tr>
+        @endforeach
+
+        <tr>
+            <th colspan="3" class="right">TOTAL</th>
+            <th class="right">{{ number_format($totalPokok,0,',','.') }}</th>
+            <th class="right">{{ number_format($totalJasa,0,',','.') }}</th>
+            <th class="right">{{ number_format($total,0,',','.') }}</th>
         </tr>
     </tbody>
 </table>
-</div>
 
-<div class="footer">
-    Tanggal Cetak : {{ $tanggal_cetak ?? date('d-m-Y') }}
-</div>
+<br>
 
-<table class="ttd-row">
+Tanggal Cetak: {{ $tanggal_cetak }}
+
+<br><br>
+
+<table>
     <tr>
-        <td style="width:30%;">
-            Kasir Koperasi Murni
+        <td width="60%"></td>
+        <td class="center">
+            Mengetahui,<br><br><br>
+            <b>Kasir Koperasi</b>
         </td>
-        
     </tr>
 </table>
-
-
 
 </body>
 </html>
