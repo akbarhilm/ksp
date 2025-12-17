@@ -6,10 +6,16 @@ use App\Models\Nasabah;
 use App\Models\Pengajuan;
 use App\Models\PengajuanJaminan;
 use App\Models\Pinjaman;
+use App\Models\Simpanan;
+
 use App\Models\User;
+use App\Models\Jurnal;
+
+use App\Models\Akun;
+
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Mpdf\Mpdf;
-use App\Helpers\Helper;
+use App\Helpers\PinjamanHelper;
 
 use Illuminate\Http\Request;
 
@@ -33,8 +39,8 @@ class CetakPdfController extends Controller
             $resort = $p->nasabah->kode_resort ?? 'UNKNOWN';
 
             // hitung hari tunggakan & kolek
-            $hariTelat = Helper::hariTunggakan($p->id_pinjaman, $tanggal);
-            $kolek     = Helper::getKolektibilitas($hariTelat);
+            $data = PinjamanHelper::hitungDenda($p->id_pinjaman);
+            // $kolek     = Helper::getKolektibilitas($hariTelat);
 
             $sisa = $p->sisa_pokok;
 
@@ -49,15 +55,15 @@ class CetakPdfController extends Controller
             $dataResort[$resort]['total_kredit'] += $sisa;
 
             // NPL = C3, C4, C5
-            if (in_array($kolek, ['C3','C4','C5'])) {
+            if (in_array($data['kolek'], ['C3','C4','C5'])) {
                 $dataResort[$resort]['total_npl'] += $sisa;
             }
 
             $dataResort[$resort]['detail'][] = [
                 'nasabah' => $p->nasabah->nama,
                 'sisa'    => $sisa,
-                'hari'    => $hariTelat,
-                'kolek'   => $kolek,
+                'hari'    => $data['haritelat'],
+                'kolek'   => $data['kolek'],
             ];
         }
 
@@ -70,51 +76,7 @@ class CetakPdfController extends Controller
 
         return view('npl.resumeresort', compact('tanggal', 'dataResort'));
     }
-    public function nplindex(Request $request){
-         $tanggal = $request->tanggal ?? date('Y-m-d');
-
-    $pinjaman = Pinjaman::where('status', 'aktif')->get();
-
-    $totalKredit = 0;
-    $totalNPL    = 0;
-
-    $detail = [];
-
-    foreach ($pinjaman as $p) {
-
-        // hitung hari tunggakan (pakai fungsi kamu)
-        $data = PinjamanHelper::hitungDenda($p->id_pinjaman);
-        // $kolek     = Helper::getKolektibilitas($hariTelat);
-
-        $sisa = $p->sisa_pokok;
-
-        $totalKredit += $sisa;
-
-        if (in_array($data['kolek'], ['C3','C4','C5'])) {
-            $totalNPL += $sisa;
-        }
-
-        $detail[] = [
-            'nasabah' => $p->nasabah->nama,
-            'sisa'    => $sisa,
-            'hari'    => $data['haritelat'],
-            'kolek'   => $data['kolek']
-        ];
-    }
-
-    $rasioNPL = $totalKredit > 0
-        ? round(($totalNPL / $totalKredit) * 100, 2)
-        : 0;
-
-    return view('npl.index', compact(
-        'tanggal',
-        'totalKredit',
-        'totalNPL',
-        'rasioNPL',
-        'detail'
-    ));
-    }
-
+    
 public function cetakJaminan($id)
 {
     $pinjaman = Pinjaman::with('nasabah')->where('id_pinjaman',$id)->first();
@@ -297,6 +259,175 @@ public function cetakPerjanjian($id){
     //     ->setOption('encoding', 'utf-8');
 
     // return $pdf->inline("SP_Hutang_{$data->rekening[0]->nasabah[0]->nama}.pdf");
+}
+
+public function bukuBesarRekap(Request $request){
+     $result = [];
+        $akunList = Akun::where('status','aktif')->orderBy('kode_akun')->get();
+        foreach ($akunList as $akun) {
+
+            $jurnal = Jurnal::where('id_akun',$akun->id_akun)
+                ->when($request->tanggal_awal && $request->tanggal_akhir, fn($q)=>
+                    $q->whereBetween('tanggal_transaksi',[
+                        $request->tanggal_awal,
+                        $request->tanggal_akhir
+                    ])
+                )->get();
+
+            $totalDebet = $jurnal->sum('v_debet');
+            $totalKredit = $jurnal->sum('v_kredit');
+
+            $saldo = in_array($akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])
+                ? $totalKredit - $totalDebet
+                : $totalDebet - $totalKredit;
+
+            $result[] = [
+                $akun->kode_akun,
+                $akun->nama_akun,
+                $totalDebet,
+                $totalKredit,
+                $saldo
+            ];
+        }
+    $html = view('pdf.bukubesarrekap', compact('result'))->render();
+
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4',
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+    ]);
+
+    $mpdf->WriteHTML($html);
+    return $mpdf->Output('saldo-akun.pdf', 'I');
+}
+public function bukuBesarAkun(Request $request){
+      $akunId  = $request->id_akun;
+        $tglAwal = $request->tanggal_awal;
+        $tglAkhir= $request->tanggal_akhir;
+
+        $akun = Akun::findOrFail($akunId);
+        $saldo = 0;
+
+        // Saldo Awal
+        if ($tglAwal) {
+            $awal = Jurnal::where('id_akun',$akunId)
+                ->whereDate('tanggal_transaksi','<',$tglAwal)->get();
+
+            foreach ($awal as $r) {
+                $saldo += in_array($akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])
+                        ? ($r->v_kredit - $r->v_debet)
+                        : ($r->v_debet - $r->v_kredit);
+            }
+        }
+
+        $rows = Jurnal::where('id_akun',$akunId)
+            ->when($tglAwal && $tglAkhir, fn($q)=>
+                $q->whereBetween('tanggal_transaksi',[$tglAwal,$tglAkhir])
+            )
+            ->orderBy('tanggal_transaksi')
+            ->get();
+
+        $data = [];
+
+        // Baris saldo awal
+        if ($tglAwal) {
+            $data[] = [$tglAwal,'Saldo Awal',0,0,$saldo];
+        }
+
+        foreach ($rows as $r) {
+            $saldo += in_array($akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])
+                        ? ($r->v_kredit - $r->v_debet)
+                        : ($r->v_debet - $r->v_kredit);
+
+            $data[] = [
+                $r->tanggal_transaksi,
+                $r->keterangan,
+                $r->v_debet,
+                $r->v_kredit,
+                $saldo
+            ];
+        }
+
+        
+    $html = view('pdf.bukubesarakun', compact('data','akun'))->render();
+
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4',
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+    ]);
+
+    $mpdf->WriteHTML($html);
+    return $mpdf->Output('saldo-akun.pdf', 'I');
+}
+
+public function penyebut($Nilai) {
+		$Nilai = abs($Nilai);
+		$huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+		$temp = "";
+		if ($Nilai < 12) {
+			$temp = " ". $huruf[$Nilai];
+		} else if ($Nilai <20) {
+			$temp = $this->penyebut($Nilai - 10). " Belas";
+		} else if ($Nilai < 100) {
+			$temp = $this->penyebut($Nilai/10)." Puluh". $this->penyebut($Nilai % 10);
+		} else if ($Nilai < 200) {
+			$temp = " Seratus" . $this->penyebut($Nilai - 100);
+		} else if ($Nilai < 1000) {
+			$temp = $this->penyebut($Nilai/100) . " Ratus" . $this->penyebut($Nilai % 100);
+		} else if ($Nilai < 2000) {
+			$temp = " Seribu" . $this->penyebut($Nilai - 1000);
+		} else if ($Nilai < 1000000) {
+			$temp = $this->penyebut($Nilai/1000) . " Ribu" . $this->penyebut($Nilai % 1000);
+		} else if ($Nilai < 1000000000) {
+			$temp = $this->penyebut($Nilai/1000000) . " Juta" . $this->penyebut($Nilai % 1000000);
+		} else if ($Nilai < 1000000000000) {
+			$temp = $this->penyebut($Nilai/1000000000) . " Milyar" . $this->penyebut(fmod($Nilai,1000000000));
+		} else if ($Nilai < 1000000000000000) {
+			$temp = $this->penyebut($Nilai/1000000000000) . " Trilyun" . $this->penyebut(fmod($Nilai,1000000000000));
+		}     
+		return $temp;
+	}
+public function terbilang($Nilai) {
+
+		if($Nilai<0) {
+			$hasil = "minus ". trim($this->penyebut($Nilai))." ";
+		}
+		elseif ($Nilai==0) {
+			$hasil = "-";	
+		} 
+		else{ 
+			$hasil = trim($this->penyebut($Nilai))." ";
+		}     		
+		return $hasil;
+	}
+    
+public function cetakPenarikan(Request $request)
+{
+    
+    $s = Simpanan::with('rekening.nasabah')->where('id_simpanan',$request->id)->first();
+    $data = [
+        'no_transaksi'   => $s->no_jurnal,
+        'nama'           => $s->rekening->nasabah[0]->nama,
+        'no_anggota'     => str_pad($s->rekening->id_nasabah,5,'0',STR_PAD_LEFT),
+        'tanggal'        => $s->tanggal,
+        'jumlah'         => $s->v_debit,
+        'terbilang'      => $this->terbilang($s->v_debit),
+    ];
+
+    $html = view('pdf.buktipenarikan', compact('data'))->render();
+
+    $mpdf = new Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4',
+        'margin_top' => 10,
+        'margin_bottom' => 10,
+    ]);
+
+    $mpdf->WriteHTML($html);
+    return $mpdf->Output('bukti-penarikan-'.$s->rekening->nasabah[0]->nama.'.pdf','I');
 }
 
 

@@ -204,12 +204,12 @@ public function bukuBesar(Request $request)
 
         // ✅ SALDO AWAL
         if ($tglAwal) {
-            $saldoAwalRows = Jurnal::where('id_akun',$akunId)
+            $saldoAwalRows = Jurnal::with('akun')->where('id_akun',$akunId)
                 ->whereDate('tanggal_transaksi','<',$tglAwal)
                 ->get();
 
             foreach ($saldoAwalRows as $r) {
-                if (in_array($akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])) {
+                if (in_array($r->akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])) {
                     $saldoAwal += ($r->v_kredit - $r->v_debet);
                 } else {
                     $saldoAwal += ($r->v_debet - $r->v_kredit);
@@ -235,10 +235,9 @@ public function bukuBesar(Request $request)
         // BARIS TRANSAKSI
          $totalDebet =0;
                 $totalKredit =0;
-                $saldo =0;
         foreach ($rows as $r) {
 
-            if (in_array($akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])) {
+            if (in_array($r->akun->tipe_akun,['Kewajiban','Modal','Pendapatan'])) {
                 $saldo += ($r->v_kredit - $r->v_debet);
                 $totalDebet += $r->v_debet;
                 $totalKredit += $r->v_kredit;

@@ -147,16 +147,24 @@
                                         class="form-control format-angka  input-jumlah">
                                 </div>
                             </div>
-                                @if ($pengajuan->jenis == 'topup')
                                 <div class="row">
+
+                            <div class="col-md-6 mb-4">
+                                    <label class="form-label">Materai</label>
+                                    <input type="text" readonly name="materai"
+                                        value="{{ number_format($pengajuan->materai, 0) }}"
+                                        class="form-control format-angka  input-jumlah">
+                                </div>
+                                @if ($pengajuan->jenis == 'topup')
                                     <div class="col-md-6 mb-4">
                                         <label class="form-label">Sisa Pinjaman Sebelumnya</label>
                                         <input type="text" readonly name="asuransi"
-                                            value="{{ number_format($pinjaman->sisa_pokok, 0) }}"
+                                            value="{{ number_format($pinjaman->sisa_pokok+$pinjaman->sisa_bunga, 0) }}"
                                             class="form-control format-angka  input-jumlah">
                                     </div>
-                                </div>
                                 @endif
+
+                                </div>
 
 
                             <hr>

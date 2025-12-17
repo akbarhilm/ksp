@@ -57,27 +57,14 @@
                                         @enderror
                                     </div>
 
-                                     <div class="col-md-6">
-                                        <div class="input-group input-group-static mb-4">
-                                            <label>Jenis Simpanan</label>
-                                           <select class="form-control" name="jenis">
-                                            <option value="">--Pilih Jenis Simpanan--</option>
-                                            <option value="pokok">Simpanan Pokok</option>
-                                            <option value="wajib">Simpanan Wajib</option>
-                                            <option value="sukarela">Simpanan Sukarela</option>
-                                           </select>
-                                        </div>
-                                        @error('no_rekening')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                        @enderror
-                                    </div>
+                                    
                                    
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
                                             <label>Jumlah</label>
-                                            <input type="number"  class="form-control input-jumlah" name="v_kredit"
+                                            <input type="text"  class="form-control input-jumlah" name="v_kredit"
                                                 value="{{old('v_kredit') }}" 
                                                 />
 

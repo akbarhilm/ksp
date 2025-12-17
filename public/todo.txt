@@ -10,3 +10,4 @@ Sekalian tlg aturan² nya ya supaya bisa disesuaikan spt
 9. ⁠simpanan ada adm 2000 dan bunga di atas 500 rbu simpanan 0,5% v
 10. Penambahan Menu NPL
 11. tutup buku otomatis, akun shu di catat, 
+12. keterangan jurnal betulkan

@@ -127,9 +127,9 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
     }
 
     // jatuh tempo setiap tanggal (misal 20)
-
+$tgl = 20;
     // dueDate pertama yang terlewat = tanggal jatuhTempo pada bulan berikutnya setelah bulan acuan
-    $firstMissedDue = $acuan->copy()->addMonth()->startOfMonth()->setDay($jatuhTempo);
+    $firstMissedDue = $acuan->copy()->addMonth()->startOfMonth()->setDay($jtempo);
 
     // jika bulan acuan memiliki tanggal > days in month (misal setDay overflow), Carbon akan handle.
     // pastikan firstMissedDue valid (Carbon setDay menangani)
@@ -137,9 +137,9 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
     $today = Carbon::today();
 
     // kalau hari ini belum melewati due date pertama → belum terlambat
-    if ($today->lte($firstMissedDue)) {
-        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
-    }
+    // if ($today->lte($firstMissedDue)) {
+    //     return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
+    // }
 
     // hari telat = selisih hari antara due date pertama terlewat dan hari ini
     $hariTelat = $firstMissedDue->diffInDays($today);

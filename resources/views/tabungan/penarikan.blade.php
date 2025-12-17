@@ -54,49 +54,27 @@
 
                         {{-- Saldo Sekarang --}}
                         <div class='row'>
-                        <div class="mb-3 col-md-4">
-                            <label class="form-label">Saldo Pokok</label>
-                            <input type="text" class="form-control" name="saldopokok" readonly value="{{ number_format($saldo['pokok'],0) }}">
-                        </div>
+                        
                          <div class="mb-3 col-md-4">
-                            <label class="form-label">Saldo Wajib</label>
-                            <input type="text" class="form-control" name='saldowajib' readonly value="{{ number_format($saldo['wajib'],0) }}">
+                            <label class="form-label">Saldo </label>
+                            <input type="text" class="form-control" name='saldo' readonly value="{{ number_format($saldo,0) }}">
                         </div>
-                         <div class="mb-3 col-md-4">
-                            <label class="form-label">Saldo Sukarela</label>
-                            <input type="text" class="form-control" name='saldosukarela' readonly value="{{ number_format($saldo['sukarela'],0) }}">
-                        </div>
+                         
                         </div>
                           <div class="row">
-                        <div class="mb-3 col-md-4">
-                            <div class='input-group input-group-static'>
-                            <label class="">Penarikan saldo Pokok</label>
-                            <input type="text" class="form-control input-jumlah" name='tarik_pokok' value={{old('tarik_pokok')??0}}>
-                            </div>
-                            @error('tarik_pokok')
-                                <span class="text-danger small">{{ $message }}</span>
-                            @enderror
-                        </div>
+                       
 
                         {{-- Jumlah Penarikan --}}
                       
                         <div class="mb-3 col-md-4 ">
                             <div class='input-group input-group-static'>
                             <label class="">Penarikan Saldo Wajib</label>
-                            <input type="text" class="form-control input-jumlah" name="tarik_wajib" value={{ old('tarik_wajib')??0}} >
+                            <input type="text" class="form-control input-jumlah" name="tarik" value={{ old('tarik')??0}} >
                             </div>
-                               @error('tarik_wajib')
+                               @error('tarik')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
-                        </div>
-                           <div class="mb-3 col-md-4">
-                            <div class='input-group input-group-static '>
-                            <label >Penarikan Saldo Sukarela</label>
-                            <input type="text" class="form-control input-jumlah" name="tarik_rela" value={{ old('tarik_rela')??0}} >
-                                 @error('tarik_rela')
-                                <span class="text-danger small">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        
                         </div>
                           </div>
                           <div class="row">

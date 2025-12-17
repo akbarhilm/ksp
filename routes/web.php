@@ -183,6 +183,11 @@ Route::get('/buku-besar/export/rekap',   [ReportFileController::class,'exportRek
 Route::get('/buku-besar/export/detail',  [ReportFileController::class,'exportDetail'])->name('bukubesar.export.detail');
 Route::get('/export/jurnal',  [ReportFileController::class,'exportJurnal'])->name('export.jurnal');
 Route::get('/npl',  [CetakPdfController::class,'nplPerResort'])->name('npl.resume');
+Route::get('/bukubesar/rekap',  [CetakPdfController::class,'bukuBesarRekap'])->name('bukubesar.rekap');
+Route::get('/bukubesar/akun',  [CetakPdfController::class,'bukuBesarAkun'])->name('bukubesar.akun');
+Route::get('/cetak/penarikan',  [CetakPdfController::class,'cetakPenarikan'])->name('cetak.penarikan');
+
+
 
 });
 

@@ -14,6 +14,7 @@ class TransaksiHarianController extends Controller
 {
     public function index(Request $request)
     {
+        
         if($request->tanggal){
             $tanggal = $request->tanggal;
         }else{
@@ -21,26 +22,25 @@ class TransaksiHarianController extends Controller
         }
         $userId = auth()->id(); // <-- user yang menginput data
 
-        $simpanan = Simpanan::where('id_entry', $userId)
-            ->whereDate('tanggal', $tanggal)
+        $simpanan = Simpanan::with('nasabah')->whereDate('tanggal', $tanggal)
             ->orderBy('tanggal', 'ASC')
             ->get();
-        $pengajuan =  Pengajuan::with('rekening')->where('id_entry', $userId)
-            ->whereDate('tanggal_pengajuan', $tanggal)
+        $pengajuan =  Pengajuan::with('rekening')->
+            whereDate('tanggal_pengajuan', $tanggal)
             ->orderBy('tanggal_pengajuan', 'ASC')
             ->get();
-        $angsuran = Angsuran::with('pinjaman.nasabah')->where('id_entry', $userId)
+        $angsuran = Angsuran::with('pinjaman.nasabah')
             ->whereDate('tanggal', $tanggal)
             ->orderBy('tanggal', 'ASC')
             ->get();
-        $pinjaman =  Pinjaman::where('id_entry', $userId)
-            ->whereHas('pengajuan', function ($q) use($tanggal){
+        $pinjaman =  Pinjaman::
+            whereHas('pengajuan', function ($q) use($tanggal){
                 $q->whereDate('tanggal_pencairan', $tanggal);
             })
             ->with('pengajuan')
             ->get();
 
-
+dd($angsuran);
 
         return view('transharian.index',compact('simpanan','pengajuan','angsuran','pinjaman'));
     }

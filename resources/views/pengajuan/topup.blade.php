@@ -137,7 +137,7 @@
 
                         <div class="col-md-6 mb-4">
                                 <label class="form-label">Sisa Pokok Pinjaman</label>
-                                <input type="text"  name="sisa_pokok" disabled value="{{number_format($pinjaman->sisa_pokok,0) }}" class="form-control format-angka  input-jumlah">
+                                <input type="text"  name="sisa_pokok" disabled value="{{number_format($pinjaman->sisa_pokok+$pinjaman->sisa_bunga,0) }}" class="form-control format-angka  input-jumlah">
                             </div>
                         </div>
 

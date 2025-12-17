@@ -18,7 +18,7 @@
 </button>
 
 <!-- MODAL TAMBAH JURNAL DOUBLE ENTRY -->
-<div class="modal fade" id="modalJurnal" tabindex="-1">
+<div class="modal fade" id="modalJurnal" >
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -49,8 +49,7 @@
                         <h6 class="text-primary fw-bold">Baris Debit</h6>
                         <div class="col-md-8">
     <label class="form-label">Akun Debit</label>
-    <select name="akun_debet" id="akun_debet" class="form-select" required>
-        <option value="">-- Pilih Akun --</option>
+    <select name="akun_debet" id="akun_debet" class="select2" required>
         @foreach ($akunList as $a)
             <option value="{{ $a->id_akun }}">{{ $a->kode_akun.' / '. $a->nama_akun }}</option>
         @endforeach
@@ -65,8 +64,7 @@
                         <h6 class="text-danger fw-bold mt-3">Baris Kredit</h6>
                         <div class="col-md-8">
                             <label class="form-label">Akun Kredit</label>
-                            <select name="akun_kredit" id="akun_kredit" class="form-select" required>
-                                <option value="">-- Pilih Akun --</option>
+                            <select name="akun_kredit" id="akun_kredit" class='select2' required>
                                 @foreach ($akunList as $a)
                                     <option value="{{ $a->id_akun }}">{{$a->kode_akun.' / '.$a->nama_akun }}</option>
                                 @endforeach
@@ -146,22 +144,26 @@
 @push('js')
 <script>
 
+$('#modalJurnal').on('shown.bs.modal', function () {
+    $(this).find('.select2').select2({
+        dropdownParent: $('#modalJurnal'),
+        width: '100%'
+    });
+});
 $(document).ready(function() {
-    $('#akun_debet').select2({
-        placeholder: "-- Pilih Akun --",
-        allowClear: true,
-        width: '100%'
-    });
-     $('#akun_kredit').select2({
-        placeholder: "-- Pilih Akun --",
-        allowClear: true,
-        width: '100%'
-    });
-      $('#filterAkun').select2({
-        placeholder: "-- Pilih Akun --",
-        allowClear: true,
-        width: '100%'
-    });
+ 
+    // $('#akun_debet').select2({
+    //     placeholder: "-- Pilih Akun --",
+    //     allowClear: true,
+    //     width: '100%'
+    // });
+    //  $('#akun_kredit').select2({
+    //     placeholder: "-- Pilih Akun --",
+    //     allowClear: true,
+    //     width: '100%'
+    // });
+   
+    
 });
 
 document.addEventListener('DOMContentLoaded', function () {

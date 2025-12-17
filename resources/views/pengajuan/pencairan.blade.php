@@ -81,7 +81,7 @@
                                                     {{ number_format($n->asuransi, 0) }}
                                                 </td>
                                                 <td class="text-end text-sm">
-                                                    {{ $pinjamanAktif ? number_format($pinjamanAktif->sisa_pokok,0,',','.') : '0' }}
+                                                    {{ $pinjamanAktif ? number_format($pinjamanAktif->sisa_pokok + $pinjamanAktif->sisa_bunga,0,',','.') : '0' }}
                                                 </td>
 
                                                 <td class="text-center text-sm">

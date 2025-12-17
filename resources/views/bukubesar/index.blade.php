@@ -180,7 +180,7 @@ $('#btnDownloadRekap').on('click', function(e){
     let awal   = $('#tanggal_awal').val();
     let akhir  = $('#tanggal_akhir').val();
 
-    let url = `{{ route('bukubesar.export.rekap') }}?id_akun=${akun}&tanggal_awal=${awal}&tanggal_akhir=${akhir}`;
+    let url = `{{ route('bukubesar.rekap') }}?id_akun=${akun}&tanggal_awal=${awal}&tanggal_akhir=${akhir}`;
     window.open(url, '_blank');
 });
 
@@ -191,7 +191,7 @@ $('#btnDownloadDetail').on('click', function(e){
     let awal   = $('#tanggal_awal').val();
     let akhir  = $('#tanggal_akhir').val();
 
-    let url = `{{ route('bukubesar.export.detail') }}?id_akun=${akun}&tanggal_awal=${awal}&tanggal_akhir=${akhir}`;
+    let url = `{{ route('bukubesar.akun') }}?id_akun=${akun}&tanggal_awal=${awal}&tanggal_akhir=${akhir}`;
     window.open(url, '_blank');
 });
 

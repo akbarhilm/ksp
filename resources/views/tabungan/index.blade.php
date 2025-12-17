@@ -5,6 +5,7 @@
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Tabungan"></x-navbars.navs.auth>
         <!-- End Navbar -->
+    
         <div class="container-fluid py-4">
             <div class="card mb-4">
                 <div class="card-body">
