@@ -146,17 +146,26 @@
                         <h6 class="mb-3">Jaminan</h6>
 
                         <div id="jaminan-container">
+                            @if($errors->has('jenis_jaminan.*') || $errors->has('keterangan.*'))
+    <div class="text-danger">
+        Semua jenis jaminan dan keterangan wajib diisi
+    </div>
+@endif
                             @foreach ($pinjaman->pengajuan->jaminan as $j )
                             
                                 <div class="row jaminan-item mb-3">
                                 <div class="col-md-5">
                                     <label class="form-label">Jenis Jaminan</label>
                                     <input type="text" name="jenis_jaminan[]" class="form-control" value="{{ $j->jenis_jaminan }}">
+                             @error('jenis_jaminan[]') <small class="text-danger">{{ $message }}</small> @enderror
+
                                 </div>
 
                                 <div class="col-md-5">
                                     <label class="form-label">Keterangan</label>
                                     <input type="text" name="keterangan[]" class="form-control" value="{{$j->keterangan}}">
+                             @error('keterangan[]') <small class="text-danger">{{ $message }}</small> @enderror
+
                                 </div>
 
                                 <div class="col-md-2 d-flex align-items-end">
@@ -223,11 +232,15 @@ $("#bunga, #tenor").on("input", function () {
                 <div class="col-md-5">
                     <label class="form-label">Jenis Jaminan</label>
                     <input type="text" name="jenis_jaminan[]" class="form-control" placeholder="Contoh: ATM">
+                             @error('jenis_jaminan[]') <small class="text-danger">{{ $message }}</small> @enderror
+
                 </div>
 
                 <div class="col-md-5">
                     <label class="form-label">Keterangan</label>
                     <input type="text" name="keterangan[]" class="form-control" placeholder="Contoh: No kartu 1234...">
+                             @error('keterangan[]') <small class="text-danger">{{ $message }}</small> @enderror
+
                 </div>
 
                 <div class="col-md-2 d-flex align-items-end">

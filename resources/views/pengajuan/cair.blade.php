@@ -229,6 +229,7 @@
 
                         if (res.success) {
                               window.open(res.pdf_url, '_blank');
+                              window.open(res.pencairan, '_blank');
                             window.location.href = window.location.origin+'/pengajuan/pencairan';
 
 

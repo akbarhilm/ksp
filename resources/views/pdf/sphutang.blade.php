@@ -6,8 +6,8 @@
     {{-- <link rel="stylesheet" href="{{ public_path('css/pdf.css') }}"> --}}
     <style>
         body {
-    font-family: 'dejavusans';
-
+    /* font-family: 'dejavusans'; */
+font-family: "DejaVu Sans", sans-serif;
     font-size: 12px;
     line-height: 1.35;
 }
@@ -23,8 +23,8 @@ h1, h2, h3, h4, h5, h6 {
 .text-left { text-align: left; }
 .text-justify { text-align: justify; }
 
-.text-sm { font-size: 14px; }
-.text-xs { font-size: 12px; }
+.text-sm { font-size: 12px; }
+.text-xs { font-size: 10px; }
 
 .table {
     width: 100%;
@@ -61,7 +61,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .page {
     width: 100%;
-    max-width: 210mm;
     margin: 0 auto;
     padding: 15px 20px;
     background: white;

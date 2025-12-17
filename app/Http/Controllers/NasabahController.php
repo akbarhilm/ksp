@@ -233,7 +233,7 @@ public function datatableindex(Request $request)
 
     // ada pinjaman aktif?
     $punyaPinjamanAktif = $n->pinjaman->count() > 0;
-    // $routeTopup     = route('pengajuan.topup', ['id_nasabah' => $n->id_nasabah]);
+    $routeTopup     = route('pengajuan.topup', ['id_nasabah' => $n->id_nasabah]);
 
     // route
     $routePengajuan = route('pengajuan.create', ['id_nasabah' => $n->id_nasabah]);
@@ -266,7 +266,7 @@ public function datatableindex(Request $request)
 
     }
     if ($punyaPinjamanAktif) {
-     $routeTopup     = route('angsuran.index', $n->pinjaman[0]->id_pinjaman);
+    //  $routeTopup     = route('angsuran.index', $n->pinjaman[0]->id_pinjaman);
 
         // ✅ ADA PINJAMAN AKTIF → TOPUP
         return '

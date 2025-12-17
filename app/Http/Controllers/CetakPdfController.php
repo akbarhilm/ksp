@@ -79,10 +79,10 @@ class CetakPdfController extends Controller
     
 public function cetakJaminan($id)
 {
-    $pinjaman = Pinjaman::with('nasabah')->where('id_pinjaman',$id)->first();
+    // $pinjaman = Pinjaman::with('nasabah')->where('id_pinjaman',$id)->first();
     $user = User::where('jabatan','Kepala Cabang')->first();
-    $jaminan = PengajuanJaminan::where('id_pengajuan',$pinjaman->id_pengajuan)->get();
-    $data =['nama'=>$pinjaman->nasabah->nama,'alamat'=>$pinjaman->nasabah->alamat,'jaminan'=>[]];
+    $jaminan = PengajuanJaminan::with('pengajuan.rekening.nasabah')->where('id_pengajuan',$id)->get();
+    $data =['nama'=>$jaminan[0]->pengajuan->rekening[0]->nasabah[0]->nama,'alamat'=>$jaminan[0]->pengajuan->rekening[0]->nasabah[0]->alamat,'jaminan'=>[]];
     foreach($jaminan as $j){
         if($j->jenis_jaminan==$j->keterangan){
            if(str_contains(strtolower($j->jenis_jaminan),'pin') || str_contains(strtolower($j->ket),'pin')){
@@ -125,6 +125,10 @@ public function cetakJaminan($id)
 
 public function cetakPencairan($id){
     $pinjaman = Pinjaman::with('nasabah','pengajuan')->where('id_pinjaman',$id)->first();
+    if($pinjaman->ref != null){
+    $pinjamanlama = Pinjaman::where('id_pinjaman',$pinjaman->ref)->first();
+    $jumlahlama = $pinjamanlama->sisa_pokok + $pinjamanlama->sisa_bunga;
+    }
     $materai = $pinjaman->pengajuan->materai;
         $provisi = $pinjaman->pengajuan->admin;
         $survey = $pinjaman->pengajuan->survey;
@@ -136,7 +140,7 @@ public function cetakPencairan($id){
 
 
     $data = [
-        'no_anggota' => str_pad($pinjaman->nasabah->id,5,'0',STR_PAD_LEFT),
+        'no_anggota' => str_pad($pinjaman->id_nasabah,5,'0',STR_PAD_LEFT),
         'nama' => $pinjaman->nasabah->nama,
         'telepon' => $pinjaman->nasabah->no_telp,
         'tgl_lahir' => date('d-m-Y', strtotime($pinjaman->nasabah->tgl_lahir)),
@@ -150,14 +154,16 @@ public function cetakPencairan($id){
         'bunga'=>$pinjaman->pengajuan->bunga,
         'id'=>$pinjaman->id_pinjaman,
         'simpanan_pokok' => $pinjaman->pengajuan->simpanan_pokok,
-        'diterima_bersih' => ($pinjaman->total_pinjaman -$provisi-$survey-$asuransi-$simpanan_pokok),
+        'pinjamanlama'=>$jumlahlama??0,
+        'diterima_bersih' => ($pinjaman->total_pinjaman -$provisi-$survey-$asuransi-$materai - $simpanan_pokok-($jumlahlama??0)),
     ];
    // return view('pdf.pencairan',compact('data'));
    $html = view('pdf.pencairan', compact('data'))->render();
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',
-        'format' => 'A4-L', // LANDSCAPE
+        'format' => 'A4-L', 
+        // LANDSCAPE
         'margin_top' => 10,
         'margin_bottom' => 10,
         'margin_left' => 10,
@@ -168,7 +174,7 @@ public function cetakPencairan($id){
     $mpdf->WriteHTML($html);
 
     return response($mpdf->Output(
-        'Riwayat-Pembayaran.pdf',
+        'SPK.pdf',
         'I'
     ))->header('Content-Type', 'application/pdf');
     // $pdf = PDF::loadView('pdf.pencairan', compact('data'))
@@ -239,14 +245,14 @@ public function cetakPerjanjian($id){
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',
-        'format' => 'A4-L', // LANDSCAPE
+        'format' => 'A4-P', // LANDSCAPE
         'margin_top' => 10,
         'margin_bottom' => 10,
         'margin_left' => 10,
         'margin_right' => 10,
         'default_font' => 'dejavusans'
     ]);
-
+$mpdf->SetFooter('Halaman {PAGENO} dari {nbpg}');
     $mpdf->WriteHTML($html);
 
     return response($mpdf->Output(

@@ -89,7 +89,7 @@
             <td class='d-grid'>
                 <a href="{{route('pengajuan.detail.pencairan', $p->id_pengajuan)}}" class='btn btn-sm btn-info'>Pengajuan</a>
                 <a href="{{route('cetak.perjanjian',$p->id_pengajuan)}}" class='btn btn-sm btn-secondary'>Perjanjian</a>
-                <a href="{{route('cetak.jaminan',$id)}}" class='btn btn-sm btn-info'>Jaminan</a>
+                <a href="{{route('cetak.jaminan',$p->id_pengajuan)}}" class='btn btn-sm btn-info'>Jaminan</a>
                 <a href="{{route('cetak.pencairan',$id)}}" class='btn btn-sm btn-secondary'>Pencairan</a>
                 <a href="{{route('cetak.angsuran',$id)}}" class='btn btn-sm btn-info'>Angsuran</a>
 

@@ -52,7 +52,7 @@
                                     <tbody>
                                         @foreach ($pinjaman as $n)
                                             @php
-                                                $pinjamanAktif = $n->rekening[0]->nasabah[0]->pinjaman->first();
+                                                $pinjamanAktif = $n->rekening[0]->nasabah[0]->pinjaman->where('status','aktif')->first();
                                             @endphp
                                             <tr>
                                                 <td class="text-center text-sm">

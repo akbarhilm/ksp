@@ -145,6 +145,12 @@
                         <h6 class="mb-3">Jaminan</h6>
 
                         <div id="jaminan-container">
+                            @if($errors->has('jenis_jaminan.*')||$error->has('keterangan.*'))
+    <div class="text-danger">
+        Semua jenis jaminan dan keterangan wajib diisi
+    </div>
+@endif
+
                             <div class="row jaminan-item mb-3">
                                 <div class="col-md-5">
                                     <label class="form-label">Jenis Jaminan</label>

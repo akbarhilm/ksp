@@ -95,16 +95,31 @@
         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
 function formatAngka(angka) {
-    if (!angka) return "";
-    angka = angka.toString().replace(/[^0-9]/g, ""); // hilangkan non-angka
-
-    return angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return angka
+        .toString()
+        .replace(/[^0-9]/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 $(document).on("input", ".input-jumlah", function () {
-    let cursorPos = this.selectionStart;
-    this.value = formatAngka(this.value);
-    this.setSelectionRange(cursorPos, cursorPos);
+   let input = this;
+
+    // posisi kursor lama (jumlah digit sebelum kursor)
+    let start = input.selectionStart;
+    let angkaSebelum = input.value.slice(0, start).replace(/\D/g, "").length;
+
+    // format ulang
+    let formatted = formatAngka(input.value);
+    input.value = formatted;
+
+    // cari posisi kursor baru berdasarkan digit
+    let pos = 0, count = 0;
+    while (count < angkaSebelum && pos < formatted.length) {
+        if (/\d/.test(formatted[pos])) count++;
+        pos++;
+    }
+
+    input.setSelectionRange(pos, pos);
     hitungCicilan();
 });
 

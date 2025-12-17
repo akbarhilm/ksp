@@ -74,18 +74,18 @@ Route::get('/pdf/sphutang/{id}', function($id){
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',
-        'format' => 'A4-L', // LANDSCAPE
+        'format' => 'A4-P',
         'margin_top' => 10,
         'margin_bottom' => 10,
         'margin_left' => 10,
         'margin_right' => 10,
         'default_font' => 'dejavusans'
     ]);
-
+$mpdf->SetFooter('Halaman {PAGENO} dari {nbpg}');
     $mpdf->WriteHTML($html);
 
     return response($mpdf->Output(
-        'Riwayat-Pembayaran.pdf',
+        'SPK.pdf',
         'I'
     ))->header('Content-Type', 'application/pdf');
 })->name('pdf.sphutang.download');

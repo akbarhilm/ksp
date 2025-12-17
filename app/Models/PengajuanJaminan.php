@@ -13,7 +13,7 @@ class PengajuanJaminan extends Model
 
 public function pengajuan()
     {
-        return $this->belongsTo(Pengajuan::class, 'id_pengajuan');
+        return $this->belongsTo(Pengajuan::class, 'id_pengajuan','id_pengajuan');
     }
 
 }
