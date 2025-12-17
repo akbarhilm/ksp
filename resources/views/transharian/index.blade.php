@@ -51,7 +51,7 @@
                     <tr>
                         <td>{{ $s->tanggal }}</td>
                         <td>{{ $s->jenis }}</td>
-                        <td>{{ $s->keterangan.' '.$s->nasabah->id_nasabah.' / '.$s->nasabah->nama }}</td>
+                        <td>{{ $s->keterangan.' '.$s->rekening->nasabah[0]->id_nasabah.' / '.$s->rekening->nasabah[0]->nama }}</td>
                         <td class="text-end">{{ number_format($s->v_debit,0) }}</td>
                         <td class="text-end">{{ number_format($s->v_kredit,0) }}</td>
                     </tr>

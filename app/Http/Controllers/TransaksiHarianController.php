@@ -22,7 +22,7 @@ class TransaksiHarianController extends Controller
         }
         $userId = auth()->id(); // <-- user yang menginput data
 
-        $simpanan = Simpanan::with('nasabah')->whereDate('tanggal', $tanggal)
+        $simpanan = Simpanan::with('rekening.nasabah')->whereDate('tanggal', $tanggal)
             ->orderBy('tanggal', 'ASC')
             ->get();
         $pengajuan =  Pengajuan::with('rekening')->
@@ -40,7 +40,6 @@ class TransaksiHarianController extends Controller
             ->with('pengajuan')
             ->get();
 
-dd($angsuran);
 
         return view('transharian.index',compact('simpanan','pengajuan','angsuran','pinjaman'));
     }
