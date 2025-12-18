@@ -145,7 +145,7 @@
                         <h6 class="mb-3">Jaminan</h6>
 
                         <div id="jaminan-container">
-                            @if($errors->has('jenis_jaminan.*')||$error->has('keterangan.*'))
+                            @if($errors->has('jenis_jaminan.*')||$errors->has('keterangan.*'))
     <div class="text-danger">
         Semua jenis jaminan dan keterangan wajib diisi
     </div>
