@@ -334,29 +334,52 @@ masing pihak dengan diberi materai secukupnya untuk dijadikan bukti yang sah.
     </p>
 
     <!-- SIGNATURES -->
-    <table class="table table-borderless text-sm mt-4">
-        <tr>
-            <td class="text-center">KSP SINAR MURNI</td>
-            <td class="text-center">Tangerang, {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'dd MMMM yyyy'))
-        ->format(new DateTime()) }}</td>
-        </tr>
-        <tr>
-            <td style="height: 70px"></td>
-            <td style="height: 70px"></td>
-        </tr>
-        <tr>
-            <td class="text-center">{{strtoupper($user->nama)}}<br>{{strtoupper($user->jabatan)}}</td>
-            <td class="text-center">{{strtoupper($data->rekening[0]->nasabah[0]->nama) }}<br>(PIHAK KESATU)</td>
-        </tr>
-        <tr>
-            <td style="height: 70px"></td>
-            <td style="height: 70px"></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td class="text-center">{{strtoupper($data->rekening[0]->nasabah[0]->nama_suami_istri)}}<br>(PENANGGUNG JAWAB)</td>
-        </tr>
-    </table>
+    <table class="table table-borderless text-sm mt-4"
+       width="100%"
+       style="page-break-inside: avoid; margin-top:40px;">
+    
+    <tr>
+        <td class="text-center">
+            KSP SINAR MURNI
+        </td>
+        <td class="text-center">
+            Tangerang, 
+            {{ (new IntlDateFormatter('id_ID', IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, 'dd MMMM yyyy'))
+                ->format(new DateTime()) }}
+        </td>
+    </tr>
+
+    {{-- ruang tanda tangan --}}
+    <tr>
+        <td style="height:80px;"></td>
+        <td style="height:80px;"></td>
+    </tr>
+
+    <tr>
+        <td class="text-center">
+            <strong>{{ strtoupper($user->nama) }}</strong><br>
+            {{ strtoupper($user->jabatan) }}
+        </td>
+        <td class="text-center">
+            <strong>{{ strtoupper($data->rekening[0]->nasabah[0]->nama) }}</strong><br>
+            (PIHAK KESATU)
+        </td>
+    </tr>
+
+    {{-- jarak penanggung jawab --}}
+    <tr>
+        <td colspan="2" style="height:90px;"></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td class="text-center">
+            <strong>{{ strtoupper($data->rekening[0]->nasabah[0]->nama_suami_istri) }}</strong><br>
+            (PENANGGUNG JAWAB)
+        </td>
+    </tr>
+</table>
+
 
 </div>
 </body>

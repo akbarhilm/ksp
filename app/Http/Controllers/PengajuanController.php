@@ -252,9 +252,18 @@ class PengajuanController extends Controller
         
     }
 
-    public function pencairan()
+    public function pencairan(Request $request)
+
     {
-        $pinjaman = Pengajuan::where('status', '=', 'approv')->with('rekening.nasabah')->orderBy('updated_at', 'desc')->get();
+$pinjaman = Pengajuan::where('status', 'approv')
+    ->when($request->nama, function ($query) use ($request) {
+        $query->whereHas('rekening.nasabah', function ($q) use ($request) {
+            $q->where('nama', 'like', '%' . $request->nama . '%');
+        });
+    })
+    ->with('rekening.nasabah')
+    ->orderBy('updated_at', 'desc')
+    ->get();
 
 
         return view('pengajuan.pencairan', compact('pinjaman'));

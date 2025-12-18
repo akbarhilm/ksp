@@ -13,13 +13,13 @@
                         <div class="card-body">
 
                             {{-- Form Pencarian --}}
-                            <form action="{{ route('rekening.cari') }}" method="GET">
+                            <form action="{{ route('pengajuan.pencairan') }}" method="GET">
                                 <div class="row g-3 mb-4 align-items-end">
 
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Cari Nasabah</label>
-                                        <input type="text" name="param" class="form-control"
-                                            placeholder="No Nasabah / NIK / Nama">
+                                        <input type="text" name="nama" class="form-control" value="{{request()->nama}}"
+                                            placeholder="Nama">
                                     </div>
 
                                     <div class="col-md-2">
