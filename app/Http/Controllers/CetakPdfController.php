@@ -80,7 +80,7 @@ class CetakPdfController extends Controller
 public function cetakJaminan($id)
 {
     // $pinjaman = Pinjaman::with('nasabah')->where('id_pinjaman',$id)->first();
-    $user = User::where('jabatan','Kepala Cabang')->first();
+    $user = User::where('jabatan','Pimpinan')->first();
     $jaminan = PengajuanJaminan::with('pengajuan.rekening.nasabah')->where('id_pengajuan',$id)->get();
     $data =['nama'=>$jaminan[0]->pengajuan->rekening[0]->nasabah[0]->nama,'alamat'=>$jaminan[0]->pengajuan->rekening[0]->nasabah[0]->alamat,'jaminan'=>[]];
     foreach($jaminan as $j){
@@ -100,6 +100,7 @@ public function cetakJaminan($id)
         }
     }
     $data['jaminan']=$jj;
+    dd($user->nama);
     $data['ttd']=$user->nama;
 
    // return view('pdf.sttjaminan', compact('data'));
@@ -240,14 +241,15 @@ public function cetakRiwayat($id)
 
 public function cetakPerjanjian($id){
     $data = Pengajuan::with('rekening.nasabah')->where('id_pengajuan',$id)->first();
+    $user = User::where('jabatan','Pimpinan')->first();
 
-    $html = view('pdf.sphutang', compact('data'))->render();
+    $html = view('pdf.sphutang', compact('data','user'))->render();
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',
         'format' => 'A4-P', // LANDSCAPE
         'margin_top' => 10,
-        'margin_bottom' => 10,
+        'margin_bottom' => 20,
         'margin_left' => 10,
         'margin_right' => 10,
         'default_font' => 'dejavusans'

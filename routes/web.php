@@ -76,7 +76,7 @@ Route::get('/pdf/sphutang/{id}', function($id){
         'mode' => 'utf-8',
         'format' => 'A4-P',
         'margin_top' => 10,
-        'margin_bottom' => 10,
+        'margin_bottom' => 20,
         'margin_left' => 10,
         'margin_right' => 10,
         'default_font' => 'dejavusans'

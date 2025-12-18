@@ -243,8 +243,12 @@ sukarela menitip dengan PIHAK KEDUA berupa
         @foreach ($data->jaminan as $j)
             <tr>
                 <td>{{$loop->iteration}}</td>
+                @if($j->jenis_jaminan != $j->keterangan)
                 <td>{{$j->jenis_jaminan}}</td>
                 <td>{{$j->keterangan}}</td>
+                @else
+                <td>{{$j->keterangan}}</td>
+                @endif
             </tr>
         @endforeach
      
@@ -341,7 +345,7 @@ masing pihak dengan diberi materai secukupnya untuk dijadikan bukti yang sah.
             <td style="height: 70px"></td>
         </tr>
         <tr>
-            <td class="text-center">ROHMAYATI<br>(PIMPINAN CABANG)</td>
+            <td class="text-center">{{strtoupper($user->nama)}}<br>{{strtoupper($user->jabatan)}}</td>
             <td class="text-center">{{strtoupper($data->rekening[0]->nasabah[0]->nama) }}<br>(PIHAK KESATU)</td>
         </tr>
         <tr>
@@ -350,7 +354,7 @@ masing pihak dengan diberi materai secukupnya untuk dijadikan bukti yang sah.
         </tr>
         <tr>
             <td></td>
-            <td class="text-center">MOCH EDWIN APRIZA<br>(PENANGGUNG JAWAB)</td>
+            <td class="text-center">{{strtoupper($data->rekening[0]->nasabah[0]->nama_suami_istri)}}<br>(PENANGGUNG JAWAB)</td>
         </tr>
     </table>
 
