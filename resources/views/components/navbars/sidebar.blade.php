@@ -58,6 +58,7 @@
                 </a>
             </li>
             @endif
+            @if(auth()->user()->role != 'kepalaadmin')
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'rekening' ? ' active bg-gradient-info' : '' }} "
                     href="{{ route('rekening.index') }}">
@@ -67,7 +68,7 @@
                     <span class="nav-link-text ms-1">Data Rekening</span>
                 </a>
             </li>
-           
+           @endif
             
             </div>
             <li class="nav-item mt-3">
@@ -118,7 +119,6 @@
                     <span class="nav-link-text ms-1">Approval Pengajuan</span>
                 </a>
             </li>
-            @endif
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'cair' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pengajuan.pencairan') }}">
@@ -128,6 +128,8 @@
                     <span class="nav-link-text ms-1">Pencairan</span>
                 </a>
             </li>
+            @endif
+
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'angsuran' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pinjaman.index') }}">

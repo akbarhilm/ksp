@@ -86,10 +86,12 @@
     </div>
             
           <div class='d-flex justify-content-between'>
-            @if(auth()->user()->role != 'kepalaadmin')
-            <button type="submit" class="btn btn-info" >Simpan Perubahan Angsuran</button>
-            @endif
             @if(auth()->user()->role !== 'admin')
+            <div class='gap-2'>
+            <button type="submit" class="btn btn-info" >Simpan Perubahan Angsuran</button>
+             <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>
+            </div>
+           
             <a href='javascript:{}'  class="btn btn-danger" onclick="hapus()">Hapus Angsuran</a>
             @endif
 

@@ -22,26 +22,26 @@ class TransaksiHarianController extends Controller
         }
         $userId = auth()->id(); // <-- user yang menginput data
 
-        $simpanan = Simpanan::with('rekening.nasabah')->whereDate('tanggal', $tanggal)
+        $simpanan = Simpanan::with('rekening.nasabah')->whereDate('tanggal', $tanggal)->where('id_entry',$userId)
             ->orderBy('tanggal', 'ASC')
             ->get();
-        $pengajuan =  Pengajuan::with('rekening')->
+        $pengajuan =  Pengajuan::with('rekening')->where('id_entry',$userId)->
             whereDate('tanggal_pengajuan', $tanggal)
             ->orderBy('tanggal_pengajuan', 'ASC')
             ->get();
-        $angsuran = Angsuran::with('pinjaman.nasabah')
+        $angsuran = Angsuran::with('pinjaman.nasabah')->where('id_entry',$userId)
             ->whereDate('tanggal', $tanggal)
             ->orderBy('tanggal', 'ASC')
             ->get();
-        $pinjaman =  Pinjaman::
-            whereHas('pengajuan', function ($q) use($tanggal){
-                $q->whereDate('tanggal_pencairan', $tanggal);
-            })
-            ->with('pengajuan')
-            ->get();
+        // $pinjaman =  Pinjaman::
+        //     whereHas('pengajuan', function ($q) use($tanggal){
+        //         $q->whereDate('tanggal_pencairan', $tanggal);
+        //     })->where('id_entry',$userId)
+        //     ->with('pengajuan')
+        //     ->get();
 
 
-        return view('transharian.index',compact('simpanan','pengajuan','angsuran','pinjaman'));
+        return view('transharian.index',compact('simpanan','pengajuan','angsuran'));
     }
 
     public function cetakAngsuran(Request $request){

@@ -195,7 +195,23 @@ public function datatableindex(Request $request)
     public function datatables(Request $request)
 {
     if ($request->ajax()) {
+if(auth()->user()->role == 'kepalaadmin'){
+    $query = Nasabah::where('status','aktif')->whereHas('pengajuan', function ($q) {
+        $q->where('tmpengajuan.status', 'pengajuan');
+    })
+    ->with(['pengajuan' => function ($q) {
+        $q->where('tmpengajuan.status', 'pengajuan');
+    }]);
+    if ($request->filled('id_nasabah')) {
+            $query->where('id_nasabah', $request->id_nasabah);
+        }
 
+        // filter nama
+        if ($request->filled('nama')) {
+            $query->where('nama','like','%'.$request->nama.'%');
+            }
+    // $query->orderBy('id_nasabah','desc');
+}else{
     $query = Nasabah::with([
         'pinjaman' => function ($q) {
             $q->where('tmpinjaman.status', 'aktif');
@@ -212,6 +228,7 @@ public function datatableindex(Request $request)
         if ($request->filled('nama')) {
             $query->where('nama','like','%'.$request->nama.'%');
             }
+        }
     $query->orderBy('id_nasabah','desc');
 
 

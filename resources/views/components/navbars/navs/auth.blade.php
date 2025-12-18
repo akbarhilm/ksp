@@ -21,7 +21,7 @@
     
     <ul class="navbar-nav justify-content-end ms-auto"> 
         <li class="nav-item d-flex align-items-center">
-           <span class='d-none d-sm-inline mx-4'>{{auth()->user()->nama .' / '. auth()->user()->role}}</span>
+           <span class='d-none d-sm-inline mx-4'>{{auth()->user()->nama .' / '. auth()->user()->jabatan}}</span>
     <a href="#" 
        onclick="event.preventDefault();document.getElementById('logout-form').submit()" 
        class="nav-link text-body font-weight-bold px-0">

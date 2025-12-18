@@ -116,7 +116,10 @@
                         <th>Denda</th>
                         <th>Simpanan</th>
                         <th>Keterangan</th>
+            @if(auth()->user()->role != 'admin')
+
                         <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -141,7 +144,9 @@
             <td class="text-end">{{ number_format($denda,0) }}</td>
             <td class="text-end">{{ number_format($simpanan,0) }}</td>
             <td></td>
+            @if(auth()->user()->role != 'admin')
             <td></td>
+            @endif
         </tr>
 
         {{-- RESET HITUNGAN --}}
@@ -163,9 +168,11 @@
         <td class="text-end">{{ number_format($h->bayar_denda,0) }}</td>
         <td class="text-end">{{ number_format($h->simpanan,0) }}</td>
         <td>Pembayaran Angsuran ke {{ $h->cicilan_ke }}</td>
+        @if(auth()->user()->role != 'admin')
         <td class=''>
             <a href='{{ route('angsuran.edit',$h->id_pembayaran) }}' class='btn btn-warning'>Edit</a>
         </td>
+        @endif
 
     </tr>
 
@@ -195,7 +202,10 @@
     <td class="text-end">{{ number_format($denda,0) }}</td>
     <td class="text-end">{{ number_format($simpanan,0) }}</td>
     <td></td>
+        @if(auth()->user()->role != 'admin')
+
     <td></td>
+    @endif
 
 </tr>
 @endif
