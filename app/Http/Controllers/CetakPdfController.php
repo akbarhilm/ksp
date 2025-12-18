@@ -163,11 +163,11 @@ public function cetakPencairan($id){
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',
-        'format' => 'A4-L', 
+        'format' => 'A5-P', 
         // LANDSCAPE
         'margin_top' => 10,
         'margin_bottom' => 10,
-        'margin_left' => 10,
+        'margin_left' => 20,
         'margin_right' => 10,
         'default_font' => 'dejavusans'
     ]);

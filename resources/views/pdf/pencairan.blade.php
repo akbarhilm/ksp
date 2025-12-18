@@ -87,7 +87,7 @@ if (!function_exists('bulatKhusus')) {
 <table class="no-border">
     <tr>
         <td width="15%">
-            <img src="{{ public_path('koperasi.png') }}" width="80">
+            <img src="{{ public_path('koperasi.png') }}" width="60">
         </td>
         <td width="85%">
             <b>KOPERASI SINAR MURNI SEJAHTERA</b><br>
