@@ -119,6 +119,8 @@
                     <span class="nav-link-text ms-1">Approval Pengajuan</span>
                 </a>
             </li>
+            @endif
+
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'cair' ? ' active bg-gradient-info' : '' }}  "
                     href="{{ route('pengajuan.pencairan') }}">
@@ -128,7 +130,6 @@
                     <span class="nav-link-text ms-1">Pencairan</span>
                 </a>
             </li>
-            @endif
 
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'angsuran' ? ' active bg-gradient-info' : '' }}  "
