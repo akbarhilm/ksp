@@ -21,18 +21,28 @@ class TransaksiHarianController extends Controller
             $tanggal = now();
         }
         $userId = auth()->id(); // <-- user yang menginput data
+        $role = auth()->user()->role;
 
-        $simpanan = Simpanan::with('rekening.nasabah')->whereDate('tanggal', $tanggal)->where('id_entry',$userId)
-            ->orderBy('tanggal', 'ASC')
-            ->get();
-        $pengajuan =  Pengajuan::with('rekening')->where('id_entry',$userId)->
+        $qs = Simpanan::with('rekening.nasabah')->whereDate('tanggal', $tanggal)
+            ->orderBy('tanggal', 'ASC');
+            if($role=='admin'){
+                $qs->where('id_entry',$userId);
+            }
+            $simpanan = $qs->get();
+         $qp = Pengajuan::with('rekening')->where('id_entry',$userId)->
             whereDate('tanggal_pengajuan', $tanggal)
-            ->orderBy('tanggal_pengajuan', 'ASC')
-            ->get();
-        $angsuran = Angsuran::with('pinjaman.nasabah')->where('id_entry',$userId)
+            ->orderBy('tanggal_pengajuan', 'ASC');
+          if($role =='admin'){
+            $qp->where('id_entry',$userId);
+          }
+            $pengajuan = $qp->get();
+       $qa = Angsuran::with('pinjaman.nasabah')
             ->whereDate('tanggal', $tanggal)
-            ->orderBy('tanggal', 'ASC')
-            ->get();
+            ->orderBy('tanggal', 'ASC');
+            if($role =='admin'){
+                $qa->where('id_entry',$userId);
+            }
+           $angsuran =   $qa->get();
         // $pinjaman =  Pinjaman::
         //     whereHas('pengajuan', function ($q) use($tanggal){
         //         $q->whereDate('tanggal_pencairan', $tanggal);
