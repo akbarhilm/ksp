@@ -26,6 +26,7 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CetakPdfController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ReportFileController;
+use App\Models\User;
 use Mpdf\Mpdf;
 
 
@@ -70,7 +71,8 @@ Route::get('/pdf/sphutang/{id}', function($id){
     //     ->setOption('disable-smart-shrinking', false);
 	
     //  return $pdf->download('Surat_Pernyataan_Hutang.pdf');
-	$html = view('pdf.sphutang', ['data'=>$data])->render();
+	$user = User::where('jabatan','Pimpinan')->first();
+	$html = view('pdf.sphutang', ['data'=>$data,'user'=>$user])->render();
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',

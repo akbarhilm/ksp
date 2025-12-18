@@ -242,7 +242,7 @@ public function cetakRiwayat($id)
 public function cetakPerjanjian($id){
     $data = Pengajuan::with('rekening.nasabah')->where('id_pengajuan',$id)->first();
     $user = User::where('jabatan','Pimpinan')->first();
-
+    dd($user);
     $html = view('pdf.sphutang', compact('data','user'))->render();
 
     $mpdf = new Mpdf([
