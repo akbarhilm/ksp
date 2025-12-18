@@ -329,14 +329,14 @@ $pinjaman = Pengajuan::where('status', 'approv')
 
             if ($data->jenis == 'topup') {
                 
-                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin, 'id_entry' => auth()->user()->id];
+                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin - $data->simpanan_pokok, 'id_entry' => auth()->user()->id];
 
                 $datakreditoldpinjaman = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman','id_pinjaman' => $pinjamanLama->id_pinjaman, 'keterangan' => 'Piutang Pinjaman Lama Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
                 Jurnal::create($datajurnalkredit);
 
                 Jurnal::create($datakreditoldpinjaman);
             } else {
-                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin, 'id_entry' => auth()->user()->id];
+                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin - $data->simpanan_pokok, 'id_entry' => auth()->user()->id];
 
                 Jurnal::create($datajurnalkredit);
             }

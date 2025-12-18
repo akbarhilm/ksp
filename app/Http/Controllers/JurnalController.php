@@ -275,6 +275,11 @@ public function bukuBesar(Request $request)
 public function storeDouble(Request $request)
 {
     $nojurnal = JurnalHelper::noJurnal();
+    $request->merge([
+        'jumlah_debet' => str_replace('.', '', $request->jumlah_debet),
+        'jumlah_kredit' => str_replace('.', '', $request->jumlah_kredit)
+    ]);
+
     $request->validate([
         'tanggal_transaksi' => 'required|date',
         'keterangan' => 'required',

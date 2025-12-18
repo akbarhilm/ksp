@@ -100,7 +100,6 @@ public function cetakJaminan($id)
         }
     }
     $data['jaminan']=$jj;
-    dd($user->nama);
     $data['ttd']=$user->nama;
 
    // return view('pdf.sttjaminan', compact('data'));
@@ -108,7 +107,7 @@ public function cetakJaminan($id)
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',
-        'format' => 'A4-L', // LANDSCAPE
+        'format' => 'A5-P', // LANDSCAPE
         'margin_top' => 10,
         'margin_bottom' => 10,
         'margin_left' => 10,

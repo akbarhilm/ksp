@@ -58,7 +58,7 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Jumlah Debit</label>
-                            <input type="text" id="jumlah_debet" name="jumlah_debet" class="form-control " required min="0">
+                            <input type="text" id="jumlah_debet" name="jumlah_debet" class="form-control  input-jumlah" required min="0">
                         </div>
 
                         <h6 class="text-danger fw-bold mt-3">Baris Kredit</h6>
@@ -72,7 +72,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Jumlah Kredit</label>
-                            <input type="text" id="jumlah_kredit" name="jumlah_kredit" class="form-control " required min="0">
+                            <input type="text" id="jumlah_kredit" name="jumlah_kredit"  class="form-control input-jumlah" required min="0">
                         </div>
 
                     </div>
@@ -150,6 +150,15 @@ $('#modalJurnal').on('shown.bs.modal', function () {
         width: '100%'
     });
 });
+// function format(angka){
+//        if (!angka.value) return '';
+    
+//     angka.value = angka.value.toString().replace(/[^0-9]/g, '');
+//     let form = angka.value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+//      document.getElementById("jumlah_debet").value=form
+//     document.getElementById("jumlah_kredit").value=form
+
+// }
 $(document).ready(function() {
  
     // $('#akun_debet').select2({
@@ -166,22 +175,38 @@ $(document).ready(function() {
     
 });
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("input", function (e) {
+    if (!e.target.classList.contains("input-jumlah")) return;
 
-    const debit = document.getElementById("jumlah_debet");
-    const kredit = document.getElementById("jumlah_kredit");
+    let input = e.target;
 
-    // Jika debit berubah, kredit ikut
-    debit.addEventListener("input", function() {
-        kredit.value = this.value;
-    });
+    // simpan posisi kursor
+    let start = input.selectionStart;
+    let angkaSebelum = input.value.slice(0, start).replace(/\D/g, "").length;
 
-    // Jika kredit berubah, debit ikut
-    kredit.addEventListener("input", function() {
-        debit.value = this.value;
-          });
+    // format
+    let formatted = formatAngka(input.value);
+    input.value = formatted;
 
+    // atur ulang kursor
+    let pos = 0, count = 0;
+    while (count < angkaSebelum && pos < formatted.length) {
+        if (/\d/.test(formatted[pos])) count++;
+        pos++;
+    }
+    input.setSelectionRange(pos, pos);
+
+    // ambil angka murni
+    let angkaMurni = formatted.replace(/\D/g, "");
+
+    // sync ke pasangan TANPA trigger loop
+    if (input.id === "jumlah_debet") {
+        document.getElementById("jumlah_kredit").value = formatAngka(angkaMurni);
+    } else {
+        document.getElementById("jumlah_debet").value = formatAngka(angkaMurni);
+    }
 });
+
 $(function(){
 
 

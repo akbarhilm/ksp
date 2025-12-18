@@ -88,9 +88,10 @@
 <body>
 
 {{-- LOGO --}}
-<img src="{{ public_path('koperasi.png') }}" class="logo">
 
 <div class="header">
+<img src="{{ public_path('koperasi.png') }}" class="logo">
+
     <div class="instansi">
         KOPERASI SIMPAN PINJAM<br>
         SINAR MURNI

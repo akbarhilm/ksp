@@ -96,9 +96,7 @@
                                         <option value="tunai">Tunai</option>
                                         <option value="non">Non Tunai</option>
                                     </select>
-                                    @error('metode')
-                                   <small  class="text-danger">{{$message}}</small>
-                                   @enderror
+                                   <small id='met_error' class="text-danger"></small>
 
 
                                 </div>
@@ -106,9 +104,7 @@
                                     <label class="form-label">Tanggal Pencairan</label>
                                     <input type='date' class="form-control" id='tgl' name="tanggal_pencairan" required>
                                        
-                                    @error('tanggal_pencairan')
-                                   <small  class="text-danger">{{$message}}</small>
-                                   @enderror
+                                   <small id='tgl_error' class="text-danger"></small>
 
 
 
@@ -240,7 +236,12 @@
                         let errors = xhr.responseJSON.errors;
 
     if(errors.metode){
-        $('#error-metode').html(errors.metode[0]);
+        $('#met_error').html(errors.metode[0]);
+        alert('Metode Pencairan Belum Dipilih')
+    }
+    if(errors.tgl_cair){
+        $('#tgl_error').html(errors.tgl_cair[0]);
+        alert('Tanggal Pencairan Belum Dipilih')
     }
                     });
             });
