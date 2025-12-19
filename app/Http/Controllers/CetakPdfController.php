@@ -222,10 +222,10 @@ public function cetakRiwayat($id)
 
     $mpdf = new Mpdf([
         'mode' => 'utf-8',
-        'format' => 'A4-L', // LANDSCAPE
+        'format' => 'A4-P', // LANDSCAPE
         'margin_top' => 10,
         'margin_bottom' => 10,
-        'margin_left' => 10,
+        'margin_left' => 20,
         'margin_right' => 10,
         'default_font' => 'dejavusans'
     ]);

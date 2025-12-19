@@ -101,23 +101,29 @@ public function edit($nojurnal){
 }
 
 public function update(Request $request){
-    //  if ($request->jumlah_debet != $request->jumlah_kredit) {
-    //     return back()->with('error', 'Debit dan Kredit harus sama nominalnya.');
-    // }
+ 
+
+    $request->validate([
+        'tanggal_transaksi'=>'required',
+        'keterangan.*'=>'required',
+        'v_debet.*'=>'required',
+        'v_kredit.*'=>'required',
+
+    ]);
+    $totalDebet = 0;
+    $totalKredit = 0;
    $tgl =  $request->tanggal_transaksi;
-   $ket = $request->keterangan;
    foreach($request->id_jurnal as $i=>$jr){
-   $detail['detail'][]=['id_akun'=>$request->akun_id[$i],'id_jurnal'=>$request->id_jurnal[$i],'v_debet'=>$request->v_debet[$i],'v_kredit'=>$request->v_kredit[$i],'jenis'=>$request->jenis[$i]];
-   $detail['detail'][]=['id_akun'=>$request->akun_id[$i],'id_jurnal'=>$request->id_jurnal[$i],'v_debet'=>$request->v_debet[$i],'v_kredit'=>$request->v_kredit[$i],'jenis'=>$request->jenis[$i]];
+   $detail['detail'][]=['id_akun'=>$request->akun_id[$i],'keterangan'=>$request->keterangan[$i],'id_jurnal'=>$request->id_jurnal[$i],'v_debet'=>str_replace('.','',$request->v_debet[$i]),'v_kredit'=>str_replace('.','',$request->v_kredit[$i]),'jenis'=>$request->jenis[$i]];
+//    $detail['detail'][]=['id_akun'=>$request->akun_id[$i],'id_jurnal'=>$request->id_jurnal[$i],'v_debet'=>$request->v_debet[$i],'v_kredit'=>$request->v_kredit[$i],'jenis'=>$request->jenis[$i]];
    }
    foreach($detail['detail'] as $i=>$d){
-        $d['keterangan'] = $ket;
         $d['tanggal_transaksi'] = $tgl;
        
       $jurnal = Jurnal::find($d['id_jurnal'])->update($d);
      
        if($d['jenis']=='simpanan'){
-            $s = ['v_debit'=>$d['v_debet'],'v_kredit'=>$d['v_kredit'],'id_akun'=>$d['id_akun'],'keterangan'=>$ket,'tanggal'=>$tgl];
+            $s = ['v_debit'=>$d['v_debet'],'v_kredit'=>$d['v_kredit'],'id_akun'=>$d['id_akun'],'keterangan'=>$d['keterangan'],'tanggal'=>$tgl];
 
              Simpanan::where('id_jurnal',$d['id_jurnal'])->update($s);
         }

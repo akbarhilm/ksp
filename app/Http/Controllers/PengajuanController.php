@@ -309,10 +309,10 @@ $pinjaman = Pengajuan::where('status', 'approv')
             if ($data->jenis == 'topup') {
                 $pinjamanLama = Pinjaman::where('id_nasabah', $data->rekening[0]->id_nasabah)->where('status', 'aktif')->first();
                 $sisa_pokok_lama = $pinjamanLama->sisa_pokok+$pinjamanLama->sisa_bunga;
-                $datajurnaldebet = ['id_akun' => $idakunjurnal,'jenis'=>'pinjaman','no_jurnal'=>$nojurnal, 'tanggal_transaksi'=>$tgl,  'keterangan' => $ket, 'v_debet' => $sisa_pokok_lama, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+                $datajurnaldebet = ['id_akun' => $idakunjurnal,'jenis'=>'pinjaman','no_jurnal'=>$nojurnal, 'tanggal_transaksi'=>$tgl,  'keterangan' => 'Pelunasan ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$data->rekening[0]->nasabah->nama, 'v_debet' => $sisa_pokok_lama, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
                 
                 
-                $datajurnalkredit = ['id_akun' => '9','no_jurnal'=>$nojurnal,'jenis'=>'pinjaman','tanggal_transaksi'=>$tgl,  'keterangan' => 'Piutang Pinjaman Lama Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
+                $datajurnalkredit = ['id_akun' => '9','no_jurnal'=>$nojurnal,'jenis'=>'pinjaman','tanggal_transaksi'=>$tgl,  'keterangan' => 'Pelunasan ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
                 $pinjamanLama->update(['status' => 'lunas']);
                 Jurnal::create($datajurnalkredit);
                 
@@ -325,18 +325,18 @@ $pinjaman = Pengajuan::where('status', 'approv')
 
 
 
-            $datajurnaldebet = ['id_akun' => '9','no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl,'jenis'=>'pinjaman',  'keterangan' => 'Piutang Pinjaman ' . $data->jenis . ' Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => $data->jumlah_pencairan, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
+            $datajurnaldebet = ['id_akun' => '9','no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl,'jenis'=>'pinjaman',  'keterangan' => 'Piutang Pinjaman ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => $data->jumlah_pencairan, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
 
             if ($data->jenis == 'topup') {
                 
-                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin - $data->simpanan_pokok, 'id_entry' => auth()->user()->id];
+                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' =>'Piutang Pinjaman ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin - $data->simpanan_pokok, 'id_entry' => auth()->user()->id];
 
-                $datakreditoldpinjaman = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman','id_pinjaman' => $pinjamanLama->id_pinjaman, 'keterangan' => 'Piutang Pinjaman Lama Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
+                $datakreditoldpinjaman = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman','id_pinjaman' => $pinjamanLama->id_pinjaman, 'keterangan' => 'Piutang Pinjaman ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
                 Jurnal::create($datajurnalkredit);
 
                 Jurnal::create($datakreditoldpinjaman);
             } else {
-                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' => $ket, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin - $data->simpanan_pokok, 'id_entry' => auth()->user()->id];
+                $datajurnalkredit = ['id_akun' => $idakunjurnal,'no_jurnal'=>$nojurnal,'tanggal_transaksi'=>$tgl, 'jenis'=>'pinjaman', 'keterangan' => 'Piutang Pinjaman ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $data->jumlah_pencairan - $sisa_pokok_lama - $data->survey - $data->materai - $data->asuransi - $data->admin - $data->simpanan_pokok, 'id_entry' => auth()->user()->id];
 
                 Jurnal::create($datajurnalkredit);
             }
@@ -357,7 +357,7 @@ $pinjaman = Pengajuan::where('status', 'approv')
            
 
             // simpanan
-            $datajurnalsimpanankredit = ['id_akun' => '36','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'pinjaman',  'keterangan' => 'Simpanan pokok Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $pengajuan->simpanan_pokok, 'id_entry' => auth()->user()->id];
+            $datajurnalsimpanankredit = ['id_akun' => '36','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'pinjaman',  'keterangan' => 'Simpanan dari pencairan ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $pengajuan->simpanan_pokok, 'id_entry' => auth()->user()->id];
             $itu = Jurnal::create($datajurnalsimpanankredit);
             
 
@@ -366,7 +366,7 @@ $pinjaman = Pengajuan::where('status', 'approv')
                 'id_rekening' => $rekening->id_rekening,
                 'id_akun' => 13,
                 'tanggal'=>$tgl,
-                'keterangan' => 'Simpanan pokok Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT),
+                'keterangan' => 'Simpanan dari pencairan' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$data->rekening[0]->nasabah->nama,
                 'v_debit' => 0,
                 'v_kredit' => $pengajuan->simpanan_pokok,
                    'id_jurnal'=>$itu->id_jurnal,
@@ -375,21 +375,21 @@ $pinjaman = Pengajuan::where('status', 'approv')
             ]);
 
             //pendapatan admin
-            $dataadminkredit = ['id_akun' => '48','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'pinjaman',  'keterangan' => 'Provisi pinjaman Anggota ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $data->admin, 'id_entry' => auth()->user()->id];
+            $dataadminkredit = ['id_akun' => '48','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'pinjaman',  'keterangan' => 'Provisi '. str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $data->admin, 'id_entry' => auth()->user()->id];
             Jurnal::create($dataadminkredit);
             
             //asuransi jika kewajiban
-            $dataasuransikredit = ['id_akun' => '82','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'pinjaman',  'keterangan' => 'Dana Cadangan Klaim ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $data->asuransi, 'id_entry' => auth()->user()->id];
+            $dataasuransikredit = ['id_akun' => '82','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'pinjaman',  'keterangan' => 'Asuransi ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $data->asuransi, 'id_entry' => auth()->user()->id];
             Jurnal::create($dataasuransikredit);
             
 
             //survey
-            $datasurveykredit = ['id_akun' => '51','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal, 'jenis'=>'pinjaman', 'keterangan' => 'Pendapatan Survey ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $data->survey, 'id_entry' => auth()->user()->id];
+            $datasurveykredit = ['id_akun' => '51','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal, 'jenis'=>'pinjaman', 'keterangan' => 'Survey ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $data->survey, 'id_entry' => auth()->user()->id];
             Jurnal::create($datasurveykredit);
             
 
             //materai
-            $datamateraikredit = ['id_akun' => '14','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal, 'jenis'=>'pinjaman', 'keterangan' => 'Penjualan Materai ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT), 'v_debet' => 0, 'v_kredit' => $data->materai, 'id_entry' => auth()->user()->id];
+            $datamateraikredit = ['id_akun' => '14','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal, 'jenis'=>'pinjaman', 'keterangan' => 'Materai ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah->nama, 'v_debet' => 0, 'v_kredit' => $data->materai, 'id_entry' => auth()->user()->id];
             Jurnal::create($datamateraikredit);
             
             //asuransi jika pendapatan

@@ -30,7 +30,7 @@ public function edit($id){
 }
 public function update(Request $request,$id){
         $request->merge([
-            'total_bayar'=>str_replace('.','',$request->total_bayar),
+            'total_bayar'=>str_replace('.','',$request->total_bayar)-str_replace('.','',$request->simpanan),
             'bayar_pokok'=>str_replace('.','',$request->bayar_pokok),
             'bayar_bunga'=>str_replace('.','',$request->bayar_bunga),
             'bayar_denda'=>str_replace('.','',$request->bayar_denda),
@@ -38,6 +38,7 @@ public function update(Request $request,$id){
         ]);
    $an =  Angsuran::find($id);
    $jur = Jurnal::where('no_jurnal',$an->no_jurnal)->get();
+    Simpanan::where('no_jurnal',$an->no_jurnal)->update(['v_kredit'=>$request->simpanan]);
    $an->update($request->all());
    foreach($jur as $j){
     if($j->id_akun == '5'){
@@ -81,7 +82,7 @@ public function destroy($id){
      
 
     //update pinjaman
-    $datapinjaman = Pinjaman::find($pinjamanId);
+    $datapinjaman = Pinjaman::with('nasabah')->find($pinjamanId);
     $datapinjaman->update(['sisa_pokok'=>$datapinjaman->sisa_pokok - $pokok,'sisa_bunga'=>$datapinjaman->sisa_bunga - $bunga]);
 
     if($datapinjaman->sisa_pokok <=0 ){
@@ -110,7 +111,7 @@ public function destroy($id){
         'jenis'=>'angsuran',
         'no_jurnal'=>$nojurnal,
         'tanggal_transaksi' => $request->tanggal,
-        'keterangan' => 'Pembayaran angsuran pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'keterangan' => 'Pembayaran angsuran '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$datapinjaman->nasabah->nama,
         'v_debet' => $total,
         'v_kredit' => 0,
         'id_entry' => $userId,
@@ -122,7 +123,7 @@ public function destroy($id){
         'jenis'=>'angsuran',
 
         'tanggal_transaksi' => $request->tanggal,
-        'keterangan' => 'Piutang pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'keterangan' => 'Pembayaran angsuran '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$datapinjaman->nasabah->nama,
         'v_debet' => 0,
         'v_kredit' => $pokok,
         'id_entry' => $userId,
@@ -135,7 +136,7 @@ public function destroy($id){
         'jenis'=>'angsuran',
 
         'tanggal_transaksi' => $request->tanggal,
-        'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$datapinjaman->nasabah->nama,
         'v_debet' => 0,
         'v_kredit' => $bunga,
         'id_entry' => $userId,
@@ -150,7 +151,7 @@ public function destroy($id){
         'jenis'=>'angsuran',
 
         'tanggal_transaksi' => $request->tanggal,
-        'keterangan' => 'Pendapatan bunga pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'keterangan' => 'Pendapatan denda pinjaman '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$datapinjaman->nasabah->nama,
         'v_debet' => 0,
         'v_kredit' => str_replace('.', '',$request->denda),
         'id_entry' => $userId,
@@ -164,7 +165,7 @@ public function destroy($id){
         'jenis'=>'angsuran',
 
         'tanggal_transaksi' => $request->tanggal,
-        'keterangan' => 'Simpanan wajib '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'keterangan' => 'Simpanan dari angsuran '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$datapinjaman->nasabah->nama,
         'v_debet' => 0,
         'v_kredit' => str_replace('.', '',$request->simpanan),
         'id_entry' => $userId,
@@ -192,7 +193,7 @@ $angsuran = Angsuran::create([
         'tanggal' => $request->tanggal,
         'v_debit'=>0,
         'v_kredit'=>str_replace('.', '',$request->simpanan),
-        'keterangan'=>'Simpanan dari angsuran '.str_pad($rekening->id_nasabah, 5, '0', STR_PAD_LEFT),
+        'keterangan'=>'Simpanan dari angsuran '.str_pad($datapinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$datapinjaman->nasabah->nama,
         'id_entry'=>$userId
 
 

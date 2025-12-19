@@ -114,8 +114,8 @@ if (!$user || $user->role != 'kepalaadmin') {
         $id_entry =  auth()->user()->id;
           $nasabah = Rekening::find($request->id_rekening);
        
-           $datajurnalkredit = ['id_akun'=>$id_akun,'no_jurnal'=>$nojurnal,'jenis'=>'simpanan','keterangan'=>$request->nama_rekening.' '.$request->jenis.' anggota '.str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT),'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
-        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'no_jurnal'=>$nojurnal,'keterangan'=>'kas','v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
+           $datajurnalkredit = ['id_akun'=>$id_akun,'no_jurnal'=>$nojurnal,'jenis'=>'simpanan','keterangan'=>'Simpanan '. str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $nasabah->nama,'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
+        $datajurnaldebet = ['id_akun'=>$idakunjurnal,'no_jurnal'=>$nojurnal,'keterangan'=>'Simpanan '. str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $nasabah->nama,'v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
         $ini = Jurnal::create($datajurnalkredit);
         Jurnal::create($datajurnaldebet);
        $request->request->add(['id_entry' => $id_entry,'no_jurnal'=>$nojurnal,'id_jurnal'=>$ini->id_jurnal]);
@@ -234,13 +234,13 @@ if($tarik>$saldo ){
 }
     
    
-
+    $nasabah = Nasabah::find($request->id_nasabah);
     $jurnal = Jurnal::create([
         'id_akun' => 36,
         'no_jurnal'=>$nojurnal,
         'jenis'=>'simpanan',
         'tanggal_transaksi' => $request->tgl_tarik,
-        'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
+        'keterangan' => 'Penarikan Tabungan '. str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $nasabah->nama,
         'v_debet' => $tarik,
         'v_kredit' => 0,
         'id_entry' => auth()->id()
@@ -249,7 +249,7 @@ if($tarik>$saldo ){
         'id_rekening' => $request->id_rekening,
         'tanggal' => $request->tgl_tarik,
         'id_akun' => 0, // Kas
-        'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
+        'keterangan' => $request->keterangan ?? 'Penarikan '. str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $nasabah->nama,
         'v_debit' => $tarik, // debit = keluar
         'v_kredit' => 0,
         'no_jurnal'=>$nojurnal,
@@ -262,7 +262,7 @@ Jurnal::create([
         'no_jurnal'=>$nojurnal,
         'jenis'=>'simpanan',
         'tanggal_transaksi' => $request->tgl_tarik,
-        'keterangan' => $request->keterangan ?? 'Penarikan Tabungan '.$request->id_nasabah,
+        'keterangan' => 'Penarikan tabungan '. str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $nasabah->nama,
         'v_debet' => 0, // debet = keluar
         'v_kredit' => $tarik,
         'id_entry' => auth()->id()
