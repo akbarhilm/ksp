@@ -27,15 +27,7 @@
                         value="{{ $jurnal[0]->tanggal_transaksi }}" required>
                 </div>
                 </div>
-                <div class='row'>
-                <div class="mb-3">
-                    <div class='input-group input-group-static'>
-                    <label class="">Keterangan</label>
-                    <input type="text" name="keterangan" class="form-control"
-                        value="{{ $jurnal[0]->keterangan }}">
-                    </div>
-                </div>
-                </div>
+                
             </div>
         </div>
 
@@ -47,13 +39,14 @@
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th style="width: 40%">Akun</th>
-                            <th style="width: 20%">Debit</th>
-                            <th style="width: 20%">Kredit</th>
+                            <th class='w-20'>Akun</th>
+                            <th class='w-20 text-wrap'>Keterangan</th>
+                            <th class='w-20 text-end'>Debit</th>
+                            <th class='w-20 text-end'>Kredit</th>
                         </tr>
                     </thead>
                     <tbody id="detail-body">
-                        @foreach ($jurnal as $j)
+                        @foreach ($jurnal as $i=>$j)
                         <tr>
                             <td>
                                 <select name="akun_id[]"  class="form-select" required>
@@ -67,14 +60,28 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="number" id='jumlah_debet' name="v_debet[]" class="form-control"
-                                       value="{{ $j->v_debet }}">
+                    <input type="text" name="keterangan[]" class="form-control"
+                        value="{{ $j->keterangan }}">
+                        
+                        @error('keterangan.'.$i)
+                            <p class='text-danger inputerror'>{{ $message }} </p>
+                        @enderror
+                            </td>
+                            <td>
+                                <input type="text" id='jumlah_debet' name="v_debet[]" class="form-control text-end input-jumlah"
+                                       value="{{ number_format($j->v_debet,0,',','.') }}">
+                        @error('v_debet.'.$i)
+                            <p class='text-danger inputerror'>{{ $message }} </p>
+                        @enderror
                                 <input type='hidden' name='jenis[]' value='{{$j->jenis}}'>
 
                             </td>
                             <td>
-                                <input type="number" id='jumlah_kredit' name="v_kredit[]" class="form-control"
-                                       value="{{ $j->v_kredit }}">
+                                <input type="text" id='jumlah_kredit' name="v_kredit[]" class="form-control text-end input-jumlah"
+                                       value="{{ number_format($j->v_kredit,0,',','.') }}">
+                                 @error('v_kredit.'.$i)
+                            <p class='text-danger inputerror'>{{ $message }} </p>
+                        @enderror
                                 <input type='hidden' name='id_jurnal[]' value='{{$j->id_jurnal}}'>
 
                             </td>
