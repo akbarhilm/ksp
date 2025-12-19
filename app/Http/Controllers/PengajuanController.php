@@ -357,7 +357,7 @@ $pinjaman = Pengajuan::where('status', 'approv')
            
 
             // simpanan
-            $datajurnalsimpanankredit = ['id_akun' => '36','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'pinjaman',  'keterangan' => 'Simpanan dari pencairan ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah[0]->nama, 'v_debet' => 0, 'v_kredit' => $pengajuan->simpanan_pokok, 'id_entry' => auth()->user()->id];
+            $datajurnalsimpanankredit = ['id_akun' => '36','tanggal_transaksi'=>$tgl,'no_jurnal'=>$nojurnal,'jenis'=>'simpanan',  'keterangan' => 'Simpanan dari pencairan ' . $data->jenis . ' ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $data->rekening[0]->nasabah[0]->nama, 'v_debet' => 0, 'v_kredit' => $pengajuan->simpanan_pokok, 'id_entry' => auth()->user()->id];
             $itu = Jurnal::create($datajurnalsimpanankredit);
             
 
