@@ -14,7 +14,9 @@ class Pengajuan extends Model
     public function rekening() {
         return $this->hasMany(Rekening::class, 'id_rekening', 'id_rekening');
     }
-
+ public function entry(){
+        return $this->belongsTo(User::class,'id_entry','id');
+    }
 
     public function jaminan()
 {

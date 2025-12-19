@@ -37,7 +37,8 @@
                 <thead>
                     <tr>
                         <th>Tanggal</th>
-                        <th>Jenis</th>
+                        <th>Input</th>
+
                         <th>Keterangan</th>
                         <th class="text-end">Debit</th>
                         <th class="text-end">Kredit</th>
@@ -50,10 +51,11 @@
                     @foreach($simpanan as $s)
                     <tr>
                         <td>{{ $s->tanggal }}</td>
-                        <td>{{ $s->jenis }}</td>
-                        <td>{{ $s->keterangan.' '.$s->rekening->nasabah[0]->id_nasabah.' / '.$s->rekening->nasabah[0]->nama }}</td>
+                        <td>{{$s->entry->nama}}</td>
+                        <td class='text-wrap'>{{ $s->keterangan }}</td>
                         <td class="text-end">{{ number_format($s->v_debit,0) }}</td>
                         <td class="text-end">{{ number_format($s->v_kredit,0) }}</td>
+                        
                     </tr>
                     @php $tdebit += $s->v_debit;
                     $tkredit += $s->v_kredit;
@@ -88,20 +90,25 @@
                 <thead>
                     <tr>
                         <th>Tanggal</th>
+                        <th>Input</th>
                         <th>Nasabah</th>
                         <th>Bunga</th>
                         <th class="text-end">Plafon</th>
                         <th class="text-end">Tenor</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($pengajuan as $p)
                     <tr>
                         <td>{{ $p->tanggal_pengajuan }}</td>
+                        <td>{{$p->entry->nama}}</td>
+
                         <td>{{ str_pad($p->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT) }}</td>
                         <td>{{ $p->bunga.'%' }}</td>
                         <td class="text-end">{{ number_format($p->jumlah_pengajuan,0) }}</td>
                         <td class="text-end">{{ $p->tenor }} bulan</td>
+                        <td>{{$p->status}}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -126,6 +133,7 @@
                 <thead>
                     <tr>
                         <th>Tanggal</th>
+                        <th>Input</th>
                         <th>Nama Nasabah</th>
                         <th class="text-end">Bayar Pokok</th>
                         <th class="text-end">Bayar Bunga</th>
@@ -142,7 +150,8 @@
                     @foreach($angsuran as $a)
                     <tr>
                         <td>{{ $a->tanggal }}</td>
-                        <td>{{  str_pad($a->pinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$a->pinjaman->nasabah->nama ?? '-' }}</td>
+                        <td>{{$a->entry->nama}}</td>
+                        <td class='text-wrap'>{{  str_pad($a->pinjaman->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$a->pinjaman->nasabah->nama ?? '-' }}</td>
                         <td class="text-end">{{ number_format($a->bayar_pokok,0) }}</td>
                         <td class="text-end">{{ number_format($a->bayar_bunga,0) }}</td>
                         <td class="text-end">{{ number_format($a->bayar_denda,0) }}</td>
@@ -159,7 +168,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan='2'>
+                        <th colspan='3'>
                             Total
                         </th>
                         <th class='text-end'>{{ number_format($totalpokok,0) }}</th>

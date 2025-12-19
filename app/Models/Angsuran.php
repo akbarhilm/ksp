@@ -14,4 +14,7 @@ class Angsuran extends Model
     public function pinjaman() {
         return $this->belongsTo(Pinjaman::class, 'id_pinjaman');
     }
+     public function entry(){
+        return $this->belongsTo(User::class,'id_entry','id');
+    }
 }

@@ -13,4 +13,7 @@ class Simpanan extends Model
     public function rekening() {
         return $this->belongsTo(Rekening::class, 'id_rekening','id_rekening');
     }
+    public function entry(){
+        return $this->belongsTo(User::class,'id_entry','id');
+    }
 }

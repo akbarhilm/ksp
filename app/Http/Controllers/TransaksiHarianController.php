@@ -23,20 +23,20 @@ class TransaksiHarianController extends Controller
         $userId = auth()->id(); // <-- user yang menginput data
         $role = auth()->user()->role;
 
-        $qs = Simpanan::with('rekening.nasabah')->whereDate('tanggal', $tanggal)
+        $qs = Simpanan::with('rekening.nasabah','entry')->whereDate('tanggal', $tanggal)
             ->orderBy('tanggal', 'ASC');
             if($role=='admin'){
                 $qs->where('id_entry',$userId);
             }
             $simpanan = $qs->get();
-         $qp = Pengajuan::with('rekening')->where('id_entry',$userId)->
+         $qp = Pengajuan::with('rekening','entry')->
             whereDate('tanggal_pengajuan', $tanggal)
             ->orderBy('tanggal_pengajuan', 'ASC');
           if($role =='admin'){
             $qp->where('id_entry',$userId);
           }
             $pengajuan = $qp->get();
-       $qa = Angsuran::with('pinjaman.nasabah')
+       $qa = Angsuran::with('pinjaman.nasabah','entry')
             ->whereDate('tanggal', $tanggal)
             ->orderBy('tanggal', 'ASC');
             if($role =='admin'){
