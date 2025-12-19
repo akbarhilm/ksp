@@ -295,7 +295,6 @@ $pinjaman = Pengajuan::where('status', 'approv')
         try {
           $nojurnal = JurnalHelper::noJurnal();
             $data = Pengajuan::where('id_pengajuan', $id)->where('status', '=', 'approv')->with('rekening.nasabah', 'jaminan')->first();
-            dd($data);
             $pengajuan = Pengajuan::where('id_pengajuan', $id)->first();
             $pengajuan->update(['status' => 'cair', 'tanggal_pencairan' => $tgl]);
             $pinjamanLama = null;
