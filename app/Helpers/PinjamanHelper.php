@@ -81,96 +81,205 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
 
 
 
-  public static function hitungDenda($id_pinjaman)
-{
-    // Ambil aturan denda
-    $bunga = Bunga::where('jenis_bunga', 'Denda')->first();
+//   public static function hitungDenda($id_pinjaman)
+// {
+//     // Ambil aturan denda
+//     $bunga = Bunga::where('jenis_bunga', 'Denda')->first();
    
-    $persenDenda = $bunga->persentase; // persen per hari, contoh: 0.5 = 0.5%
+//     $persenDenda = $bunga->persentase; // persen per hari, contoh: 0.5 = 0.5%
 
-    // Jika sudah bayar bulan ini → denda = 0
-    $bulanIni = date('Y-m');
+//     // Jika sudah bayar bulan ini → denda = 0
+//     $bulanIni = date('Y-m');
     
 
-    // ambil pinjaman
-    $pinjaman = Pinjaman::with('pengajuan')->where('id_pinjaman', $id_pinjaman)->first();
-    $cicilanBulanan = round($pinjaman->total_pinjaman / $pinjaman->pengajuan->tenor);
+//     // ambil pinjaman
+//     $pinjaman = Pinjaman::with('pengajuan')->where('id_pinjaman', $id_pinjaman)->first();
+//     $cicilanBulanan = round($pinjaman->total_pinjaman / $pinjaman->pengajuan->tenor);
 
-   $jtempo = substr($pinjaman->pengajuan->tanggal_pencairan,8,2);
-    $jatuhTempo = Carbon::today()->setDay($jtempo);
+//    $jtempo = substr($pinjaman->pengajuan->tanggal_pencairan,8,2);
+//     $jatuhTempo = Carbon::today()->setDay($jtempo);
 
-    // ambil tanggal acuan: pembayaran terakhir jika ada, kalau tidak pakai created_at (pencairan)
-    $lastPay = Angsuran::where('id_pinjaman', $id_pinjaman)
-        ->orderBy('tanggal', 'DESC')
-        ->first();
+//     // ambil tanggal acuan: pembayaran terakhir jika ada, kalau tidak pakai created_at (pencairan)
+//     $lastPay = Angsuran::where('id_pinjaman', $id_pinjaman)
+//         ->orderBy('tanggal', 'DESC')
+//         ->first();
 
-           $cicilanSekarang = $lastPay ? $lastPay->cicilan_ke : 1;
+//            $cicilanSekarang = $lastPay ? $lastPay->cicilan_ke : 1;
 
-    // Total bayar cicilan ini
-    $totalBayar = Angsuran::where('id_pinjaman', $id_pinjaman)
-        ->where('cicilan_ke', $cicilanSekarang)
-        ->get();
+//     // Total bayar cicilan ini
+//     $totalBayar = Angsuran::where('id_pinjaman', $id_pinjaman)
+//         ->where('cicilan_ke', $cicilanSekarang)
+//         ->get();
 
-    // ============================
-    // STATUS
-    // ============================
-$bayarpokok = $totalBayar->sum('bayar_pokok');
+//     // ============================
+//     // STATUS
+//     // ============================
+// $bayarpokok = $totalBayar->sum('bayar_pokok');
 
-    if ($bayarpokok>=$cicilanBulanan) {
-        return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
-    }
+//     if ($bayarpokok>=$cicilanBulanan) {
+//         return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
+//     }
 
-    if ($lastPay) {
-        $acuan = Carbon::parse($lastPay->tanggal);
-    } else {
-        $acuan = Carbon::parse($pinjaman->pengajuan->tanggal_pencarian);
-    }
+//     if ($lastPay) {
+//         $acuan = Carbon::parse($lastPay->tanggal);
+//     } else {
+//         $acuan = Carbon::parse($pinjaman->pengajuan->tanggal_pencarian);
+//     }
 
-    // jatuh tempo setiap tanggal (misal 20)
-$tgl = 20;
-    // dueDate pertama yang terlewat = tanggal jatuhTempo pada bulan berikutnya setelah bulan acuan
-    $firstMissedDue = $acuan->copy()->addMonth()->startOfMonth()->setDay($jtempo);
+//     // jatuh tempo setiap tanggal (misal 20)
+// $tgl = 20;
+//     // dueDate pertama yang terlewat = tanggal jatuhTempo pada bulan berikutnya setelah bulan acuan
+//     $firstMissedDue = $acuan->copy()->addMonth()->startOfMonth()->setDay($jtempo);
+//     dd($firstMissedDue);
+//     // jika bulan acuan memiliki tanggal > days in month (misal setDay overflow), Carbon akan handle.
+//     // pastikan firstMissedDue valid (Carbon setDay menangani)
 
-    // jika bulan acuan memiliki tanggal > days in month (misal setDay overflow), Carbon akan handle.
-    // pastikan firstMissedDue valid (Carbon setDay menangani)
+//     $today = Carbon::today();
 
-    $today = Carbon::today();
+//     //kalau hari ini belum melewati due date pertama → belum terlambat
+//     if ($today->lte($firstMissedDue)) {
+//         return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
+//     }
 
-    // kalau hari ini belum melewati due date pertama → belum terlambat
-    // if ($today->lte($firstMissedDue)) {
-    //     return ['denda'=>0, 'kolek'=>'C1', 'kolekBadge'=>'success','haritelat'=>0];
-    // }
-
-    // hari telat = selisih hari antara due date pertama terlewat dan hari ini
-    $hariTelat = $firstMissedDue->diffInDays($today);
-    // dasar perhitungan denda:
-    // gunakan sisa pokok (lebih akurat) kalau ada field saldo_pokok, jika tidak fallback ke total_pinjaman
-    $dasar = $pinjaman->total_pinjaman;
-    $kolek = "C1";
-     $kolekBadge = "success";
-    if ($hariTelat >= 1  && $hariTelat <= 30 && $bayarpokok < $cicilanBulanan ) {
-        $kolek = "C2";
-        $kolekBadge = "info";
-    } elseif ($hariTelat >= 31  && $hariTelat <= 60 && $bayarpokok < $cicilanBulanan) {
-        $kolek = "C3";
-        $kolekBadge = "warning";
-    } elseif ($hariTelat >= 61 && $hariTelat <= 90 && $bayarpokok < $cicilanBulanan) {
-        $kolek = "C4";
-        $kolekBadge = "danger";
-    } elseif ($hariTelat > 90 && $bayarpokok < $cicilanBulanan)  {
-        $kolek = "C5";
-        $kolekBadge = "dark";
+//     // hari telat = selisih hari antara due date pertama terlewat dan hari ini
+//     $hariTelat = $firstMissedDue->diffInDays($today);
+//     // dasar perhitungan denda:
+//     // gunakan sisa pokok (lebih akurat) kalau ada field saldo_pokok, jika tidak fallback ke total_pinjaman
+//     $dasar = $pinjaman->total_pinjaman;
+//     $kolek = "C1";
+//      $kolekBadge = "success";
+//     if ($hariTelat >= 1  && $hariTelat <= 30 && $bayarpokok < $cicilanBulanan ) {
+//         $kolek = "C2";
+//         $kolekBadge = "info";
+//     } elseif ($hariTelat >= 31  && $hariTelat <= 60 && $bayarpokok < $cicilanBulanan) {
+//         $kolek = "C3";
+//         $kolekBadge = "warning";
+//     } elseif ($hariTelat >= 61 && $hariTelat <= 90 && $bayarpokok < $cicilanBulanan) {
+//         $kolek = "C4";
+//         $kolekBadge = "danger";
+//     } elseif ($hariTelat > 90 && $bayarpokok < $cicilanBulanan)  {
+//         $kolek = "C5";
+//         $kolekBadge = "dark";
    
-    }
+//     }
 
-    // jika dasar 0 → tidak ada denda
+//     // jika dasar 0 → tidak ada denda
   
 
-    // rumus denda: dasar * (persen/100) * hariTelat
-    $denda = $dasar * ($persenDenda / 100) * $hariTelat;
+//     // rumus denda: dasar * (persen/100) * hariTelat
+//     $denda = $dasar * ($persenDenda / 100) * $hariTelat;
 
-    // opsi: dibulatkan ke integer
-    return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$kolekBadge,'haritelat'=>$hariTelat];
+//     // opsi: dibulatkan ke integer
+//     return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$kolekBadge,'haritelat'=>$hariTelat];
+// }
+
+
+
+    public static function hitungDenda($id_pinjaman)
+    {
+
+        // Ambil aturan denda
+     $bunga = Bunga::where('jenis_bunga', 'Denda')->first();
+   
+     $persenDenda = $bunga->persentase; // persen per hari, contoh: 0.5 = 0.5%
+
+    
+        $pinjaman = Pinjaman::with('pengajuan')
+            ->where('status', 'aktif')
+            ->find($id_pinjaman);
+
+        if (!$pinjaman || !$pinjaman->pengajuan) {
+            return null;
+        }
+
+        $pengajuan = $pinjaman->pengajuan;
+        $today     = Carbon::today();
+
+        // ==========================
+        // NILAI CICILAN
+        // ==========================
+        $nilaiCicilan = $pinjaman->total_pinjaman / $pengajuan->tenor;
+
+        // ==========================
+        // AMBIL ANGSURAN (1 QUERY)
+        // ==========================
+        $angsuran = Angsuran::where('id_pinjaman', $id_pinjaman)
+            ->selectRaw('cicilan_ke, SUM(bayar_pokok) as total_bayar')
+            ->groupBy('cicilan_ke')
+            ->orderBy('cicilan_ke')
+            ->get();
+
+        // ==========================
+        // HITUNG CICILAN LUNAS
+        // ==========================
+        $cicilanLunas = 0;
+
+        foreach ($angsuran as $row) {
+            if ($row->total_bayar >= $nilaiCicilan) {
+                $cicilanLunas = $row->cicilan_ke;
+            } else {
+                break; // berhenti di cicilan yang belum lunas
+            }
+        }
+
+        // ==========================
+        // CICILAN SEHARUSNYA
+        // ==========================
+        $cicilanSeharusnya = $cicilanLunas + 1;
+
+        // ==========================
+        // JATUH TEMPO CICILAN
+        // ==========================
+        $jatuhTempo = Carbon::parse($pengajuan->tanggal_pencairan)
+            ->addMonths($cicilanSeharusnya);
+
+        // ==========================
+        // HARI TELAT
+        // ==========================
+        $hariTelat = $today->lte($jatuhTempo)
+            ? 0
+            : $jatuhTempo->diffInDays($today);
+
+        // ==========================
+        // KOLEKTIBILITAS
+        // ==========================
+        if ($hariTelat === 0) {
+            $kolek = 'C1';
+            $badge = 'success';
+        } elseif ($hariTelat <= 30) {
+            $kolek = 'C2';
+            $badge = 'warning';
+        } elseif ($hariTelat <= 60) {
+            $kolek = 'C3';
+            $badge = 'warning';
+        } 
+        elseif ($hariTelat <= 90) {
+            $kolek = 'C4';
+            $badge = 'danger';
+        } else {
+            $kolek = 'C5';
+            $badge = 'dark';
+        }
+
+        // ==========================
+        // DENDA
+        // ==========================
+        // $dendaPerHari = Denda::value('nominal_per_hari') ?? 0;
+        $denda        = $hariTelat * $persenDenda;
+    //  return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$badge,'haritelat'=>$hariTelat];
+
+        return [
+            'nilai_cicilan'      => round($nilaiCicilan),
+            'cicilan_lunas'      => $cicilanLunas,
+            'cicilan_seharusnya' => $cicilanSeharusnya,
+            'tgl_cair'=>$pengajuan->tanggal_pencairan,
+            'jatuh_tempo'        => $jatuhTempo->format('Y-m-d'),
+            'haritelat'         => $hariTelat,
+            'kolek'     => $kolek,
+            'kolekBadge'              => $badge,
+            'denda'              => $denda
+        ];
+    }
 }
 
-}
+

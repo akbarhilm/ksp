@@ -7,6 +7,7 @@ use App\Models\Pengajuan;
 use App\Models\PengajuanJaminan;
 use App\Models\Pinjaman;
 use App\Models\Simpanan;
+use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Jurnal;
@@ -36,8 +37,8 @@ class CetakPdfController extends Controller
 
             if (!$p->nasabah) continue;
 
-            $resort = $p->nasabah->kode_resort ?? 'UNKNOWN';
-
+            $user = User::where('kode_resort',$p->nasabah->kode_resort)->first() ?? 'UNKNOWN';
+            $resort=$p->nasabah->kode_resort.' / '.$user->nama;
             // hitung hari tunggakan & kolek
             $data = PinjamanHelper::hitungDenda($p->id_pinjaman);
             // $kolek     = Helper::getKolektibilitas($hariTelat);
@@ -58,9 +59,12 @@ class CetakPdfController extends Controller
             if (in_array($data['kolek'], ['C3','C4','C5'])) {
                 $dataResort[$resort]['total_npl'] += $sisa;
             }
-
+ $last = Carbon::parse($data['tgl_cair'])
+            ->addMonths($data['cicilan_lunas']);
             $dataResort[$resort]['detail'][] = [
-                'nasabah' => $p->nasabah->nama,
+                'nasabah' => str_pad($p->nasabah->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$p->nasabah->nama,
+                'tgl_cair' => $data['tgl_cair'],
+                'cicilan_terakhir'=>$last,
                 'sisa'    => $sisa,
                 'hari'    => $data['haritelat'],
                 'kolek'   => $data['kolek'],

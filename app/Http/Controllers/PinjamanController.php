@@ -40,6 +40,9 @@ public function index(Request $request)
             ->addColumn('resort', function($p){
                 return $p->nasabah->kode_resort ?? '-';
             })
+            ->addColumn('tgl_cair', function($p){
+                return $p->pengajuan->tanggal_pencairan ?? '-';
+            })
 
             ->addColumn('pinjaman', function($p){
                 return number_format($p->total_pinjaman,0);

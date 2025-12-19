@@ -34,6 +34,7 @@
         <tr>
             <th>Nasabah</th>
             <th class='d-none'>nama</th>
+            <th class='text-sm'>Pencairan</th>
             <th>Resort</th>
             <th>Pinjaman</th>
             <th>Sisa Pokok</th>
@@ -65,8 +66,10 @@
             }
         },
         columns: [
-            { data: 'nasabah', name: 'nasabah',className:'text-sm' },
+            { data: 'nasabah', name: 'nasabah',className:'text-sm text-wrap' },
             { data: 'nasabah', name: 'nasabah',visible:false },
+            { data: 'tgl_cair', name: 'tgl_cair',className:'text-sm text-center'},
+
 
             { data: 'resort', name: 'nasabah.kode_resort',className:'text-sm text-center' },
             { data: 'pinjaman', name: 'total_pinjaman', className:'text-end text-sm' },
