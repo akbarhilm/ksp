@@ -112,7 +112,10 @@ if (!$user || $user->role != 'kepalaadmin') {
             $request->request->add(['id_akun' => $id_akun]);
 
         $id_entry =  auth()->user()->id;
-          $nasabah = Rekening::find($request->id_rekening);
+          $nasabah = Nasabah::with('rekening')->whereHas('rekening', function ($q) use ($request) {
+            $q->where('id_rekening', $request->id_rekening);
+        })->first();
+        dd($nasabah);
        
            $datajurnalkredit = ['id_akun'=>$id_akun,'no_jurnal'=>$nojurnal,'jenis'=>'simpanan','keterangan'=>'Simpanan '. str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $nasabah->nama,'v_debet'=>0,'v_kredit'=>$request->v_kredit,'id_entry'=>$id_entry];
         $datajurnaldebet = ['id_akun'=>$idakunjurnal,'no_jurnal'=>$nojurnal,'keterangan'=>'Simpanan '. str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT).' / '. $nasabah->nama,'v_debet'=>$request->v_kredit,'v_kredit'=>0,'id_entry'=>$id_entry];
