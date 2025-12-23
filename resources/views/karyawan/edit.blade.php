@@ -146,8 +146,9 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="d-flex gap-2 input-group input-group-static mb-4">
+                                            @if(auth()->user()->role == 'superadmin')
                                             <button class="btn btn-info" type="submit">Simpan</button>
-                                       
+                                            @endif
                                             <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>
                                         </div>
                                     </div>
