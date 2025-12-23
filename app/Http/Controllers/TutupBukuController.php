@@ -33,7 +33,7 @@ class TutupBukuController extends Controller
         DB::beginTransaction();
 
         try {
-$nilai = AssetHelper::susutGlobalTahunan(20);
+$nilai = AssetHelper::susutGlobalTahunan(25);
           $nojurnal = JurnalHelper::noJurnal();
             $today = Carbon::parse($request->tanggal ?? now());
 
