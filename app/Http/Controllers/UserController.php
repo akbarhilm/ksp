@@ -204,8 +204,9 @@ public function datatableindex(Request $request)
         ->addColumn('aksi', function ($row) {
             $edit = route('users.edit', $row->id);
             $delete = route('users.destroy', $row->id);
-
-            return '
+            $user = auth()->user();
+            if (!$user || $user->role == 'superadmin') {
+                return '
                 <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
                     <i class="material-icons">edit</i>
                 </a>
@@ -216,6 +217,14 @@ public function datatableindex(Request $request)
                     '.csrf_field().method_field('DELETE').'
                 </form>
             ';
+            }else{
+            return '
+                <a href="'.$edit.'" class="btn btn-sm btn-success btn-link" title="edit">
+                    <i class="material-icons">edit</i>
+                </a>
+               
+            ';
+            }
         })
         ->rawColumns(['aksi'])
         ->make(true);
