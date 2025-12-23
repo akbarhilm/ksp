@@ -67,7 +67,7 @@ public function datatableindex(Request $request)
             </a>
         ';
     }
-    if (!$user || $user->role != 'admin') {
+    if (!$user || $user->role == 'superadmin' ) {
         $btnhapus = '
            <a href="javascript:{}" onclick="hapusNasabah('.$row->id_nasabah.')" class="btn btn-sm btn-danger btn-link" title="Non aktifkan">
                     <i class="material-icons">close</i>

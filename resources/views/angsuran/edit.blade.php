@@ -86,7 +86,7 @@
     </div>
             
           <div class='d-flex justify-content-between'>
-            @if(auth()->user()->role !== 'admin')
+            @if(auth()->user()->role == 'superadmin')
             <div class='gap-2'>
             <button type="submit" class="btn btn-info" >Simpan Perubahan Angsuran</button>
              <a class="btn btn-dark btn-link " href="{{ url()->previous() }}">kembali</a>

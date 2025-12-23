@@ -116,7 +116,7 @@
                         <th>Denda</th>
                         <th>Simpanan</th>
                         <th>Keterangan</th>
-            @if(auth()->user()->role != 'admin')
+            @if(auth()->user()->role == 'superadmin')
 
                         <th>Aksi</th>
                         @endif
@@ -144,7 +144,7 @@
             <td class="text-end">{{ number_format($denda,0) }}</td>
             <td class="text-end">{{ number_format($simpanan,0) }}</td>
             <td></td>
-            @if(auth()->user()->role != 'admin')
+            @if(auth()->user()->role == 'superadmin')
             <td></td>
             @endif
         </tr>
@@ -168,7 +168,7 @@
         <td class="text-end">{{ number_format($h->bayar_denda,0) }}</td>
         <td class="text-end">{{ number_format($h->simpanan,0) }}</td>
         <td>Pembayaran Angsuran ke {{ $h->cicilan_ke }}</td>
-        @if(auth()->user()->role != 'admin')
+        @if(auth()->user()->role == 'superadmin')
         <td class=''>
             <a href='{{ route('angsuran.edit',$h->id_pembayaran) }}' class='btn btn-warning'>Edit</a>
         </td>
@@ -202,7 +202,7 @@
     <td class="text-end">{{ number_format($denda,0) }}</td>
     <td class="text-end">{{ number_format($simpanan,0) }}</td>
     <td></td>
-        @if(auth()->user()->role != 'admin')
+        @if(auth()->user()->role == 'superadmin')
 
     <td></td>
     @endif

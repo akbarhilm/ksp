@@ -91,7 +91,7 @@
                     </tbody>
                 </table>
   <div class="row">
-     @if(auth()->user()->role != 'admin')
+     @if(auth()->user()->role == 'superadmin')
            <div class=' col-md-6 gap-2'>
             @if(!$angsuran)
             <a href="javascript:{}" onclick="rubah({{ $jurnal[0]->no_jurnal }})" class="btn btn-success " title="hapus">Simpan Perubahan
