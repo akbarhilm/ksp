@@ -38,7 +38,12 @@ class CetakPdfController extends Controller
             if (!$p->nasabah) continue;
 
             $user = User::where('kode_resort',$p->nasabah->kode_resort)->first() ?? 'UNKNOWN';
-            $resort=$p->nasabah->kode_resort.' / '.$user->nama;
+            if($user == 'UNKNOWN'){
+               $resort=$user;
+            }else{
+               $resort = $user->kode_resort.' - '.$user->nama;
+            }
+           
             // hitung hari tunggakan & kolek
             $data = PinjamanHelper::hitungDenda($p->id_pinjaman);
             // $kolek     = Helper::getKolektibilitas($hariTelat);

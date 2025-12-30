@@ -191,7 +191,7 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
         if (!$pinjaman || !$pinjaman->pengajuan) {
             return null;
         }
-
+        $dasar = $pinjaman->total_pinjaman;
         $pengajuan = $pinjaman->pengajuan;
         $today     = Carbon::today();
 
@@ -265,7 +265,9 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
         // DENDA
         // ==========================
         // $dendaPerHari = Denda::value('nominal_per_hari') ?? 0;
-        $denda        = $hariTelat * $persenDenda;
+        $denda = $dasar * ($persenDenda / 100) * $hariTelat;
+
+       // $denda        = $hariTelat * $persenDenda;
     //  return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$badge,'haritelat'=>$hariTelat];
 
         return [

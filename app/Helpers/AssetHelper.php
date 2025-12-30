@@ -8,26 +8,28 @@ use DB;
 
 class AssetHelper
 {
-    public static function susutGlobalTahunan($persen = 25)
+    public static function susutGlobalTahunan($persen = 25,$nojurnal)
     {
-        $nojurnal = JurnalHelper::noJurnal();
         // $tanggal = Carbon::now()->endOfMonth();
 
         // ambil total saldo ALL akun aset
         //$aset = Akun::where('tipe_akun', 'Aset')->get();
 
-        $totalAset = 0;
+        // $totalAset = 0;
         //foreach ($aset as $a) {
-            $totalAset = Jurnal::where('id_akun', 22)
-                    ->sum(DB::raw('v_debet - v_kredit'));
+            $listAset = Jurnal::where('id_akun', 22)->where('v_debet','>=','2000000')->get();
+                    // ->sum(DB::raw('v_debet - v_kredit'));
 
-           
+            // $totalAset += $saldoAset;
         
 
-        if ($totalAset <= 0) return false;
+        // if ($totalAset <= 0) return false;
 
         // hitung beban tahunan
-        $bebanTahunan = $totalAset * ($persen / 100);
+        foreach($listAset as $la){
+        
+        
+        $bebanTahunan = $la->v_debet * ($persen / 100);
         $bebanBulanan = round($bebanTahunan / 12, 0);
 
         // ambil akun
@@ -43,7 +45,7 @@ class AssetHelper
             'no_jurnal'=>$nojurnal,
             'v_debet' => $bebanBulanan,
             'v_kredit' => 0,
-            'keterangan' => 'Penyusutan aset global '.$persen.'% / tahun',
+            'keterangan' => 'Penyusutan '.$la->keterangan,
             'id_entry' => auth()->id()
         ]);
 
@@ -53,12 +55,11 @@ class AssetHelper
             'no_jurnal'=>$nojurnal,
             'v_debet' => 0,
             'v_kredit' => $bebanBulanan,
-            'keterangan' => 'Akumulasi penyusutan global',
+            'keterangan' => 'Akumulasi Penyusutan '.$la->keterangan,
             'id_entry' => auth()->id()
         ]);
 
-        return $bebanBulanan;
     }
 }
-
+}
 

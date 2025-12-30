@@ -33,8 +33,9 @@ class TutupBukuController extends Controller
         DB::beginTransaction();
 
         try {
-$nilai = AssetHelper::susutGlobalTahunan(25);
-          $nojurnal = JurnalHelper::noJurnal();
+            $nojurnal = JurnalHelper::noJurnal();
+//$nilai = AssetHelper::susutGlobalTahunan(25,$nojurnal);
+          
             $today = Carbon::parse($request->tanggal ?? now());
 
             // ============================
@@ -49,9 +50,8 @@ $nilai = AssetHelper::susutGlobalTahunan(25);
             // ============================
             // Ambil semua rekening simpanan
             // ============================
-            $rekening = Rekening::where('jenis_rekening','Tabungan')->get();
-
-            foreach ($rekening as $r) {
+            $rekening = Rekening::with('nasabah')->where('jenis_rekening','Tabungan')->get();
+             foreach ($rekening as $r) {
 
                 // ============================
                 // HITUNG SALDO AKHIR
@@ -62,7 +62,37 @@ $nilai = AssetHelper::susutGlobalTahunan(25);
                 // ============================
                 // CEK THRESHOLD
                 // ============================
-                if ($saldo < $bunga->threshold) {
+                   Jurnal::create([
+                    'tanggal_transaksi' => now(),
+                    'id_akun' => '49', // Beban bunga
+                    'no_jurnal'=>$nojurnal,
+                    'v_debet' =>0,
+                    'v_kredit' => '2000',
+                    'keterangan' => 'Pendapatan ADM dari Simpanan ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$r->nasabah[0]->nama,
+                    'id_entry' => auth()->id()
+                ]);
+                $itu =  Jurnal::create([
+                    'tanggal_transaksi' => now(),
+                    'id_akun' => '36', // Beban bunga
+                    'no_jurnal'=>$nojurnal,
+                    'jenis'=>'simpanan',
+                    'v_debet' =>'2000',
+                    'v_kredit' => 0,
+                    'keterangan' => 'Biaya ADM Simpanan ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$r->nasabah[0]->nama,
+                    'id_entry' => auth()->id()
+                ]);
+                 $Simpanan = Simpanan::create([
+                    'id_rekening' => $r->id_rekening,
+                    'tanggal' => now(),
+                    'id_akun'=>0,
+                    'keterangan' => 'Biaya ADM ',
+                    'v_debit' => '2000',
+                    'v_kredit' => 0,
+                    'id_jurnal'=>$itu->id_jurnal,
+                    'no_jurnal'=>$nojurnal,
+                    'id_entry' => auth()->id()
+                ]);
+                if ($saldo <= $bunga->threshold) {
                     continue; // belum dapat bunga
                 }
 
@@ -76,26 +106,7 @@ $nilai = AssetHelper::susutGlobalTahunan(25);
                 // ============================
                 // SIMPAN SIMPANAN (KREDIT)
                 // ============================
-                $Simpanan = Simpanan::create([
-                    'id_rekening' => $r->id_rekening,
-                    'tanggal' => now(),
-                    'id_akun'=>0,
-                    'jenis' => 'wajib',
-                    'keterangan' => 'Bunga simpanan ',
-                    'v_debit' => 0,
-                    'v_kredit' => $bungaTabungan,
-                    'id_entry' => auth()->id()
-                ]);
-                $Simpanan = Simpanan::create([
-                    'id_rekening' => $r->id_rekening,
-                    'tanggal' => now(),
-                    'id_akun'=>0,
-                    'jenis' => 'wajib',
-                    'keterangan' => 'Biaya ADM ',
-                    'v_debit' => '2000',
-                    'v_kredit' => 0,
-                    'id_entry' => auth()->id()
-                ]);
+                
 
                 // ============================
                 // JURNAL AKUNTANSI (OPSIONAL)
@@ -104,39 +115,42 @@ $nilai = AssetHelper::susutGlobalTahunan(25);
                 // Beban bunga
                 Jurnal::create([
                     'tanggal_transaksi' => now(),
-                    'id_akun' => '31', // Beban bunga
+                    'id_akun' => '72', // Beban bunga
                     'no_jurnal'=>$nojurnal,
                     'v_debet' => $bungaTabungan,
                     'v_kredit' => 0,
-                    'keterangan' => 'Beban bunga simpanan  ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT),
+                    'keterangan' => 'Beban bunga simpanan  ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$r->nasabah[0]->nama,
                     'id_entry' => auth()->id()
                 ]);
                 //ADM
-                 Jurnal::create([
-                    'tanggal_transaksi' => now(),
-                    'id_akun' => '49', // Beban bunga
-                    'no_jurnal'=>$nojurnal,
-                    'v_debet' =>0,
-                    'v_kredit' => '2000',
-                    'keterangan' => 'Pendapatan ADM ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT),
-                    'id_entry' => auth()->id()
-                ]);
+               
 
                
 
                 // Simpanan anggota
-                Jurnal::create([
+                $ini = Jurnal::create([
                     'tanggal_transaksi' => now(),
-                    'id_akun' => '14',
+                    'id_akun' => '36',
                     'no_jurnal'=>$nojurnal,
-                    'id_simpanan' => $Simpanan->id_simpanan,
+                    'jenis'=>'simpanan',
                     'v_debet' => 0,
                     'v_kredit' => $bungaTabungan,
-                    'keterangan' => 'Penambahan simpanan dari bunga '. str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT),
+                    'keterangan' => 'Penambahan simpanan dari bunga '. str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$r->nasabah[0]->nama,
                     'id_entry' => auth()->id()
                 ]);
             }
-
+            $Simpanan = Simpanan::create([
+                    'id_rekening' => $r->id_rekening,
+                    'tanggal' => now(),
+                    'id_akun'=>0,
+                    'keterangan' => 'Bunga simpanan ',
+                    'v_debit' => 0,
+                    'v_kredit' => $bungaTabungan,
+                    'no_jurnal'=>$nojurnal,
+                    'id_jurnal'=>$ini->id_jurnal,
+                    'id_entry' => auth()->id()
+                ]);
+               
             TutupBuku::create([
                 'tanggal' => now(),
                 'id_entry' => auth()->id()

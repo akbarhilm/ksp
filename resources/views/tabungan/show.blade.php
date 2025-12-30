@@ -71,7 +71,6 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Tanggal</th>
-                                    <th>Jenis</th>
                                     <th>Keterangan</th>
                                     <th class="text-center">Debit</th>
                                     <th class="text-center">Kredit</th>
@@ -137,7 +136,6 @@
                     $('#result').append(`
                         <tr>
                             <td>${simpanan.tanggal}</td>
-                            <td>${simpanan.jenis}</td>
                             <td>${simpanan.keterangan}</td>
                             <td class="text-end">${Number(simpanan.v_debit).toLocaleString()}</td>
                             <td class="text-end">${Number(simpanan.v_kredit).toLocaleString()}</td>
