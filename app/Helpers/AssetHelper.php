@@ -46,7 +46,7 @@ class AssetHelper
             'v_debet' => $bebanBulanan,
             'v_kredit' => 0,
             'keterangan' => 'Penyusutan '.$la->keterangan,
-            'id_entry' => auth()->id()
+            'id_entry' => 0
         ]);
 
         Jurnal::create([
@@ -56,7 +56,7 @@ class AssetHelper
             'v_debet' => 0,
             'v_kredit' => $bebanBulanan,
             'keterangan' => 'Akumulasi Penyusutan '.$la->keterangan,
-            'id_entry' => auth()->id()
+            'id_entry' => 0
         ]);
 
     }
