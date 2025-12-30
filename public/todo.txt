@@ -13,3 +13,4 @@ Sekalian tlg aturan² nya ya supaya bisa disesuaikan spt
 12. keterangan jurnal betulkan v
 13. inventaris kantor lebih dari 2jt
 14. tutup buku mengurani sewa bayar dimuka ke beban
+15. penarikan mengendap 10000 tutup buku saldo < 10000 ambil semua

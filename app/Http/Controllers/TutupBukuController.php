@@ -62,6 +62,41 @@ $nilai = AssetHelper::susutGlobalTahunan(25,$nojurnal);
                 // ============================
                 // CEK THRESHOLD
                 // ============================
+                 if($saldo <= 0){
+                    continue; // saldo kosong
+                }
+                 if($saldo <= 10000){
+                   Jurnal::create([
+                    'tanggal_transaksi' => now(),
+                    'id_akun' => '49', // Beban bunga
+                    'no_jurnal'=>$nojurnal,
+                    'v_debet' =>0,
+                    'v_kredit' => $saldo,
+                    'keterangan' => 'Pendapatan ADM dari Simpanan ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$r->nasabah[0]->nama,
+                    'id_entry' => auth()->id()
+                ]);
+                $itu =  Jurnal::create([
+                    'tanggal_transaksi' => now(),
+                    'id_akun' => '36', // Beban bunga
+                    'no_jurnal'=>$nojurnal,
+                    'jenis'=>'simpanan',
+                    'v_debet' =>$saldo,
+                    'v_kredit' => 0,
+                    'keterangan' => 'Biaya ADM Simpanan ' . str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$r->nasabah[0]->nama,
+                    'id_entry' => auth()->id()
+                ]);
+                 $Simpanan = Simpanan::create([
+                    'id_rekening' => $r->id_rekening,
+                    'tanggal' => now(),
+                    'id_akun'=>0,
+                    'keterangan' => 'Biaya ADM ',
+                    'v_debit' => $saldo,
+                    'v_kredit' => 0,
+                    'id_jurnal'=>$itu->id_jurnal,
+                    'no_jurnal'=>$nojurnal,
+                    'id_entry' => auth()->id()
+                ]);
+                }else{
                    Jurnal::create([
                     'tanggal_transaksi' => now(),
                     'id_akun' => '49', // Beban bunga
@@ -92,9 +127,11 @@ $nilai = AssetHelper::susutGlobalTahunan(25,$nojurnal);
                     'no_jurnal'=>$nojurnal,
                     'id_entry' => auth()->id()
                 ]);
+            }
                 if ($saldo <= $bunga->threshold) {
                     continue; // belum dapat bunga
                 }
+                
 
                 // ============================
                 // HITUNG BUNGA
@@ -138,7 +175,7 @@ $nilai = AssetHelper::susutGlobalTahunan(25,$nojurnal);
                     'keterangan' => 'Penambahan simpanan dari bunga '. str_pad($r->id_nasabah,5,'0',STR_PAD_LEFT).' / '.$r->nasabah[0]->nama,
                     'id_entry' => auth()->id()
                 ]);
-            }
+           
             $Simpanan = Simpanan::create([
                     'id_rekening' => $r->id_rekening,
                     'tanggal' => now(),
@@ -150,7 +187,7 @@ $nilai = AssetHelper::susutGlobalTahunan(25,$nojurnal);
                     'id_jurnal'=>$ini->id_jurnal,
                     'id_entry' => auth()->id()
                 ]);
-               
+            }
             TutupBuku::create([
                 'tanggal' => now()
             ]);

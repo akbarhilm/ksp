@@ -196,9 +196,11 @@ class PengajuanController extends Controller
 
         $request->request->add(['id_entry' => auth()->user()->id]);
         $pengajuan->update($request->all());
+
         if ($request->jenis_jaminan) {
-            foreach ($request->jenis_jaminan as $i => $j) {
                 $jaminan = PengajuanJaminan::where('id_pengajuan',$pengajuan->id_pengajuan)->delete();
+
+            foreach ($request->jenis_jaminan as $i => $j) {
                 PengajuanJaminan::create([
                     'id_pengajuan'  => $pengajuan->id_pengajuan,
                     'jenis_jaminan' => $j,

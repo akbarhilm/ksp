@@ -230,7 +230,7 @@ $saldo = $request->saldo;
 $tarik = $request->tarik;
 
   
-if($tarik>$saldo ){
+if($tarik>$saldo-10000){
             return redirect()->back()->with('warning', 'Penarikan melebihi saldo.');
 
 }

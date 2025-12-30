@@ -68,7 +68,7 @@
                       
                         <div class="mb-3 col-md-4 ">
                             <div class='input-group input-group-static'>
-                            <label class="">Penarikan Saldo Wajib</label>
+                            <label class="">Penarikan Saldo</label>
                             <input type="text" class="form-control input-jumlah" name="tarik" value={{ old('tarik')??0}} >
                             </div>
                                @error('tarik')
