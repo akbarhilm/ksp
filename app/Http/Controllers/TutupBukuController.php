@@ -34,7 +34,7 @@ class TutupBukuController extends Controller
 
         try {
             $nojurnal = JurnalHelper::noJurnal();
-//$nilai = AssetHelper::susutGlobalTahunan(25,$nojurnal);
+$nilai = AssetHelper::susutGlobalTahunan(25,$nojurnal);
           
             $today = Carbon::parse($request->tanggal ?? now());
 
@@ -152,8 +152,7 @@ class TutupBukuController extends Controller
                 ]);
                
             TutupBuku::create([
-                'tanggal' => now(),
-                'id_entry' => auth()->id()
+                'tanggal' => now()
             ]);
 
 //             //shu

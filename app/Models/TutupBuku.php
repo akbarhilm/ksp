@@ -11,9 +11,8 @@ class TutupBuku extends Model
     protected $primaryKey = 'id_tutupbuku';
 
     protected $fillable = [
-        'tanggal',
+        'tanggal'
        
-        'id_entry'
     ];
      
     
