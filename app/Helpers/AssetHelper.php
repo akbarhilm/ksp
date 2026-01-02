@@ -27,8 +27,12 @@ class AssetHelper
 
         // hitung beban tahunan
         foreach($listAset as $la){
-        
-        
+        $nilaiPenyusutan = Jurnal::where('id_akun', 25)
+            ->where('keterangan', 'like', '%'.$la->keterangan.'%')
+            ->sum('v_kredit');
+       if($nilaiPenyusutan >= $la->v_debet){
+           continue;
+       }
         $bebanTahunan = $la->v_debet * ($persen / 100);
         $bebanBulanan = round($bebanTahunan / 12, 0);
 
