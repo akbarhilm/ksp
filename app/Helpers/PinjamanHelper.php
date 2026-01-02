@@ -35,7 +35,7 @@ $bulanIni = Carbon::today()->format('Y-m');
 
         $bulanbayar =  $lastAngsuran ? Carbon::parse($lastAngsuran->tanggal)->format('Y-m') : null;
 
-        
+       
     // Tentukan cicilan berjalan
     $cicilanSekarang = $lastAngsuran ? $lastAngsuran->cicilan_ke : 1;
 
@@ -213,11 +213,19 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
         // HITUNG CICILAN LUNAS
         // ==========================
         $cicilanLunas = 0;
-
+        $status = '';
+        $statusBadge = '';
+        $kurang = 0;
         foreach ($angsuran as $row) {
             if ($row->total_bayar >= $nilaiCicilan) {
                 $cicilanLunas = $row->cicilan_ke;
+                $status = 'Sudah Bayar';
+                $statusBadge = 'success';
+                $kurang = 0;
             } else {
+                $status = 'Bayar Sebagian';
+                $statusBadge = 'primary';
+               $kurang =  'Kurang bayar Rp '.number_format($nilaiCicilan - $row->total_bayar,0,',','.');
                 break; // berhenti di cicilan yang belum lunas
             }
         }
@@ -236,9 +244,15 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
         // ==========================
         // HARI TELAT
         // ==========================
-        $hariTelat = $today->lte($jatuhTempo)
-            ? 0
-            : $jatuhTempo->diffInDays($today);
+        if($today->lte($jatuhTempo)){
+             $hariTelat =0; $status = ''; $statusBadge = '';$kurang=0;
+            }else{
+            $hariTelat = $jatuhTempo->diffInDays($today);
+            if($status =='Bayar Sebagian'){
+            }else{
+            $status = 'Belum Bayar'; $statusBadge = 'secondary';$kurang=0;
+        }
+        }
 
         // ==========================
         // KOLEKTIBILITAS
@@ -269,7 +283,32 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
 
        // $denda        = $hariTelat * $persenDenda;
     //  return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$badge,'haritelat'=>$hariTelat];
+// if ($bayarpokok >= $cicilanBulanan && $bayarpokok > 0 && $bulanbayar == $bulanIni ) {
+//         return [
+//             'status' => 'Sudah Bayar',
+//             'badge'  => 'success',
+//             'tooltip'=> null
+//         ];
+//     }
 
+//     // ✅ BAYAR SEBAGIAN
+//     if ($bayarpokok > 0 && $bayarpokok < $cicilanBulanan ) {
+
+//         $kurang = $cicilanBulanan - $bayarpokok;
+
+//         return [
+//             'status'  => 'Bayar Sebagian',
+//             'badge'   => 'primary',
+//             'tooltip' => 'Kurang bayar Rp '.number_format($kurang,0,',','.')
+//         ];
+//     }
+
+//     // ✅ BELUM BAYAR SAMA SEKALI
+//     return [
+//         'status' => 'Belum Bayar',
+//         'badge'  => 'secondary',
+//         'tooltip'=> null
+//     ];
         return [
             'nilai_cicilan'      => round($nilaiCicilan),
             'cicilan_lunas'      => $cicilanLunas,
@@ -279,7 +318,10 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
             'haritelat'         => $hariTelat,
             'kolek'     => $kolek,
             'kolekBadge'              => $badge,
-            'denda'              => $denda
+            'denda'              => $denda,
+            'status'              => $status,
+            'statusBadge'        => $statusBadge,
+            'kurang'             => $kurang
         ];
     }
 }

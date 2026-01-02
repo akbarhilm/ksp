@@ -192,8 +192,9 @@
                                     <tbody>
                                         @foreach ($listpinjaman as $p)
                                               @php
-                                        $info = \App\Helpers\PinjamanHelper::statusJatuhTempo($p->id_pinjaman);
+                                        //$info = \App\Helpers\PinjamanHelper::statusJatuhTempo($p->id_pinjaman);
                                         $denda = \App\Helpers\PinjamanHelper::hitungDenda($p->id_pinjaman);
+  
                                     @endphp
                                        
                                         <tr>
@@ -207,8 +208,8 @@
                                             </td>
                                             <td>
                                                 @if($p->status == 'aktif')
-                                                <span class="badge bg-{{ $info['badge'] }}">
-                                            {{ $info['status'] }}
+                                                <span class="badge bg-{{ $denda['statusBadge'] }}">
+                                            {{ $denda['status'] }}
                                             @else
                                             <span class="badge bg-secondary">Lunas</span>
                                             @endif

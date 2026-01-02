@@ -58,18 +58,18 @@ public function index(Request $request)
 
             ->addColumn('status', function($p){
 
-    $info = \App\Helpers\PinjamanHelper::statusJatuhTempo($p->id_pinjaman);
+    //$info = \App\Helpers\PinjamanHelper::statusJatuhTempo($p->id_pinjaman);
     $denda = \App\Helpers\PinjamanHelper::hitungDenda($p->id_pinjaman);
 
     // Tooltip jika ada
     $tooltip = '';
-    if (!empty($info['tooltip'])) {
-        $tooltip = 'data-bs-toggle="tooltip" title="'.$info['tooltip'].'"';
+    if ($denda['kurang']!=0) {
+        $tooltip = 'data-bs-toggle="tooltip" title="'.$denda['kurang'].'"';
     }
 
     return '
-        <span class="badge bg-'.$info['badge'].'" '.$tooltip.'>
-            '.$info['status'].'
+        <span class="badge bg-'.$denda['statusBadge'].'" '.$tooltip.'>
+            '.$denda['status'].'
         </span>
         <span class="badge bg-'.$denda['kolekBadge'].'">
             '.$denda['kolek'].'
