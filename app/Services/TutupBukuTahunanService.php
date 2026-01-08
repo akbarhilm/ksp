@@ -13,7 +13,6 @@ class TutupBukuTahunanService
         DB::beginTransaction();
 
         try {
-            $nojurnal = JurnalHelper::noJurnal();
 $lt=Jurnal::OrderBy('tanggal_transaksi','desc')->value('tanggal_transaksi');
 $year = substr($lt,0,4);
             $saldoShu = Jurnal::where('id_akun', 43) // SHU berjalan
