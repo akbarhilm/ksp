@@ -8,8 +8,8 @@
         <div class="container-fluid py-4">
             <div class="card mb-4">
                 <div class="card-body">
-                  <h5>Informasi Nasabah</h5>
-            <p><strong>Nasabah:</strong> {{ str_pad($nasabah->id_nasabah , 5, '0', STR_PAD_LEFT).' / '.$nasabah->nama}}</p>
+                  <h5>Informasi Anggota</h5>
+            <p><strong>Anggota:</strong> {{ str_pad($nasabah->id_nasabah , 5, '0', STR_PAD_LEFT).' / '.$nasabah->nama}}</p>
             <p><strong>No KTP:</strong> {{$nasabah->nik }}</p>
             <p><strong>Tanggal Lahir:</strong> {{$nasabah->tgl_lahir }}</p>
             <p><strong>No Telp:</strong> {{ $nasabah->no_telp }}</p>

@@ -10,11 +10,11 @@
                 <div class="card-body">
                     <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
                         <div class="col-md-3">
-                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Nasabah"
+                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Anggota"
                                 value="{{ request('id_nasabah') }}">
                         </div>
                         <div class="col-md-3">
-                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Anggota"
                                 value="{{ request('nama') }}">
                         </div>
                         
@@ -30,7 +30,7 @@
       <table id="nasabahTable"  class="table table-striped table-hover align-middle text-sm" width="100%">
     <thead class="table-dark">
         <tr>
-            <th>Nasabah</th>
+            <th>Anggota</th>
             <th>No KTP</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>

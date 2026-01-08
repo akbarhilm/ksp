@@ -3,18 +3,18 @@
     <x-navbars.sidebar activePage="nasabah" menuParent="admin"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Managemen Anggota"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="card mb-4">
                 <div class="card-body">
                     <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
                         <div class="col-md-3">
-                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Nasabah"
+                            <input type="text" name="id_nasabah" class="form-control" id="filter-id" placeholder="ID Anggota"
                                 value="{{ request('id_nasabah') }}">
                         </div>
                         <div class="col-md-3">
-                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Anggota"
                                 value="{{ request('nama') }}">
                         </div>
                         
@@ -30,7 +30,7 @@
                     <div class="d-flex justify-content-end mb-3">
                         @if(auth()->user()->role != 'kepalaadmin')
                         <a href="{{ route('nasabah.create') }}" class="btn btn-info">
-                            <i class="fas fa-plus me-1"></i> Tambah Nasabah
+                            <i class="fas fa-plus me-1"></i> Tambah Anggota
                         </a>
                         @endif
                     </div>

@@ -22,7 +22,7 @@
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#detail-{{ Str::slug($resort) }}">
-                        Detail Nasabah
+                        Detail Anggota
                     </button>
                 </div>
 
@@ -57,7 +57,7 @@
                         <table class="table table-sm table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nasabah</th>
+                                    <th>Anggota</th>
                                     <th class="text-center">Tanggal Cair</th>
                                     <th class="text-center">Jatuh Tempo Terakhir</th>
                                     <th class="text-end">Sisa Pokok</th>

@@ -229,9 +229,13 @@ keterlambatan pembayaran maka setiap bulannya akan dikenakan denda sebesar 0.1% 
         <tr>
             <td><p class="text-justify">d.</p></td>
             <td>
-                <p class="text-justify">
+                {{-- <p class="text-justify">
                     PIHAK KESATU menyetujui potongan simpanan Rp. {{number_format($data->simpanan_pokok,0,',','.')}} @if($data->asuransi == 0)dan @else, @endif biaya tata 
 laksana/administrasi Rp. {{number_format($data->admin,0,',','.')}} @if($data->asuransi != 0) dan Asuransi Rp. {{number_format($data->asuransi,0,',','.')}}. @else. @endif Atas dasar pinjaman tersebut, saya PIHAK KESATU dengan 
+sukarela menitip dengan PIHAK KEDUA berupa 
+                </p> --}}
+                <p class="text-justify">
+                  Atas dasar pinjaman tersebut, saya PIHAK KESATU dengan 
 sukarela menitip dengan PIHAK KEDUA berupa 
                 </p>
             </td>
@@ -278,21 +282,21 @@ perjanjian akad kredit ini di buat.</p></td>
 harus melunasi sisa utangnya sesuai dengan perjanjian Kredit</p></td>
         </tr>
 
-        <tr>
+        {{-- <tr>
             <td><p class="text-justify">g.</p></td>
             <td><p class="text-justify">Apabila PIHAK KESATU melanggar Surat Perjanjian ini, maka bersedia dituntut di Pengadilan 
 Negeri Kab. Tangerang, dengan catatan seluruh biaya perkara ditanggung oleh PIHAK KESATU</p></td>
-        </tr>
+        </tr> --}}
 
         <tr>
-            <td><p class="text-justify">h.</p></td>
+            <td><p class="text-justify">g.</p></td>
             <td><p class="text-justify">Dan apabila ada pinjaman baik dari BANK atau Pihak Lain yang masuk ke rekening yang 
 saya jaminkan kepada KSP SINAR MURNI, maka saya siap melunasi hutang di KOPERASI 
 SIMPAN PINJAM SINAR MURNI Secara Flat tidak ada pengurangan pokok maupun bunga.</p></td>
         </tr>
 
         <tr>
-            <td><p class="text-justify">i.</p></td>
+            <td><p class="text-justify">h.</p></td>
             <td>
                 <p class="text-justify">
                      PIHAK KESATU berjanji tidak akan mengambil BERKAS diatas yang saya titipkan sebelum pinjaman 
@@ -304,7 +308,7 @@ menyebabkan proses pembayaran angsuran ke PIHAK KEDUA terhambat.
         </tr>
 
         <tr>
-            <td><p class="text-justify">j.</p></td>
+            <td><p class="text-justify">i.</p></td>
             <td>
                 <p class="text-justify">
                    Bilamana PIHAK KESATU tidak bekerja lagi atau PHK (PEMUTUSAN HUBUNGAN KERJA) dari 
@@ -316,7 +320,7 @@ kredit
         </tr>
 
         <tr>
-            <td><p class="text-justify">k.</p></td>
+            <td><p class="text-justify">j.</p></td>
             <td>
                 <p class="text-justify">
                     Apabila PIHAK KESATU melanggar Surat Perjanjian ini, maka bersedia dituntut di Pengadilan 
@@ -375,7 +379,8 @@ masing pihak dengan diberi materai secukupnya untuk dijadikan bukti yang sah.
         <td></td>
         <td class="text-center">
             <strong>{{ strtoupper($data->rekening[0]->nasabah[0]->nama_suami_istri) }}</strong><br>
-            (PENANGGUNG JAWAB)
+            <u>(Penjamin)</u><br>
+            Ikut Bertanggung Jawab
         </td>
     </tr>
 </table>

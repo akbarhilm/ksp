@@ -3,7 +3,7 @@
     <x-navbars.sidebar activePage="rekening" menuParent="admin"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Managemen Anggota"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -21,7 +21,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>Nama Nasabah</label>
+                                            <label>Nama Anggota</label>
                                             <input type="text" readonly class="form-control" name="nama"
                                                 value="{{$nasabah->nama }}" 
                                                 />

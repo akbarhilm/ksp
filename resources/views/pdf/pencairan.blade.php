@@ -161,7 +161,7 @@ dengan nomor pinjaman {{ $data['id'] }}.
         <td class="right">{{ number_format($data['simpanan_pokok'],0,',','.') }}</td>
     </tr>
     <tr>
-        <td>Asuransi Jiwa</td>
+        <td>DAPERMA (Dana Perlindungan Bersama)</td>
         <td class="right">{{ number_format($data['asuransi'],0,',','.') }}</td>
     </tr>
     @if($data['pinjamanlama']>0)

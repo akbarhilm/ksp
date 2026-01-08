@@ -17,7 +17,7 @@
                                 <div class="row g-3 mb-4 align-items-end">
 
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Cari Nasabah</label>
+                                        <label class="form-label fw-semibold">Cari Anggota</label>
                                         <input type="text" name="nama" class="form-control" value="{{request()->nama}}"
                                             placeholder="Nama">
                                     </div>
@@ -36,7 +36,7 @@
                                 <table class="table table-sm table-striped table-hover align-middle">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th class="text-center text-sm">Nasabah</th>
+                                            <th class="text-center text-sm">Anggota</th>
                                            <th class="text-center text-sm">Jenis</th>
 
                                             <th class="text-center text-sm">Tanggal Pengajuan</th>

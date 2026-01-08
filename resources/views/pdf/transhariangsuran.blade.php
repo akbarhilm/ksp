@@ -91,7 +91,7 @@
     <thead>
         <tr>
             <th>Tanggal</th>
-            <th>Nasabah</th>
+            <th>Anggota</th>
             <th>Bayar Pokok</th>
             <th>Bayar Bunga</th>
             <th>Bayar Denda</th>

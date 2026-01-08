@@ -23,13 +23,13 @@
                         {{-- DATA NASABAH --}}
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">No Nasabah</label>
+                                <label class="form-label">No Anggota</label>
                                 <input type="text" readonly class="form-control"
                                     value="{{ str_pad($nasabah->id_nasabah, 5, '0', STR_PAD_LEFT) }}">
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Nama Nasabah</label>
+                                <label class="form-label">Nama Anggota</label>
                                 <input type="text" readonly class="form-control" value="{{ $nasabah->nama }}">
                             </div>
                         </div>

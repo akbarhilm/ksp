@@ -27,7 +27,7 @@
                         <div class="card-header p-3 pt-2">
 
                             <div class="text-center pt-1">
-                                <p class="text-sm mb-0 text-capitalize">Jumlah Nasabah</p>
+                                <p class="text-sm mb-0 text-capitalize">Jumlah Anggota</p>
                                 <h4 class="mb-0">{{ number_format($totalnasabah, 0, ',', '.') }}</h4>
                             </div>
                         </div>
@@ -177,7 +177,7 @@
                                         <tr>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Nasabah</th>
+                                                Anggota</th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Status</th>

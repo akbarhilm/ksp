@@ -10,7 +10,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <h5>Informasi Pinjaman</h5>
-            <p><strong>Nasabah:</strong> {{ str_pad($pinjaman->id_nasabah , 5, '0', STR_PAD_LEFT).' / '.$pinjaman->nasabah->nama}}</p>
+            <p><strong>Anggota:</strong> {{ str_pad($pinjaman->id_nasabah , 5, '0', STR_PAD_LEFT).' / '.$pinjaman->nasabah->nama}}</p>
             <p><strong>Total Pinjaman:</strong> {{ number_format($pinjaman->total_pinjaman,0) }}</p>
             <p><strong>Sisa Pokok:</strong> {{ number_format($pinjaman->sisa_pokok,0) }}</p>
             <p><strong>Sisa Bunga:</strong> {{ number_format($pinjaman->sisa_bunga,0) }}</p>

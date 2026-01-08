@@ -11,7 +11,7 @@
                     <form action="{{ route('pinjaman.index') }}" method="GET" class="row g-3">
                         <div class="col-md-3">
                             <input type="text" name="kode_resort" class="form-control" id="filter-id" placeholder="kode resort"
-                                value="{{ request('id_nasabah') }}">
+                                value="{{ request('kode_resort') }}">
                         </div>
                         <div class="col-md-3">
                             <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama karyawan"

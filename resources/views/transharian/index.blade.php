@@ -91,7 +91,7 @@
                     <tr>
                         <th>Tanggal</th>
                         <th>Input</th>
-                        <th>Nasabah</th>
+                        <th>Anggota</th>
                         <th>Bunga</th>
                         <th class="text-end">Plafon</th>
                         <th class="text-end">Tenor</th>
@@ -134,7 +134,7 @@
                     <tr>
                         <th>Tanggal</th>
                         <th>Input</th>
-                        <th>Nama Nasabah</th>
+                        <th>Nama Anggota</th>
                         <th class="text-end">Bayar Pokok</th>
                         <th class="text-end">Bayar Bunga</th>
                         <th class="text-end">Bayar Denda</th>

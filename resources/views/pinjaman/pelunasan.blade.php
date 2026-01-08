@@ -13,11 +13,11 @@
                 <div class="card-body">
                     <form action="{{ route('pelunasan.index') }}" method="GET" class="row g-3">
                         <div class="col-md-3">
-                            <input type="text" name="id_nasabah" id="filter-id" class="form-control" placeholder="ID Nasabah"
+                            <input type="text" name="id_nasabah" id="filter-id" class="form-control" placeholder="ID Anggota"
                                 value="{{ request('id_nasabah') }}">
                         </div>
                         <div class="col-md-3">
-                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Nasabah"
+                            <input type="text" name="nama" class="form-control" id="filter-nama" placeholder="Nama Anggota"
                                 value="{{ request('nama') }}">
                         </div>
                         
@@ -32,7 +32,7 @@
                     <table class="table table-sm table-striped table-bordered" id="table-pinjaman">
     <thead class="table-dark text-sm">
         <tr>
-            <th>Nasabah</th>
+            <th>Anggota</th>
             <th>Resort</th>
             <th>Pinjaman</th>
             <th>Sisa Pokok</th>

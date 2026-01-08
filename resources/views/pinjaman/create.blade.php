@@ -21,7 +21,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>No Nasabah</label>
+                                            <label>No Anggota</label>
                                             <input type="text" readonly class="form-control" name="nama"
                                                 value="{{str_pad($nasabah->id_nasabah,5,'0',STR_PAD_LEFT) }}" 
                                                 />
@@ -33,7 +33,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>Nama Nasabah</label>
+                                            <label>Nama Anggota</label>
                                             <input type="text" readonly class="form-control" name="nama"
                                                 value="{{$nasabah->nama }}" 
                                                 />

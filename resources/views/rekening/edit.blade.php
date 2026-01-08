@@ -3,7 +3,7 @@
     <x-navbars.sidebar activePage="rekening" menuParent="admin"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Managemen Nasabah"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Managemen Anggota"></x-navbars.navs.auth>
         <!-- End Navbar -->
         
 
@@ -14,7 +14,7 @@
 
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                             <div class="bg-gradient-info shadow-primary border-radius-lg pt-4 pb-3">
-                                <h6 class="text-white text-capitalize ps-3">Rekening Nasabah</h6>
+                                <h6 class="text-white text-capitalize ps-3">Rekening Anggota</h6>
                             </div>
                         </div>
                         @foreach ($rekening as $rek )
