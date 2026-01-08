@@ -2,24 +2,24 @@
  namespace App\Http\Controllers;
 
 // use App\Helpers\AssetHelper;
-// use App\Helpers\JurnalHelper;
-// use App\Models\Akun;
+ use App\Helpers\JurnalHelper;
+ use App\Models\Akun;
 // use App\Models\Bunga;
 // use App\Models\Simpanan;
-// use App\Models\Jurnal;
+ use App\Models\Jurnal;
 // use App\Models\Rekening;
-// use App\Models\TutupBuku;
-// use DB;
+ use App\Models\TutupBuku;
+ use DB;
  use Carbon\Carbon;
  use Illuminate\Http\Request;
 use App\Services\TutupBukuService;
 
  class TutupBukuController extends Controller
  {
-//     public function index(Request $request)
-//     {
-//         return view('tutupbuku.index');
-//     }
+    public function index(Request $request)
+    {
+        return view('tutupbuku.index');
+    }
 
 //     public function store(Request $request)
 //      {
@@ -206,13 +206,82 @@ use App\Services\TutupBukuService;
 //     }
 // }
 
+
+
 public function store(Request $request)
 {
-    TutupBukuService::proses(
-        Carbon::parse($request->tanggal ?? now()),
-        auth()->id()
-    );
+    // TutupBukuService::proses(
+    //     Carbon::parse($request->tanggal ?? now()),
+    //     auth()->id()
+    // );
+    //shu
+     DB::beginTransaction();
 
-    return back()->with('success', 'Tutup buku berhasil');
+        try {
+            $nojurnal = JurnalHelper::noJurnal();
+
+            $akunSHU = Akun::where('id_akun','43')->first();
+$akunPend = Akun::where('tipe_akun','Pendapatan')->get();
+$akunBeban = Akun::where('tipe_akun','Beban')->get();
+
+            foreach($akunPend as $p){
+    $saldoPendapatan = Jurnal::where('id_akun',$p->id_akun)->where('tanggal_transaksi','<=','2025-12-31')->sum(DB::raw('v_kredit - v_debet'));
+
+    if($saldoPendapatan > 0){
+        Jurnal::create([
+            'tanggal_transaksi' => '2025-12-31',
+            'id_akun' => $p->id_akun,
+            'no_jurnal'=>$nojurnal,
+            'v_debet' => $saldoPendapatan,
+            'v_kredit' => 0,
+            'keterangan' => 'Tutup Buku Pendapatan',
+             'id_entry' => auth()->id()
+        ]);
+
+        Jurnal::create([
+            'tanggal_transaksi' => '2025-12-31',
+            'id_akun' => $akunSHU->id_akun,
+            'no_jurnal'=>$nojurnal,
+            'v_debet' => 0,
+            'v_kredit' => $saldoPendapatan,
+            'keterangan' => 'SHU dari Pendapatan',
+             'id_entry' => auth()->id()
+        ]);
+    }
 }
- }
+    foreach($akunBeban as $b){
+    $saldoBeban = Jurnal::where('id_akun',$b->id_akun)->where('tanggal_transaksi','<=','2025-12-31')->sum(DB::raw('v_debet - v_kredit'));
+
+    if($saldoBeban > 0){
+        Jurnal::create([
+            'tanggal_transaksi' => '2025-12-31',
+            'id_akun' => $akunSHU->id_akun,
+            'no_jurnal'=>$nojurnal,
+            'v_debet' => $saldoBeban,
+            'v_kredit' => 0,
+            'keterangan' => 'SHU untuk Beban',
+             'id_entry' => auth()->id()
+        ]);
+
+        Jurnal::create([
+            'tanggal_transaksi' => '2025-12-31',
+            'id_akun' => $b->id_akun,
+            'no_jurnal'=>$nojurnal,
+            'v_debet' => 0,
+            'v_kredit' => $saldoBeban,
+            'keterangan' => 'Tutup Buku Beban',
+             'id_entry' => auth()->id()
+        ]);
+    }
+}
+    DB::commit();
+            return back()->with('success', 'Tutup Buku berhasil dibukukan.');
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
+        }
+    // return back()->with('success', 'Tutup buku berhasil');
+}
+}
+ 
