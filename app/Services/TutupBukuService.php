@@ -136,7 +136,7 @@ $month = substr($lt,5,2);
 
     if($saldoPendapatan > 0){
         Jurnal::create([
-            'tanggal_transaksi' => '2025-12-31',
+            'tanggal_transaksi' => $tanggal,
             'id_akun' => $p->id_akun,
             'no_jurnal'=>$nojurnal,
             'v_debet' => $saldoPendapatan,
@@ -146,7 +146,7 @@ $month = substr($lt,5,2);
         ]);
 
         Jurnal::create([
-            'tanggal_transaksi' => '2025-12-31',
+            'tanggal_transaksi' => $tanggal,
             'id_akun' => $akunSHU->id_akun,
             'no_jurnal'=>$nojurnal,
             'v_debet' => 0,
@@ -161,7 +161,7 @@ $month = substr($lt,5,2);
 
     if($saldoBeban > 0){
         Jurnal::create([
-            'tanggal_transaksi' => '2025-12-31',
+            'tanggal_transaksi' => $tanggal,
             'id_akun' => $akunSHU->id_akun,
             'no_jurnal'=>$nojurnal,
             'v_debet' => $saldoBeban,
@@ -171,7 +171,7 @@ $month = substr($lt,5,2);
         ]);
 
         Jurnal::create([
-            'tanggal_transaksi' => '2025-12-31',
+            'tanggal_transaksi' => $tanggal,
             'id_akun' => $b->id_akun,
             'no_jurnal'=>$nojurnal,
             'v_debet' => 0,
