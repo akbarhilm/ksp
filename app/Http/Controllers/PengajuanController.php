@@ -14,6 +14,7 @@ use App\Models\Pinjaman;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helpers\JurnalHelper;
+use App\Models\Angsuran;
 use DB;
 use Mpdf\Mpdf;
 
@@ -310,15 +311,35 @@ $pinjaman = Pengajuan::where('status', 'approv')
             }
             if ($data->jenis == 'topup') {
                 $pinjamanLama = Pinjaman::where('id_nasabah', $data->rekening[0]->id_nasabah)->where('status', 'aktif')->first();
-                $sisa_pokok_lama = $pinjamanLama->sisa_pokok+$pinjamanLama->sisa_bunga;
+                $sisa_pokok_lama = $pinjamanLama->sisa_pokok;
+                $sisa_bunga_lama = $pinjamanLama->sisa_bunga;
                 $datajurnaldebet = ['id_akun' => $idakunjurnal,'jenis'=>'pinjaman','no_jurnal'=>$nojurnal, 'tanggal_transaksi'=>$tgl,  'keterangan' => 'Pelunasan ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$data->rekening[0]->nasabah[0]->nama, 'v_debet' => $sisa_pokok_lama, 'v_kredit' => 0, 'id_entry' => auth()->user()->id];
-                
-                
+
+                $datajurnalkreditbunga = ['id_akun' => '47','no_jurnal'=>$nojurnal,'jenis'=>'pinjaman','tanggal_transaksi'=>$tgl,  'keterangan' => 'Pendapatan Bunga Pelunasan ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$data->rekening[0]->nasabah[0]->nama, 'v_debet' => 0, 'v_kredit' => $sisa_bunga_lama, 'id_entry' => auth()->user()->id];
+
                 $datajurnalkredit = ['id_akun' => '9','no_jurnal'=>$nojurnal,'jenis'=>'pinjaman','tanggal_transaksi'=>$tgl,  'keterangan' => 'Pelunasan ' . str_pad($data->rekening[0]->id_nasabah, 5, '0', STR_PAD_LEFT).' / '.$data->rekening[0]->nasabah[0]->nama, 'v_debet' => 0, 'v_kredit' => $sisa_pokok_lama, 'id_entry' => auth()->user()->id];
-                $pinjamanLama->update(['status' => 'lunas']);
-                Jurnal::create($datajurnalkredit);
+               
+                
+                
+                $eta = Jurnal::create($datajurnalkredit);
+                Jurnal::create($datajurnalkreditbunga);
                 
                 Jurnal::create($datajurnaldebet);
+                Angsuran::create([
+                    'id_pinjaman' => $pinjamanLama->id_pinjaman,
+                    'tanggal' => $tgl,
+                    'total_bayar' => $sisa_pokok_lama + $sisa_bunga_lama,
+                    'id_jurnal' => $eta->id_jurnal,
+                    'no_jurnal' => $nojurnal,
+                    'bayar_bunga'=>$sisa_bunga_lama,
+                    'bayar_pokok'=>$sisa_pokok_lama,
+                    'bayar_denda'=>0,
+                    'simpanan'=>0,
+                    'metode'=>'ATM',
+                    'cicilan_ke'=>99,
+                    'id_entry' => auth()->user()->id
+                ]);
+                 $pinjamanLama->update(['status' => 'lunas', 'sisa_pokok' => 0, 'sisa_bunga' => 0]);
             }
 
 
