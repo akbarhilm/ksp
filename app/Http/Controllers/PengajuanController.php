@@ -325,6 +325,7 @@ $pinjaman = Pengajuan::where('status', 'approv')
                 Jurnal::create($datajurnalkreditbunga);
                 
                 Jurnal::create($datajurnaldebet);
+                $tenor = Pengajuan::where('id_pengajuan', $pinjamanLama->id_pengajuan)->value('tenor');
                 Angsuran::create([
                     'id_pinjaman' => $pinjamanLama->id_pinjaman,
                     'tanggal' => $tgl,
@@ -336,7 +337,7 @@ $pinjaman = Pengajuan::where('status', 'approv')
                     'bayar_denda'=>0,
                     'simpanan'=>0,
                     'metode'=>'ATM',
-                    'cicilan_ke'=>99,
+                    'cicilan_ke'=>$tenor,
                     'id_entry' => auth()->user()->id
                 ]);
                  $pinjamanLama->update(['status' => 'lunas', 'sisa_pokok' => 0, 'sisa_bunga' => 0]);
