@@ -257,7 +257,7 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
         // ==========================
         // KOLEKTIBILITAS
         // ==========================
-        if ($hariTelat === 0) {
+        if ($hariTelat === 0 || $pinjaman->sisa_pokok <= 0) {
             $kolek = 'C1';
             $badge = 'success';
         } elseif ($hariTelat <= 30) {
@@ -279,8 +279,11 @@ $bayarpokok = $totalBayar->sum('bayar_pokok');
         // DENDA
         // ==========================
         // $dendaPerHari = Denda::value('nominal_per_hari') ?? 0;
+        if ($pinjaman->sisa_pokok > 0) {
         $denda = $dasar * ($persenDenda / 100) * $hariTelat;
-
+        } else {
+            $denda = 0;
+        }
        // $denda        = $hariTelat * $persenDenda;
     //  return ['denda'=>$denda, 'kolek'=>$kolek, 'kolekBadge'=>$badge,'haritelat'=>$hariTelat];
 // if ($bayarpokok >= $cicilanBulanan && $bayarpokok > 0 && $bulanbayar == $bulanIni ) {

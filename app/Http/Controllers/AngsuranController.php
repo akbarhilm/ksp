@@ -85,7 +85,7 @@ public function destroy($id){
     $datapinjaman = Pinjaman::with('nasabah')->find($pinjamanId);
     $datapinjaman->update(['sisa_pokok'=>$datapinjaman->sisa_pokok - $pokok,'sisa_bunga'=>$datapinjaman->sisa_bunga - $bunga]);
 
-    if($datapinjaman->sisa_pokok <=0 ){
+    if($datapinjaman->sisa_pokok <=0 && $datapinjaman->sisa_bunga <=0 ){
         $datapinjaman->update(['status'=>'Lunas']);
         $pengajuan = Pengajuan::where('id_pengajuan',$datapinjaman->id_pengajuan)->first();
     // if($pengajuan->asuransi >0){

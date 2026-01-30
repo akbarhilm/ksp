@@ -29,6 +29,7 @@ class CetakPdfController extends Controller
 
         $pinjaman = Pinjaman::with('nasabah')
             ->where('status', 'aktif')
+            ->where('sisa_pokok', '>', 0)
             ->get();
 
         $dataResort = [];
