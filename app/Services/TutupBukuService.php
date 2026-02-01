@@ -3,7 +3,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use DB;
-use App\Models\{Bunga, Rekening, Simpanan, Jurnal, TutupBuku};
+use App\Models\{Bunga, Rekening, Simpanan, Jurnal, TutupBuku, Akun};
 use App\Helpers\{JurnalHelper, AssetHelper};
 
 class TutupBukuService
