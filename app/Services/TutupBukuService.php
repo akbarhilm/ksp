@@ -18,7 +18,7 @@ class TutupBukuService
 $year = substr($lt,0,4);
 $month = substr($lt,5,2);
             // Penyusutan aset (jika ada)
-            AssetHelper::susutGlobalTahunan(25, $nojurnal);
+            AssetHelper::susutGlobalTahunan(25, $nojurnal,$tanggal);
 
             // ========================
             // Bunga simpanan
