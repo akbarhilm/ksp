@@ -11,10 +11,12 @@ class TutupBukuService
     public static function proses($tanggal, $userId = null)
     {
         DB::beginTransaction();
-
+   
         try {
             $nojurnal = JurnalHelper::noJurnal();
-
+ $lt=Jurnal::OrderBy('tanggal_transaksi','desc')->value('tanggal_transaksi');
+$year = substr($lt,0,4);
+$month = substr($lt,5,2);
             // Penyusutan aset (jika ada)
             AssetHelper::susutGlobalTahunan(25, $nojurnal);
 
@@ -75,6 +77,7 @@ class TutupBukuService
                         'tanggal' => $tanggal,
                          'id_akun'=>0,
                         'v_debit' => $adm,
+                        'keterangan'=>'Biaya ADM',
                         'v_kredit' => 0,
                         'id_jurnal' => $j->id_jurnal,
                         'no_jurnal' => $nojurnal,
@@ -119,6 +122,7 @@ class TutupBukuService
                      'id_akun'=>0,
                     'v_debit' => 0,
                     'v_kredit' => $nilaiBunga,
+                    'keterangan'=>'Bunga Simpanan',
                     'id_jurnal' => $j->id_jurnal,
                     'no_jurnal' => $nojurnal,
                     'id_entry' =>  0,
@@ -127,9 +131,7 @@ class TutupBukuService
           $akunSHU = Akun::where('id_akun','43')->first();
 $akunPend = Akun::where('tipe_akun','Pendapatan')->get();
 $akunBeban = Akun::where('tipe_akun','Beban')->get();
-$lt=Jurnal::OrderBy('tanggal_transaksi','desc')->value('tanggal_transaksi');
-$year = substr($lt,0,4);
-$month = substr($lt,5,2);
+
 
             foreach($akunPend as $p){
     $saldoPendapatan = Jurnal::where('id_akun',$p->id_akun)->whereYear('tanggal_transaksi',$year)->whereMonth('tanggal_transaksi',$month)->sum(DB::raw('v_kredit - v_debet'));
