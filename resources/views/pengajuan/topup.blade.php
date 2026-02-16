@@ -46,7 +46,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Bunga per Bulan (%)</label>
-                                <input type="number" id="bunga" name="bunga" class="form-control input-bunga"
+                                <input type="number" step="0.5" id="bunga" name="bunga" class="form-control input-bunga"
                                     value="{{ old('bunga') }}">
                                 @error('bunga') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>

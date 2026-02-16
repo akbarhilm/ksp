@@ -48,7 +48,7 @@
                                 <div class='input-group input-group-static'>
 
                                 <label class="">Bunga per Bulan (%)</label>
-                                <input type="number" id="bunga" name="bunga" class="form-control input-bunga"
+                                <input type="number" step="0.5" id="bunga" name="bunga" class="form-control input-bunga"
                                     value="{{ $pengajuan->bunga }}">
                                 @error('bunga') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
