@@ -78,7 +78,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="input-group input-group-static mb-4">
-                                            <label>Penangguna Jawab</label>
+                                            <label>Ikut Bertanggung Jawab</label>
                                             <input type="text" class="form-control" name="nama_suami_istri"
                                                 value="{{ old('nama_suami_istri') }}" />
                                         </div>
