@@ -156,9 +156,19 @@ public function update(Request $request){
                 $pengajuan->update(['jumlah_pencairan'=>$d['v_debet']]);
                 $pinjaman->update(['total_pinjaman'=>$d['v_debet'],'sisa_pokok'=>$d['v_debet'],'sisa_bunga'=>$pokok]);
             }
+             if($d['id_akun']=='82'){
+                $pengajuan->update(['asuransi'=>$d['v_kredit']]);
+
         }
-       
-      
+        if($d['id_akun']=='48'){
+                $pengajuan->update(['admin'=>$d['v_kredit']]);
+
+        }
+       if($d['id_akun']=='51'){
+                $pengajuan->update(['survey'=>$d['v_kredit']]);
+
+        }
+        }
     }
   return redirect()->route('jurnal.index')->with('success', 'Jurnal berhasil diperbarui.');
 }

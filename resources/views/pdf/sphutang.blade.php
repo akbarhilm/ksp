@@ -306,9 +306,16 @@ menyebabkan proses pembayaran angsuran ke PIHAK KEDUA terhambat.
                 </p>
             </td>
         </tr>
-
-        <tr>
+<tr>
             <td><p class="text-justify">i.</p></td>
+            <td>
+                <p class="text-justify">
+                     Apabila tidak turun gaji atau menarik gaji menggunakan mbanking dan memblokir ATM, maka pihak koperasi akan berkunjung ke rumah dan di kenakan biaya penagihan sebesar Rp. 300.000
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td><p class="text-justify">j.</p></td>
             <td>
                 <p class="text-justify">
                    Bilamana PIHAK KESATU tidak bekerja lagi atau PHK (PEMUTUSAN HUBUNGAN KERJA) dari 
