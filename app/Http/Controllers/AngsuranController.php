@@ -29,6 +29,7 @@ public function edit($id){
     return view('angsuran.edit',compact('angsuran','pinjaman'));
 }
 public function update(Request $request,$id){
+    $tb = str_replace('.','',$request->total_bayar);
         $request->merge([
             'total_bayar'=>str_replace('.','',$request->total_bayar)-str_replace('.','',$request->simpanan),
             'bayar_pokok'=>str_replace('.','',$request->bayar_pokok),
@@ -42,7 +43,7 @@ public function update(Request $request,$id){
    $an->update($request->all());
    foreach($jur as $j){
     if($j->id_akun == '5'){
-    Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_debet'=>$request->total_bayar,'tanggal_transaksi'=>$request->tanggal]);
+    Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_debet'=>$tb,'tanggal_transaksi'=>$request->tanggal]);
     }
     if($j->id_akun == '9'){
         Jurnal::where('id_jurnal',$j->id_jurnal)->update(['v_kredit'=>$request->bayar_pokok, 'tanggal_transaksi'=>$request->tanggal]);
